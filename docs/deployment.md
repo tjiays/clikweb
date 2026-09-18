@@ -4,11 +4,31 @@
 
 | | Staging | Production |
 | --- | --- | --- |
-| Where | This server, `202.150.74.187:8080` | cbclik.com (Phase 6) |
+| Where | This server, port 8080 (see below) | cbclik.com (Phase 6) |
 | Protected by | HTTP basic auth | Public |
 | Indexed by search engines | No | Yes |
 | Email | Captured by Mailpit | Corporate SMTP |
 | TLS | None yet | Required |
+
+## How to reach staging
+
+The server sits **behind NAT**. It holds `192.168.50.21` on the LAN and
+`100.77.127.4` on the Tailscale network; `202.150.74.187` is the gateway's
+address, not this machine's. Port 8080 is therefore not reachable from the
+public internet, which is the safer default for a staging site.
+
+| From | URL |
+| --- | --- |
+| The office network | http://192.168.50.21:8080/ |
+| Anywhere, over Tailscale | http://100.77.127.4:8080/ |
+
+Both ask for the staging username and password.
+
+Captured email is at `/mailpit/` on the same host and port.
+
+To show the site to someone outside the company, either add them to the
+Tailscale network, or ask whoever manages the gateway to forward a port. A
+public hostname and a TLS certificate would then be worth adding together.
 
 ## The server is shared
 
@@ -61,7 +81,7 @@ Moving from staging to production is a change of values, not of code:
 | Variable | Staging | Production |
 | --- | --- | --- |
 | `DATABASE_URI` | local `clik_web` | production database |
-| `NEXT_PUBLIC_SERVER_URL` | `http://202.150.74.187:8080` | `https://www.cbclik.com` |
+| `NEXT_PUBLIC_SERVER_URL` | `http://100.77.127.4:8080` | `https://www.cbclik.com` |
 | `SMTP_HOST` / `SMTP_PORT` | `127.0.0.1` / `1025` | corporate SMTP |
 | `CONTACT_FORM_RECIPIENT` | a test address | `sales@cbclik.com` |
 
