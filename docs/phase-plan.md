@@ -35,7 +35,7 @@ bilingual routing shell, staging deployment.
 **Documentation:** architecture, design system, deployment, repository
 conventions.
 
-### Phase 2 — CMS core
+### Phase 2 — CMS core ✅
 
 Every content model as a Payload collection, six roles and their permission
 matrix, the Draft → In Review → Published workflow with rejection reasons, the

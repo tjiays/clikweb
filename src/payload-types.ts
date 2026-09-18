@@ -67,7 +67,26 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    articles: Article;
+    authors: Author;
+    'media-outlets': MediaOutlet;
+    'media-coverage': MediaCoverage;
+    reports: Report;
+    'job-openings': JobOpening;
+    'job-categories': JobCategory;
+    'product-categories': ProductCategory;
+    'product-items': ProductItem;
+    'hero-slides': HeroSlide;
+    stats: Stat;
+    testimonials: Testimonial;
+    milestones: Milestone;
+    'partner-logos': PartnerLogo;
+    'cta-blocks': CtaBlock;
+    'page-content': PageContent;
+    'static-pages': StaticPage;
+    'contact-submissions': ContactSubmission;
     users: User;
+    'audit-log': AuditLog;
     media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -76,7 +95,26 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    'media-outlets': MediaOutletsSelect<false> | MediaOutletsSelect<true>;
+    'media-coverage': MediaCoverageSelect<false> | MediaCoverageSelect<true>;
+    reports: ReportsSelect<false> | ReportsSelect<true>;
+    'job-openings': JobOpeningsSelect<false> | JobOpeningsSelect<true>;
+    'job-categories': JobCategoriesSelect<false> | JobCategoriesSelect<true>;
+    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
+    'product-items': ProductItemsSelect<false> | ProductItemsSelect<true>;
+    'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
+    stats: StatsSelect<false> | StatsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    milestones: MilestonesSelect<false> | MilestonesSelect<true>;
+    'partner-logos': PartnerLogosSelect<false> | PartnerLogosSelect<true>;
+    'cta-blocks': CtaBlocksSelect<false> | CtaBlocksSelect<true>;
+    'page-content': PageContentSelect<false> | PageContentSelect<true>;
+    'static-pages': StaticPagesSelect<false> | StaticPagesSelect<true>;
+    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -87,8 +125,16 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('id' | 'en') | ('id' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'home-settings': HomeSetting;
+    'career-page': CareerPage;
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'home-settings': HomeSettingsSelect<false> | HomeSettingsSelect<true>;
+    'career-page': CareerPageSelect<false> | CareerPageSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: 'id' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -119,10 +165,101 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  title: string;
+  /**
+   * Used in the page address. Derived from title if left blank.
+   */
+  slug: string;
+  excerpt?: string | null;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  cover?: (number | null) | Media;
+  author?: (number | null) | Author;
+  publishDate: string;
+  /**
+   * Shows in the Featured News list on the Newsroom page.
+   */
+  isFeatured?: boolean | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  name: string;
+  photo?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  name: string;
+  /**
+   * A user has exactly one role.
+   */
+  role: 'super_admin' | 'hr_admin' | 'news_admin' | 'marketing_admin' | 'sales_admin' | 'approver';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,22 +281,674 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "media-outlets".
  */
-export interface Media {
+export interface MediaOutlet {
   id: number;
-  alt: string;
+  name: string;
+  /**
+   * Used in the page address. Derived from name if left blank.
+   */
+  slug: string;
+  logo: number | Media;
+  /**
+   * The outlet’s own website. Opens in a new tab.
+   */
+  websiteUrl?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-coverage".
+ */
+export interface MediaCoverage {
+  id: number;
+  title: string;
+  outlet: number | MediaOutlet;
+  excerpt?: string | null;
+  image?: (number | null) | Media;
+  /**
+   * The article on the outlet’s site. Opens in a new tab.
+   */
+  externalUrl: string;
+  publishDate: string;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports".
+ */
+export interface Report {
+  id: number;
+  type: 'annual_report' | 'business_development';
+  title: string;
+  /**
+   * Used in the page address. Derived from title if left blank.
+   */
+  slug: string;
+  year: number;
+  excerpt?: string | null;
+  cover?: (number | null) | Media;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  publishDate?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-openings".
+ */
+export interface JobOpening {
+  id: number;
+  title: string;
+  /**
+   * Used in the page address. Derived from title if left blank.
+   */
+  slug: string;
+  category: number | JobCategory;
+  responsibilities?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  minimumQualifications?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  education?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The "Lamar" button opens an email to this address.
+   */
+  applyEmail?: string | null;
+  emailSubjectFormat?: string | null;
+  /**
+   * Only open positions are listed on the website.
+   */
+  isOpen?: boolean | null;
+  postedDate?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-categories".
+ */
+export interface JobCategory {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories".
+ */
+export interface ProductCategory {
+  id: number;
+  name: string;
+  /**
+   * Used in the page address. Derived from name if left blank.
+   */
+  slug: string;
+  icon?: (number | null) | Media;
+  image?: (number | null) | Media;
+  shortDescription?: string | null;
+  lead?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  advantages?:
+    | {
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-items".
+ */
+export interface ProductItem {
+  id: number;
+  name: string;
+  category: number | ProductCategory;
+  shortDescription?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  productStatus: 'live' | 'ready_to_sell';
+  isNew?: boolean | null;
+  useCases?:
+    | {
+        segment: string;
+        use?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides".
+ */
+export interface HeroSlide {
+  id: number;
+  image: number | Media;
+  title: string;
+  subtitle?: string | null;
+  buttonLabel?: string | null;
+  buttonLink?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats".
+ */
+export interface Stat {
+  id: number;
+  icon?: (number | null) | Media;
+  /**
+   * For example 37, 10.500+ or 1jt+
+   */
+  value: string;
+  label: string;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  partnerName: string;
+  logo?: (number | null) | Media;
+  quote: string;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "milestones".
+ */
+export interface Milestone {
+  id: number;
+  year: number;
+  items?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-logos".
+ */
+export interface PartnerLogo {
+  id: number;
+  name: string;
+  logo: number | Media;
+  /**
+   * Opens in a new tab.
+   */
   url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
+  group: 'member' | 'regulator' | 'clik_member';
+  /**
+   * Lower numbers appear first.
+   */
+  sortOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cta-blocks".
+ */
+export interface CtaBlock {
+  id: number;
+  page: 'home' | 'about' | 'products' | 'business-solution' | 'credit-scoring';
+  crossLink?: {
+    label?: string | null;
+    title?: string | null;
+    image?: (number | null) | Media;
+    targetUrl?: string | null;
+  };
+  banner?: {
+    backgroundImage?: (number | null) | Media;
+    title?: string | null;
+    text?: string | null;
+    buttonLabel?: string | null;
+    buttonLink?: string | null;
+  };
+  isActive?: boolean | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-content".
+ */
+export interface PageContent {
+  id: number;
+  page: 'about' | 'products' | 'business-solution' | 'credit-scoring';
+  title?: string | null;
+  heroImage?: (number | null) | Media;
+  lead?: string | null;
+  /**
+   * One entry per section on the page. The key is what the page template looks for.
+   */
+  sections?:
+    | {
+        /**
+         * For example visi, misi, tentang-crif, cara-kerja.
+         */
+        key: string;
+        title?: string | null;
+        lead?: string | null;
+        body?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        image?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * About Us only — "Kenali CLIK Lebih Dekat" embed URL.
+   */
+  videoUrl?: string | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  publishedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "static-pages".
+ */
+export interface StaticPage {
+  id: number;
+  key: 'information_security_policy' | 'privacy_policy' | 'how_to_get_credit_report' | 'complaint_resolution';
+  title: string;
+  body: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * Shown as "Terakhir Diperbarui" on the Privacy page.
+   */
+  lastUpdatedDate?: string | null;
+  /**
+   * For example the Formulir Permintaan Data.
+   */
+  attachments?:
+    | {
+        file: number | Media;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions".
+ */
+export interface ContactSubmission {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  companyName: string;
+  interestedIn:
+    | 'Business Information'
+    | 'Business Analytics'
+    | 'Business Solutions'
+    | 'Market Research'
+    | 'CRIF PLUS Membership Programme'
+    | 'Credit Bureau'
+    | 'General Enquiries';
+  hearAboutUs?:
+    | (
+        | 'Conference/Exhibition'
+        | 'Flyer/Leaflet'
+        | 'Google Search'
+        | 'Magazine'
+        | 'Referral'
+        | 'Social Media'
+        | 'Webinar'
+        | 'Other'
+      )
+    | null;
+  message?: string | null;
+  consent: boolean;
+  marketingChannels?: ('SMS/WhatsApp' | 'Telephone' | 'Email' | 'Newsletter')[] | null;
+  marketingPreference?: ('opt_in' | 'opt_out') | null;
+  locale?: string | null;
+  pageUrl?: string | null;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  consentTextVersion?: string | null;
+  followedUp?: boolean | null;
+  followedUpBy?: (number | null) | User;
+  followedUpAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-log".
+ */
+export interface AuditLog {
+  id: number;
+  action: string;
+  collectionSlug?: string | null;
+  documentId?: string | null;
+  documentTitle?: string | null;
+  user?: (number | null) | User;
+  userEmail?: string | null;
+  detail?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -186,8 +975,84 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'articles';
+        value: number | Article;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'media-outlets';
+        value: number | MediaOutlet;
+      } | null)
+    | ({
+        relationTo: 'media-coverage';
+        value: number | MediaCoverage;
+      } | null)
+    | ({
+        relationTo: 'reports';
+        value: number | Report;
+      } | null)
+    | ({
+        relationTo: 'job-openings';
+        value: number | JobOpening;
+      } | null)
+    | ({
+        relationTo: 'job-categories';
+        value: number | JobCategory;
+      } | null)
+    | ({
+        relationTo: 'product-categories';
+        value: number | ProductCategory;
+      } | null)
+    | ({
+        relationTo: 'product-items';
+        value: number | ProductItem;
+      } | null)
+    | ({
+        relationTo: 'hero-slides';
+        value: number | HeroSlide;
+      } | null)
+    | ({
+        relationTo: 'stats';
+        value: number | Stat;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'milestones';
+        value: number | Milestone;
+      } | null)
+    | ({
+        relationTo: 'partner-logos';
+        value: number | PartnerLogo;
+      } | null)
+    | ({
+        relationTo: 'cta-blocks';
+        value: number | CtaBlock;
+      } | null)
+    | ({
+        relationTo: 'page-content';
+        value: number | PageContent;
+      } | null)
+    | ({
+        relationTo: 'static-pages';
+        value: number | StaticPage;
+      } | null)
+    | ({
+        relationTo: 'contact-submissions';
+        value: number | ContactSubmission;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'audit-log';
+        value: number | AuditLog;
       } | null)
     | ({
         relationTo: 'media';
@@ -237,9 +1102,424 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  body?: T;
+  cover?: T;
+  author?: T;
+  publishDate?: T;
+  isFeatured?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  photo?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-outlets_select".
+ */
+export interface MediaOutletsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  logo?: T;
+  websiteUrl?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-coverage_select".
+ */
+export interface MediaCoverageSelect<T extends boolean = true> {
+  title?: T;
+  outlet?: T;
+  excerpt?: T;
+  image?: T;
+  externalUrl?: T;
+  publishDate?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports_select".
+ */
+export interface ReportsSelect<T extends boolean = true> {
+  type?: T;
+  title?: T;
+  slug?: T;
+  year?: T;
+  excerpt?: T;
+  cover?: T;
+  body?: T;
+  publishDate?: T;
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-openings_select".
+ */
+export interface JobOpeningsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  responsibilities?: T;
+  minimumQualifications?: T;
+  education?: T;
+  applyEmail?: T;
+  emailSubjectFormat?: T;
+  isOpen?: T;
+  postedDate?: T;
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "job-categories_select".
+ */
+export interface JobCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-categories_select".
+ */
+export interface ProductCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  icon?: T;
+  image?: T;
+  shortDescription?: T;
+  lead?: T;
+  description?: T;
+  advantages?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-items_select".
+ */
+export interface ProductItemsSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  shortDescription?: T;
+  description?: T;
+  productStatus?: T;
+  isNew?: T;
+  useCases?:
+    | T
+    | {
+        segment?: T;
+        use?: T;
+        id?: T;
+      };
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides_select".
+ */
+export interface HeroSlidesSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  subtitle?: T;
+  buttonLabel?: T;
+  buttonLink?: T;
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats_select".
+ */
+export interface StatsSelect<T extends boolean = true> {
+  icon?: T;
+  value?: T;
+  label?: T;
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  partnerName?: T;
+  logo?: T;
+  quote?: T;
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "milestones_select".
+ */
+export interface MilestonesSelect<T extends boolean = true> {
+  year?: T;
+  items?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  sortOrder?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-logos_select".
+ */
+export interface PartnerLogosSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  url?: T;
+  group?: T;
+  sortOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cta-blocks_select".
+ */
+export interface CtaBlocksSelect<T extends boolean = true> {
+  page?: T;
+  crossLink?:
+    | T
+    | {
+        label?: T;
+        title?: T;
+        image?: T;
+        targetUrl?: T;
+      };
+  banner?:
+    | T
+    | {
+        backgroundImage?: T;
+        title?: T;
+        text?: T;
+        buttonLabel?: T;
+        buttonLink?: T;
+      };
+  isActive?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-content_select".
+ */
+export interface PageContentSelect<T extends boolean = true> {
+  page?: T;
+  title?: T;
+  heroImage?: T;
+  lead?: T;
+  sections?:
+    | T
+    | {
+        key?: T;
+        title?: T;
+        lead?: T;
+        body?: T;
+        image?: T;
+        id?: T;
+      };
+  videoUrl?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  publishedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "static-pages_select".
+ */
+export interface StaticPagesSelect<T extends boolean = true> {
+  key?: T;
+  title?: T;
+  body?: T;
+  lastUpdatedDate?: T;
+  attachments?:
+    | T
+    | {
+        file?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-submissions_select".
+ */
+export interface ContactSubmissionsSelect<T extends boolean = true> {
+  firstName?: T;
+  lastName?: T;
+  email?: T;
+  phone?: T;
+  companyName?: T;
+  interestedIn?: T;
+  hearAboutUs?: T;
+  message?: T;
+  consent?: T;
+  marketingChannels?: T;
+  marketingPreference?: T;
+  locale?: T;
+  pageUrl?: T;
+  ipAddress?: T;
+  userAgent?: T;
+  consentTextVersion?: T;
+  followedUp?: T;
+  followedUpBy?: T;
+  followedUpAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -256,6 +1536,21 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-log_select".
+ */
+export interface AuditLogSelect<T extends boolean = true> {
+  action?: T;
+  collectionSlug?: T;
+  documentId?: T;
+  documentTitle?: T;
+  user?: T;
+  userEmail?: T;
+  detail?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -314,6 +1609,233 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-settings".
+ */
+export interface HomeSetting {
+  id: number;
+  aboutTitle?: string | null;
+  aboutText?: string | null;
+  trustBarText?: string | null;
+  solutionsTitle?: string | null;
+  solutionsSubtitle?: string | null;
+  testimonialsTitle?: string | null;
+  testimonialsSubtitle?: string | null;
+  newsTitle?: string | null;
+  newsSubtitle?: string | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "career-page".
+ */
+export interface CareerPage {
+  id: number;
+  heroTitle?: string | null;
+  heroSubtitle?: string | null;
+  heroImages?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  values?:
+    | {
+        title: string;
+        subtitle?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  benefits?:
+    | {
+        icon?: (number | null) | Media;
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  recruitmentSteps?:
+    | {
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  cvNote?: string | null;
+  /**
+   * Editors submit for review. Only the Approver approves or rejects.
+   */
+  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  /**
+   * Required when rejecting. The editor sees this.
+   */
+  rejectionReason?: string | null;
+  submittedBy?: (number | null) | User;
+  submittedAt?: string | null;
+  reviewedBy?: (number | null) | User;
+  reviewedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  companyName: string;
+  address?: string | null;
+  phone?: string | null;
+  generalEmail?: string | null;
+  /**
+   * Contact form submissions are sent here.
+   */
+  salesEmail?: string | null;
+  careersEmail?: string | null;
+  websiteUrl?: string | null;
+  /**
+   * Google Maps embed URL for the Contact page.
+   */
+  mapEmbedUrl?: string | null;
+  ojkLicenceNumber?: string | null;
+  /**
+   * Official CRIF Global website.
+   */
+  crifUrl?: string | null;
+  socialLinks?:
+    | {
+        platform: 'linkedin' | 'instagram' | 'facebook' | 'x' | 'whatsapp' | 'youtube';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  defaultSeo?: {
+    title?: string | null;
+    description?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-settings_select".
+ */
+export interface HomeSettingsSelect<T extends boolean = true> {
+  aboutTitle?: T;
+  aboutText?: T;
+  trustBarText?: T;
+  solutionsTitle?: T;
+  solutionsSubtitle?: T;
+  testimonialsTitle?: T;
+  testimonialsSubtitle?: T;
+  newsTitle?: T;
+  newsSubtitle?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "career-page_select".
+ */
+export interface CareerPageSelect<T extends boolean = true> {
+  heroTitle?: T;
+  heroSubtitle?: T;
+  heroImages?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  values?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        description?: T;
+        id?: T;
+      };
+  benefits?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        id?: T;
+      };
+  recruitmentSteps?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  cvNote?: T;
+  approvalStatus?: T;
+  rejectionReason?: T;
+  submittedBy?: T;
+  submittedAt?: T;
+  reviewedBy?: T;
+  reviewedAt?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  companyName?: T;
+  address?: T;
+  phone?: T;
+  generalEmail?: T;
+  salesEmail?: T;
+  careersEmail?: T;
+  websiteUrl?: T;
+  mapEmbedUrl?: T;
+  ojkLicenceNumber?: T;
+  crifUrl?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  defaultSeo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

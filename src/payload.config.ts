@@ -6,8 +6,33 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
-import { Users } from './collections/Users'
-import { Media } from './collections/Media'
+import {
+  Users,
+  Media,
+  AuditLog,
+  Articles,
+  Authors,
+  MediaOutlets,
+  MediaCoverage,
+  Reports,
+  JobCategories,
+  JobOpenings,
+  HeroSlides,
+  Stats,
+  Testimonials,
+  Milestones,
+  PartnerLogos,
+  ProductCategories,
+  ProductItems,
+  CTABlocks,
+  StaticPages,
+  PageContent,
+  ContactSubmissions,
+} from './collections'
+import { SiteSettings } from './globals/SiteSettings'
+import { HomeSettings } from './globals/HomeSettings'
+import { CareerPage } from './globals/CareerPage'
+import { autoTranslateEndpoint } from './endpoints/autoTranslate'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -34,7 +59,37 @@ export default buildConfig({
     fallback: true,
   },
 
-  collections: [Users, Media],
+  collections: [
+    // Newsroom
+    Articles,
+    Authors,
+    MediaOutlets,
+    MediaCoverage,
+    // Laporan
+    Reports,
+    // Karir
+    JobOpenings,
+    JobCategories,
+    // Produk & Layanan
+    ProductCategories,
+    ProductItems,
+    // Konten Website
+    HeroSlides,
+    Stats,
+    Testimonials,
+    Milestones,
+    PartnerLogos,
+    CTABlocks,
+    PageContent,
+    StaticPages,
+    // Pengaturan
+    ContactSubmissions,
+    Users,
+    AuditLog,
+    // Shared
+    Media,
+  ],
+  globals: [HomeSettings, CareerPage, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -62,6 +117,8 @@ export default buildConfig({
         : undefined,
     },
   }),
+
+  endpoints: [autoTranslateEndpoint],
 
   sharp,
   plugins: [],
