@@ -62,40 +62,28 @@ const run = async () => {
   if (!fs.existsSync(DIR)) throw new Error(`No .assets directory at ${DIR}`)
 
   // --- Upload, reusing anything already there ---
+  //
+  // Matched on the Indonesian alt text rather than the file name: Payload
+  // appends a suffix when a file is replaced (hero-1.jpeg becomes
+  // hero-7.jpeg), so a name-based lookup would miss on the second run and
+  // upload a duplicate every time.
   const existing = await payload.find({ collection: 'media', limit: 500, locale: 'id' })
-  const byName: Record<string, string | number> = {}
-  for (const doc of existing.docs as { id: string | number; filename?: string }[]) {
-    if (doc.filename) byName[doc.filename] = doc.id
+  const byAlt: Record<string, string | number> = {}
+  for (const doc of existing.docs as { id: string | number; alt?: string }[]) {
+    if (doc.alt) byAlt[doc.alt] = doc.id
   }
 
   const media: Record<string, string | number> = {}
   for (const file of fs.readdirSync(DIR).sort()) {
     const key = file.replace(/\.[^.]+$/, '')
     const alt = ALT[key] ?? { id: key, en: key }
+    const already = byAlt[alt.id]
 
-    // A placeholder generated earlier may carry the same file name. Replacing
-    // the file on the existing record is what actually swaps the image;
-    // reusing the record without a new file would leave the placeholder in
-    // place and only look as though it worked.
-    if (byName[file]) {
-      await payload.update({
-        collection: 'media',
-        id: byName[file],
-        locale: 'id',
-        data: { alt: alt.id, isSample: false } as never,
-        filePath: path.join(DIR, file),
-        overrideAccess: true,
-      })
-      await payload.update({
-        collection: 'media',
-        id: byName[file],
-        locale: 'en',
-        data: { alt: alt.en } as never,
-        overrideAccess: true,
-      })
-      media[key] = byName[file]
+    if (already) {
+      media[key] = already
       continue
     }
+
     const created = await payload.create({
       collection: 'media',
       locale: 'id',
@@ -191,24 +179,29 @@ const run = async () => {
   log(`Stat icons updated: ${n}`)
 
   // --- Product category icons and images ---
-  n = 0
-  for (const slug of [
-    'credit-scoring',
-    'analytics',
-    'decisioning',
-    'business-intelligence',
-    'consulting',
-  ]) {
-    if (await setImage('product-categories', { slug: { equals: slug } }, 'icon', `icon-${slug}`)) n++
-    await setImage('product-categories', { slug: { equals: slug } }, 'image', 'products')
+  // Each category gets its OWN picture. The Business Solution page shows all
+  // five in a row, so repeating one image made the page look unfinished.
+  // The Figma frames use travel stock photography here, which says nothing
+  // about the product, so these are the relevant CLIK images instead.
+  const categoryImage: Record<string, string> = {
+    'credit-scoring': 'article-3',
+    analytics: 'article-2',
+    decisioning: 'article-1',
+    'business-intelligence': 'hero-2',
+    consulting: 'hero-1',
   }
-  log(`Product category icons updated: ${n}`)
+  n = 0
+  for (const [slug, asset] of Object.entries(categoryImage)) {
+    if (await setImage('product-categories', { slug: { equals: slug } }, 'icon', `icon-${slug}`)) n++
+    await setImage('product-categories', { slug: { equals: slug } }, 'image', asset)
+  }
+  log(`Product category icons and images updated: ${n}`)
 
   // --- Page hero images ---
   const pageImage: Record<string, string> = {
     about: 'about-office',
     products: 'products',
-    'business-solution': 'products',
+    'business-solution': 'about-office',
     'credit-scoring': 'article-3',
   }
   n = 0

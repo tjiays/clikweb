@@ -8,10 +8,12 @@ const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
   images: {
+    // Both paths must be listed or the image optimizer answers 400 and the
+    // picture silently fails to render. /api/media/file is the CMS media
+    // library; /brand is the logo and social icons served from public/.
     localPatterns: [
-      {
-        pathname: '/api/media/file/**',
-      },
+      { pathname: '/api/media/file/**' },
+      { pathname: '/brand/**' },
     ],
   },
   webpack: (webpackConfig) => {
