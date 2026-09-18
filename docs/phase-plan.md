@@ -61,7 +61,7 @@ owns it.
 
 **Documentation:** an editor guide per module.
 
-### Phase 5 — Forms, English and responsive
+### Phase 5 — Forms, English and responsive ✅
 
 Contact form with rate limiting, 404 and success states, share buttons, the
 English translation pass, and the responsive implementation.

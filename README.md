@@ -69,6 +69,9 @@ language lives in `src/i18n/routes.ts`.
 | [Editor guide: Newsroom](./docs/editor-guide-newsroom.md) | Panduan News Admin (Bahasa Indonesia) |
 | [Editor guide: Karir](./docs/editor-guide-careers.md) | Panduan HR Admin (Bahasa Indonesia) |
 | [Editor guide: Marketing](./docs/editor-guide-marketing.md) | Panduan Marketing Admin (Bahasa Indonesia) |
+| [Contact form](./docs/contact-form.md) | Submission flow, email, rate limits |
+| [Responsive behaviour](./docs/responsive.md) | Small-screen specification |
+| [Translation process](./docs/translation-process.md) | How English is produced and checked |
 | [Phase plan](./docs/phase-plan.md) | The six delivery phases |
 
 ## Project specification

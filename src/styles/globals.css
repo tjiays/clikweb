@@ -132,3 +132,74 @@ ul, ol {
   white-space: nowrap;
   border: 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * Responsive
+ *
+ * No mobile or tablet designs exist — every page frame in Figma is 1440px
+ * desktop — so this behaviour is designed rather than transcribed, following
+ * the minimum expectations in intent/01-design-system.md §3.
+ *
+ * Per-component stacking lives in each component's own module; what follows
+ * applies everywhere.
+ * ------------------------------------------------------------------------- */
+
+/* Nothing may cause a sideways scroll of the page itself. */
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Tables are the exception: they scroll inside their own box rather than
+   forcing the page to. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --space-section: 3.5rem;
+    --header-height: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    /* The desktop scale is too large on a phone; these keep the same
+       hierarchy at a readable size. */
+    --fs-display: 2.25rem;     /* 60 -> 36 */
+    --fs-display-sub: 1.5rem;  /* 38 -> 24 */
+    --fs-h1: 1.75rem;          /* 38 -> 28 */
+    --fs-h2: 1.5rem;           /* 30 -> 24 */
+    --fs-card-title: 1.25rem;  /* 26 -> 20 */
+    --fs-h3: 1.25rem;          /* 24 -> 20 */
+    --fs-lead: 1.125rem;       /* 24 -> 18 */
+    --fs-h4: 1.0625rem;
+    --space-section: 3rem;
+    --gutter: 1rem;
+  }
+
+  /* Long words and URLs must not push the layout wider than the screen. */
+  body {
+    overflow-wrap: break-word;
+  }
+}
+
+/* Every control is comfortable to tap. */
+@media (pointer: coarse) {
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [role='button'] {
+    min-height: 44px;
+  }
+
+  a {
+    /* Inline links in prose keep their natural height. */
+    min-height: auto;
+  }
+}

@@ -14,6 +14,7 @@ import { ArticleDetailPage } from '@/components/pages/ArticleDetailPage'
 import { MediaCoveragePage } from '@/components/pages/MediaCoveragePage'
 import { ReportsPage, ReportDetailPage } from '@/components/pages/ReportsPage'
 import { CareersPage, JobDetailPage } from '@/components/pages/CareersPage'
+import { ContactPage } from '@/components/pages/ContactPage'
 import { matchDynamicRoute } from '@/i18n/routes'
 
 /**
@@ -43,6 +44,7 @@ const PAGES: Partial<Record<RouteKey, (props: { locale: Locale }) => Promise<Rea
     businessSolution: BusinessSolutionPage,
     creditScoring: CreditScoringPage,
     careers: CareersPage,
+    contact: ContactPage,
   }
 
 /** Pages that read ?page=n. */
@@ -75,6 +77,7 @@ export async function generateMetadata({
     newsroom: dict.nav.newsroom,
     reports: dict.dropdown.reports,
     careers: dict.nav.careers,
+    contact: dict.contact.title,
     about: dict.dropdown.aboutClik,
     products: dict.dropdown.products,
     businessSolution: dict.dropdown.businessSolution,

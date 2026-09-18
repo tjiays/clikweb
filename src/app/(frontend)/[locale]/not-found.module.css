@@ -1,0 +1,27 @@
+.wrap {
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  text-align: center;
+  padding-block: 7rem;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.code {
+  margin: 0;
+  font-size: var(--fs-display);
+  font-weight: var(--fw-black);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.body {
+  margin: 0;
+}
+
+.link {
+  margin-top: 1rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
