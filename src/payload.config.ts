@@ -46,6 +46,20 @@ export default buildConfig({
     meta: {
       titleSuffix: '— CLIK CMS',
     },
+    components: {
+      graphics: {
+        // Payload's own mark replaced with the CLIK logo.
+        Logo: '@/components/admin/Logo#default',
+        Icon: '@/components/admin/Icon#default',
+      },
+      views: {
+        // Replaces the default flat list of collections with grouped,
+        // colour-coded cards that open each module's list directly.
+        dashboard: {
+          Component: '@/components/admin/Dashboard#default',
+        },
+      },
+    },
   },
 
   // Indonesian is the source language; English is produced by translation
