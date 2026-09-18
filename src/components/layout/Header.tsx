@@ -42,17 +42,19 @@ export function Header({ locale, dict, variant }: Props) {
     }
   }, [menuOpen])
 
+  // Order and contents follow the Figma dropdowns (951:5644 and 953:5693).
+  // The design does NOT repeat "Layanan dan Produk" inside its own dropdown —
+  // the top-level item already links to that page.
   const productItems = [
-    { label: dict.dropdown.products, href: href('products', locale) },
-    { label: dict.dropdown.businessSolution, href: href('businessSolution', locale) },
     { label: dict.dropdown.creditScoring, href: href('creditScoring', locale) },
+    { label: dict.dropdown.businessSolution, href: href('businessSolution', locale) },
   ]
 
   const aboutItems = [
     { label: dict.dropdown.aboutClik, href: href('about', locale) },
     { label: dict.dropdown.reports, href: href('reports', locale) },
-    { label: dict.dropdown.infoSecurityPolicy, href: href('infoSecurityPolicy', locale) },
     { label: dict.dropdown.privacyPolicy, href: href('privacyPolicy', locale) },
+    { label: dict.dropdown.infoSecurityPolicy, href: href('infoSecurityPolicy', locale) },
   ]
 
   return (

@@ -42,12 +42,34 @@ export function ProductAccordion({ rows }: { rows: ProductRow[] }) {
                 <StatusBadge status={row.status} />
                 {row.isNew && <StatusBadge status="new" />}
               </span>
-              <span className={styles.name}>{row.name}</span>
-              {row.shortDescription && (
-                <span className={styles.short}>{row.shortDescription}</span>
-              )}
-              <span className={styles.toggle} aria-hidden="true">
-                {isOpen ? '−' : '+'}
+
+              {/*
+                Figma "Product card" 1625:10968 — the name and its one-line
+                description are stacked beside the badge, not laid out as
+                separate columns.
+              */}
+              <span className={styles.text}>
+                <span className={styles.name}>{row.name}</span>
+                {row.shortDescription && (
+                  <span className={styles.short}>{row.shortDescription}</span>
+                )}
+              </span>
+
+              {/*
+                Collapsed the toggle is an outlined circle; expanded
+                (1391:5420) it is filled navy with a cross, pinned top right.
+              */}
+              <span
+                className={`${styles.toggle} ${isOpen ? styles.toggleOpen : ''}`}
+                aria-hidden="true"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  {isOpen ? (
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  ) : (
+                    <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+                  )}
+                </svg>
               </span>
             </button>
 
