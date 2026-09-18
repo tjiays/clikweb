@@ -1,12 +1,16 @@
 import type { Field } from 'payload'
 import { lockedForApprover } from './approval'
 
-/** URL slug. Localised, so each language can have its own wording (open item O6). */
-export const slugField = (from = 'title'): Field => ({
+/**
+ * URL slug. Localised by default so each language can have its own wording
+ * (open item O6). Pass localized: false where the value is a proper noun that
+ * reads the same in both languages, such as a media outlet's name.
+ */
+export const slugField = (from = 'title', localized = true): Field => ({
   name: 'slug',
   type: 'text',
   required: true,
-  localized: true,
+  localized,
   index: true,
   access: lockedForApprover,
   admin: {

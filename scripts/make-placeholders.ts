@@ -52,6 +52,17 @@ const specs: Spec[] = [
   { file: 'logo-aftech.png', w: 240, h: 100, label: 'AFTECH', dark: false },
   { file: 'logo-appi.png', w: 240, h: 100, label: 'APPI', dark: false },
   { file: 'logo-ojk.png', w: 240, h: 100, label: 'OJK', dark: false },
+  { file: 'logo-kumparan.png', w: 240, h: 100, label: 'Kumparan', dark: false },
+  { file: 'logo-bisnis.png', w: 240, h: 100, label: 'Bisnis', dark: false },
+  { file: 'logo-kontan.png', w: 240, h: 100, label: 'Kontan', dark: false },
+  { file: 'logo-katadata.png', w: 240, h: 100, label: 'Katadata', dark: false },
+  { file: 'article-1.png', w: 1200, h: 700, label: 'Berita 1', dark: false },
+  { file: 'article-2.png', w: 1200, h: 700, label: 'Berita 2', dark: false },
+  { file: 'article-3.png', w: 1200, h: 700, label: 'Berita 3', dark: false },
+  { file: 'report.png', w: 1200, h: 700, label: 'Laporan', dark: true },
+  { file: 'career-1.png', w: 900, h: 600, label: 'Karir 1', dark: false },
+  { file: 'career-2.png', w: 900, h: 600, label: 'Karir 2', dark: false },
+  { file: 'career-3.png', w: 900, h: 600, label: 'Karir 3', dark: false },
 ]
 
 const run = async () => {

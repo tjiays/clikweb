@@ -16,6 +16,14 @@ import {
   ctaBlocks,
   staticPages,
   TODO_LEGAL,
+  authors,
+  mediaOutlets,
+  articles,
+  mediaCoverage,
+  reports,
+  jobCategories,
+  jobOpenings,
+  careerPage,
 } from './seed-data'
 
 /**
@@ -340,6 +348,181 @@ const run = async () => {
       )
     }
     log(`Seeded ${staticPages.length} static pages (placeholder text)`)
+  }
+
+  // --- Newsroom: authors, outlets, articles, coverage ---
+  const authorIds: (string | number)[] = []
+  if (await isEmpty('authors')) {
+    for (const author of authors) {
+      const created = await payload.create({
+        collection: 'authors',
+        locale: 'id',
+        data: author as never,
+        overrideAccess: true,
+      })
+      authorIds.push((created as { id: string | number }).id)
+    }
+    log(`Seeded ${authors.length} authors`)
+  } else {
+    const { docs } = await payload.find({ collection: 'authors', limit: 50, locale: 'id' })
+    authorIds.push(...docs.map((d: any) => d.id))
+  }
+
+  const outletIds: Record<string, string | number> = {}
+  if (await isEmpty('media-outlets')) {
+    for (const { file, ...outlet } of mediaOutlets) {
+      const created = await payload.create({
+        collection: 'media-outlets',
+        locale: 'id',
+        data: { ...outlet, logo: media[file], isSample: true } as never,
+        overrideAccess: true,
+      })
+      outletIds[outlet.slug] = (created as { id: string | number }).id
+    }
+    log(`Seeded ${mediaOutlets.length} media outlets`)
+  } else {
+    const { docs } = await payload.find({ collection: 'media-outlets', limit: 50, locale: 'id' })
+    for (const doc of docs as any[]) outletIds[doc.slug] = doc.id
+  }
+
+  if (await isEmpty('articles')) {
+    const covers = ['article-1.png', 'article-2.png', 'article-3.png']
+    for (const [index, article] of articles.entries()) {
+      await createBilingual(
+        'articles',
+        {
+          title: article.title,
+          slug: article.slug,
+          excerpt: article.excerpt,
+          body: { id: rich(article.body.id), en: rich(article.body.en) },
+          cover: media[covers[index % covers.length]],
+          author: authorIds[index % authorIds.length],
+          publishDate: `${article.publishDate}T00:00:00.000Z`,
+          isFeatured: article.isFeatured,
+          isSample: true,
+        },
+        [],
+      )
+    }
+    log(`Seeded ${articles.length} articles`)
+  }
+
+  if (await isEmpty('media-coverage')) {
+    for (const item of mediaCoverage) {
+      const outletId = outletIds[item.outlet]
+      if (!outletId) continue
+      await createBilingual(
+        'media-coverage',
+        {
+          title: item.title,
+          outlet: outletId,
+          externalUrl: item.url,
+          image: media['article-1.png'],
+          publishDate: `${item.publishDate}T00:00:00.000Z`,
+          isSample: true,
+        },
+        [],
+      )
+    }
+    log(`Seeded ${mediaCoverage.length} media coverage items`)
+  }
+
+  // --- Laporan ---
+  if (await isEmpty('reports')) {
+    for (const report of reports) {
+      const isAnnual = report.type === 'annual_report'
+      await createBilingual(
+        'reports',
+        {
+          type: report.type,
+          title: report.title,
+          slug: report.slug,
+          year: report.year,
+          sortOrder: report.sortOrder,
+          // The business-development variant has no cover image in the design.
+          cover: isAnnual ? media['report.png'] : undefined,
+          body: {
+            id: rich(TODO_LEGAL(`isi ${report.title.id}`)),
+            en: rich(TODO_LEGAL(`the contents of ${report.title.en}`)),
+          },
+          isSample: true,
+        },
+        [],
+      )
+    }
+    log(`Seeded ${reports.length} reports (placeholder body)`)
+  }
+
+  // --- Karir ---
+  const categoryRefs: (string | number)[] = []
+  if (await isEmpty('job-categories')) {
+    for (const category of jobCategories) {
+      const created = await createBilingual('job-categories', category as never, [])
+      categoryRefs.push((created as { id: string | number }).id)
+    }
+    log(`Seeded ${jobCategories.length} job categories`)
+  } else {
+    const { docs } = await payload.find({ collection: 'job-categories', limit: 50, locale: 'id' })
+    categoryRefs.push(...docs.map((d: any) => d.id))
+  }
+
+  if (await isEmpty('job-openings')) {
+    for (const job of jobOpenings) {
+      await createBilingual(
+        'job-openings',
+        {
+          title: job.title,
+          slug: job.slug,
+          category: categoryRefs[job.category],
+          responsibilities: { id: rich(job.responsibilities.id), en: rich(job.responsibilities.en) },
+          minimumQualifications: {
+            id: rich(job.minimumQualifications.id),
+            en: rich(job.minimumQualifications.en),
+          },
+          education: { id: rich(job.education.id), en: rich(job.education.en) },
+          applyEmail: 'talent@cbclik.com',
+          emailSubjectFormat: {
+            id: `Lamaran - ${job.title.id}`,
+            en: `Application - ${job.title.en}`,
+          },
+          isOpen: true,
+          postedDate: '2026-09-01T00:00:00.000Z',
+          isSample: true,
+        },
+        [],
+      )
+    }
+    log(`Seeded ${jobOpenings.length} job openings`)
+  }
+
+  // --- Career page (global) ---
+  {
+    const careerData: Record<string, unknown> = {
+      ...careerPage,
+      heroImages: ['career-1.png', 'career-2.png', 'career-3.png'].map((file) => ({
+        image: media[file],
+      })),
+    }
+    const idCareer = pick(careerData, 'id') as Record<string, unknown>
+    await payload.updateGlobal({
+      slug: 'career-page',
+      locale: 'id',
+      data: { ...idCareer, approvalStatus: 'approved' } as never,
+      overrideAccess: true,
+    })
+    const saved = await payload.findGlobal({ slug: 'career-page', locale: 'id', depth: 0 })
+    const enCareer = attachRowIds(
+      pick(careerData, 'en'),
+      saved as unknown as Record<string, unknown>,
+    ) as Record<string, unknown>
+    delete enCareer.approvalStatus
+    await payload.updateGlobal({
+      slug: 'career-page',
+      locale: 'en',
+      data: enCareer as never,
+      overrideAccess: true,
+    })
+    log('Seeded career page content')
   }
 
   // --- Homepage settings (global) ---

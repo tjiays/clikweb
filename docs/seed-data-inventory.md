@@ -25,7 +25,15 @@ items to replace.
 | Page content | 4 | Summary copy written from the design; **not legally reviewed** |
 | CTA blocks | 5 | Headlines from the design |
 | Static pages | 4 | **Placeholder only — see below** |
-| Media | 21 | **All placeholders**, generated at build time |
+| Articles | 7 | **Sample news written for the build** — replace with real releases |
+| Authors | 2 | Includes the design's placeholder author "gvezenzcha" |
+| Media outlets | 4 | Real outlet names, **placeholder logos** |
+| Media coverage | 5 | **Sample items linking to outlet home pages**, not real articles |
+| Reports | 4 | Real titles; **bodies carry a TODO, not real figures** |
+| Job openings | 3 | **Sample vacancies** — not real positions |
+| Job categories | 3 | Real category names |
+| Career page | 1 | Values, benefits and steps from the design |
+| Media | 32 | **All placeholders**, generated at build time |
 | Homepage settings | 1 | Section headings and intro copy from the design |
 | Site settings | 1 | Real address, phone and emails from the design |
 
@@ -47,6 +55,10 @@ at the right proportions. Every one is flagged as sample.
 
 ## Before launch
 
+- [ ] **Remove the three sample job vacancies** before the site is public — they are not real positions
+- [ ] **Replace the five media coverage items** — they link to outlet home pages, not real articles about CLIK
+- [ ] Replace the seven sample articles with real press releases
+- [ ] Supply real report bodies, including the financial statement tables
 - [ ] Replace the four lorem ipsum testimonials with approved client quotes
 - [ ] Replace all placeholder images with real photography and logos
 - [ ] Supply reviewed text for the four policy and how-to pages

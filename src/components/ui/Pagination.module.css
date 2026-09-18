@@ -1,0 +1,44 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.page,
+.arrow {
+  min-width: 44px;
+  height: 44px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  color: var(--color-secondary);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.page:hover,
+.arrow:hover {
+  background: var(--color-bg-tint);
+  color: var(--color-primary);
+}
+
+.active,
+.active:hover {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+.disabled {
+  color: var(--color-disabled);
+  cursor: not-allowed;
+}
+
+.disabled:hover {
+  background: none;
+  color: var(--color-disabled);
+}

@@ -9,6 +9,12 @@ import { ProductsPage } from '@/components/pages/ProductsPage'
 import { BusinessSolutionPage } from '@/components/pages/BusinessSolutionPage'
 import { CreditScoringPage } from '@/components/pages/CreditScoringPage'
 import { StaticContentPage } from '@/components/pages/StaticContentPage'
+import { NewsroomPage } from '@/components/pages/NewsroomPage'
+import { ArticleDetailPage } from '@/components/pages/ArticleDetailPage'
+import { MediaCoveragePage } from '@/components/pages/MediaCoveragePage'
+import { ReportsPage, ReportDetailPage } from '@/components/pages/ReportsPage'
+import { CareersPage, JobDetailPage } from '@/components/pages/CareersPage'
+import { matchDynamicRoute } from '@/i18n/routes'
 
 /**
  * One catch-all route serves every page, because the Indonesian and English
@@ -17,6 +23,14 @@ import { StaticContentPage } from '@/components/pages/StaticContentPage'
  */
 
 type Params = { locale: string; slug?: string[] }
+type Search = Promise<Record<string, string | string[] | undefined>>
+
+/** ?page=n, defaulting to the first page. */
+const pageNumber = (value: string | string[] | undefined): number => {
+  const raw = Array.isArray(value) ? value[0] : value
+  const parsed = Number.parseInt(raw ?? '1', 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
+}
 
 const pathOf = (slug?: string[]) => `/${(slug ?? []).join('/')}`.replace(/\/$/, '') || '/'
 
@@ -28,7 +42,16 @@ const PAGES: Partial<Record<RouteKey, (props: { locale: Locale }) => Promise<Rea
     products: ProductsPage,
     businessSolution: BusinessSolutionPage,
     creditScoring: CreditScoringPage,
+    careers: CareersPage,
   }
+
+/** Pages that read ?page=n. */
+const PAGINATED: Partial<
+  Record<RouteKey, (props: { locale: Locale; page: number }) => Promise<React.ReactElement>>
+> = {
+  newsroom: NewsroomPage,
+  reports: ReportsPage,
+}
 
 const STATIC_PAGES: Partial<Record<RouteKey, string>> = {
   infoSecurityPolicy: 'information_security_policy',
@@ -49,6 +72,9 @@ export async function generateMetadata({
   const dict = await getDictionary(locale)
   const titles: Partial<Record<RouteKey, string>> = {
     home: dict.nav.home,
+    newsroom: dict.nav.newsroom,
+    reports: dict.dropdown.reports,
+    careers: dict.nav.careers,
     about: dict.dropdown.aboutClik,
     products: dict.dropdown.products,
     businessSolution: dict.dropdown.businessSolution,
@@ -59,12 +85,49 @@ export async function generateMetadata({
   return titles[key] ? { title: titles[key] } : {}
 }
 
-export default async function Page({ params }: { params: Promise<Params> }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<Params>
+  searchParams: Search
+}) {
   const { locale, slug } = await params
   if (!isLocale(locale)) notFound()
 
-  const key = matchRoute(pathOf(slug), locale)
+  const path = pathOf(slug)
+
+  // Detail pages first: /newsroom/<slug>, /laporan/<slug>, /karir/<slug>
+  // and /newsroom/media/<outlet>.
+  const dynamic = matchDynamicRoute(path, locale)
+  if (dynamic) {
+    const query = await searchParams
+    switch (dynamic.kind) {
+      case 'article':
+        return <ArticleDetailPage locale={locale} slug={dynamic.slug} />
+      case 'mediaOutlet':
+        return (
+          <MediaCoveragePage
+            locale={locale}
+            slug={dynamic.slug}
+            page={pageNumber(query.page)}
+          />
+        )
+      case 'report':
+        return <ReportDetailPage locale={locale} slug={dynamic.slug} />
+      case 'job':
+        return <JobDetailPage locale={locale} slug={dynamic.slug} />
+    }
+  }
+
+  const key = matchRoute(path, locale)
   if (!key) notFound()
+
+  const Paginated = PAGINATED[key]
+  if (Paginated) {
+    const query = await searchParams
+    return Paginated({ locale, page: pageNumber(query.page) })
+  }
 
   const staticKey = STATIC_PAGES[key]
   if (staticKey) {

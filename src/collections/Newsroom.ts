@@ -38,7 +38,9 @@ export const MediaOutlets: CollectionConfig = contentCollection({
   approval: false,
   fields: [
     { name: 'name', type: 'text', required: true },
-    slugField('name'),
+    // An outlet's name reads the same in both languages, so its slug is not
+    // localised — one URL per outlet, whichever language the reader is in.
+    slugField('name', false),
     imageField('logo', 'Logo', true),
     {
       name: 'websiteUrl',

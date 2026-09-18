@@ -54,7 +54,7 @@ implemented and registered. The eight known design errors fixed.
 **Documentation:** page implementation notes, external links register, seed
 data inventory.
 
-### Phase 4 — Content modules
+### Phase 4 — Content modules ✅
 
 Newsroom, Laporan and Karir, each wired to the CMS and handed to the team that
 owns it.

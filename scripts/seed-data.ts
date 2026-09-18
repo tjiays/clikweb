@@ -392,3 +392,195 @@ export const staticPages = [
   { key: 'how_to_get_credit_report', title: { id: 'Cara mendapat laporan kredit Anda', en: 'How to Get Your Credit Report' }, name: 'Cara mendapat laporan kredit' },
   { key: 'complaint_resolution', title: { id: 'Penyelesaian Pengaduan', en: 'Complaint Resolution' }, name: 'Penyelesaian Pengaduan' },
 ]
+
+/* ---------------------------------------------------------------------------
+ * Phase 4 seed: Newsroom, Laporan, Karir
+ * Placeholder author "gvezenzcha" and lorem text are kept and flagged as
+ * sample, per confirmed decision 8.
+ * ------------------------------------------------------------------------- */
+
+export const authors = [
+  { name: 'gvezenzcha', isSample: true },
+  { name: 'Tim Komunikasi CLIK', isSample: false },
+]
+
+export const mediaOutlets = [
+  { name: 'Kumparan', slug: 'kumparan', file: 'logo-kumparan.png', sortOrder: 0 },
+  { name: 'Bisnis Indonesia', slug: 'bisnis-indonesia', file: 'logo-bisnis.png', sortOrder: 1 },
+  { name: 'Kontan', slug: 'kontan', file: 'logo-kontan.png', sortOrder: 2 },
+  { name: 'Katadata', slug: 'katadata', file: 'logo-katadata.png', sortOrder: 3 },
+]
+
+export const articles = [
+  {
+    title: { id: 'CLIK Perluas Jaringan Anggota Lembaga Keuangan', en: 'CLIK Expands Its Financial Institution Member Network' },
+    slug: 'clik-perluas-jaringan-anggota',
+    excerpt: {
+      id: 'CLIK mencatat pertumbuhan jumlah lembaga yang terhubung ke layanan biro kredit sepanjang tahun ini.',
+      en: 'CLIK recorded growth in the number of institutions connected to its credit bureau services this year.',
+    },
+    body: {
+      id: 'PT CRIF Lembaga Informasi Keuangan (CLIK) mencatat pertumbuhan jumlah lembaga keuangan dan non-keuangan yang terhubung ke layanan biro kredit sepanjang tahun berjalan. Pertumbuhan ini didorong oleh kebutuhan industri akan data kredit yang lebih lengkap dan tepercaya.',
+      en: 'PT CRIF Lembaga Informasi Keuangan (CLIK) recorded growth in the number of financial and non-financial institutions connected to its credit bureau services during the year. The growth is driven by industry demand for more complete and trusted credit data.',
+    },
+    isFeatured: true,
+    publishDate: '2026-08-20',
+  },
+  {
+    title: { id: 'Memahami Skor Kredit dan Manfaatnya bagi Konsumen', en: 'Understanding Credit Scores and Their Benefits for Consumers' },
+    slug: 'memahami-skor-kredit',
+    excerpt: {
+      id: 'Skor kredit membantu konsumen memahami posisi kreditnya sebelum mengajukan pembiayaan.',
+      en: 'A credit score helps consumers understand their credit position before applying for financing.',
+    },
+    body: {
+      id: 'Skor kredit merangkum riwayat pembayaran seseorang menjadi satu angka yang mudah dibaca. Bagi konsumen, memahami skor kredit membantu mempersiapkan pengajuan pembiayaan dengan lebih baik.',
+      en: 'A credit score summarises a person’s payment history into a single readable number. For consumers, understanding it helps them prepare better before applying for financing.',
+    },
+    isFeatured: true,
+    publishDate: '2026-07-14',
+  },
+  {
+    title: { id: 'CLIK Luncurkan Layanan Credit Scoring Terbaru', en: 'CLIK Launches Its Latest Credit Scoring Service' },
+    slug: 'clik-luncurkan-credit-scoring',
+    excerpt: {
+      id: 'Layanan baru ini dirancang untuk mempercepat proses underwriting lembaga keuangan.',
+      en: 'The new service is designed to speed up underwriting for financial institutions.',
+    },
+    body: {
+      id: 'Layanan credit scoring terbaru CLIK dirancang untuk membantu lembaga keuangan mempercepat proses underwriting tanpa mengorbankan ketelitian penilaian risiko.',
+      en: 'CLIK’s latest credit scoring service is designed to help financial institutions speed up underwriting without sacrificing the rigour of their risk assessment.',
+    },
+    isFeatured: false,
+    publishDate: '2026-06-02',
+  },
+  {
+    title: { id: 'Kolaborasi CLIK dan CRIF Global dalam Analitik Kredit', en: 'CLIK and CRIF Global Collaborate on Credit Analytics' },
+    slug: 'kolaborasi-clik-crif-global',
+    excerpt: {
+      id: 'Kolaborasi ini membawa praktik analitik kredit global ke pasar Indonesia.',
+      en: 'The collaboration brings global credit analytics practice to the Indonesian market.',
+    },
+    body: {
+      id: 'Sebagai bagian dari jaringan CRIF yang hadir di 37 negara, CLIK membawa praktik analitik kredit global ke pasar Indonesia melalui rangkaian solusi yang disesuaikan dengan kebutuhan lokal.',
+      en: 'As part of the CRIF network present in 37 countries, CLIK brings global credit analytics practice to the Indonesian market through solutions adapted to local needs.',
+    },
+    isFeatured: false,
+    publishDate: '2026-05-11',
+  },
+  {
+    title: { id: 'Tips Menjaga Riwayat Kredit yang Sehat', en: 'Tips for Keeping a Healthy Credit History' },
+    slug: 'tips-riwayat-kredit-sehat',
+    excerpt: {
+      id: 'Beberapa kebiasaan sederhana dapat membantu menjaga riwayat kredit tetap baik.',
+      en: 'A few simple habits can help keep your credit history in good shape.',
+    },
+    body: {
+      id: 'Membayar tepat waktu, menjaga rasio penggunaan kredit, dan memeriksa laporan kredit secara berkala adalah tiga kebiasaan yang membantu menjaga riwayat kredit tetap sehat.',
+      en: 'Paying on time, keeping your credit utilisation in check, and reviewing your credit report regularly are three habits that help keep a credit history healthy.',
+    },
+    isFeatured: false,
+    publishDate: '2026-04-08',
+  },
+  {
+    title: { id: 'Peran Biro Kredit dalam Inklusi Keuangan', en: 'The Role of Credit Bureaus in Financial Inclusion' },
+    slug: 'peran-biro-kredit-inklusi-keuangan',
+    excerpt: {
+      id: 'Data kredit yang lengkap membuka akses pembiayaan bagi segmen yang sebelumnya sulit dinilai.',
+      en: 'Complete credit data opens financing access for segments that were previously hard to assess.',
+    },
+    body: {
+      id: 'Dengan data kredit yang lengkap, lembaga keuangan dapat menilai calon debitur yang sebelumnya tidak memiliki rekam jejak formal, sehingga memperluas akses pembiayaan secara bertanggung jawab.',
+      en: 'With complete credit data, financial institutions can assess borrowers who previously had no formal track record, responsibly widening access to financing.',
+    },
+    isFeatured: false,
+    publishDate: '2026-03-19',
+  },
+  {
+    title: { id: 'CLIK Dukung Penguatan Tata Kelola Data Kredit', en: 'CLIK Supports Stronger Credit Data Governance' },
+    slug: 'clik-dukung-tata-kelola-data',
+    excerpt: {
+      id: 'Tata kelola data yang kuat menjadi fondasi kepercayaan industri keuangan.',
+      en: 'Strong data governance is the foundation of trust in the financial industry.',
+    },
+    body: {
+      id: 'Sebagai LPIP yang diawasi OJK, CLIK menempatkan tata kelola dan keamanan data sebagai fondasi utama layanan biro kredit yang dijalankan.',
+      en: 'As an LPIP supervised by OJK, CLIK places governance and data security at the foundation of the credit bureau services it operates.',
+    },
+    isFeatured: false,
+    publishDate: '2026-02-25',
+  },
+]
+
+export const mediaCoverage = [
+  { outlet: 'kumparan', title: { id: 'CLIK dan Pertumbuhan Biro Kredit Swasta', en: 'CLIK and the Growth of Private Credit Bureaus' }, url: 'https://kumparan.com/', publishDate: '2026-08-22' },
+  { outlet: 'kumparan', title: { id: 'Menakar Peran Data Kredit di Industri Keuangan', en: 'Weighing the Role of Credit Data in Finance' }, url: 'https://kumparan.com/', publishDate: '2026-06-10' },
+  { outlet: 'bisnis-indonesia', title: { id: 'Biro Kredit Swasta Perluas Layanan', en: 'Private Credit Bureaus Widen Their Services' }, url: 'https://bisnis.com/', publishDate: '2026-07-01' },
+  { outlet: 'kontan', title: { id: 'Skor Kredit Jadi Andalan Lembaga Pembiayaan', en: 'Credit Scores Become a Mainstay for Lenders' }, url: 'https://kontan.co.id/', publishDate: '2026-05-18' },
+  { outlet: 'katadata', title: { id: 'Data Kredit dan Inklusi Keuangan Indonesia', en: 'Credit Data and Financial Inclusion in Indonesia' }, url: 'https://katadata.co.id/', publishDate: '2026-04-02' },
+]
+
+export const reports = [
+  { type: 'annual_report', title: { id: 'Laporan Tahunan 2025', en: 'Annual Report 2025' }, slug: 'laporan-tahunan-2025', year: 2025, sortOrder: 0 },
+  { type: 'annual_report', title: { id: 'Laporan Tahunan 2024', en: 'Annual Report 2024' }, slug: 'laporan-tahunan-2024', year: 2024, sortOrder: 1 },
+  { type: 'annual_report', title: { id: 'Laporan Tahunan 2023', en: 'Annual Report 2023' }, slug: 'laporan-tahunan-2023', year: 2023, sortOrder: 2 },
+  { type: 'business_development', title: { id: 'Laporan Perkembangan Usaha PT CLIK', en: 'PT CLIK Business Development Report' }, slug: 'laporan-perkembangan-usaha', year: 2022, sortOrder: 3 },
+]
+
+export const jobCategories = [
+  { name: { id: 'Information Technology', en: 'Information Technology' } },
+  { name: { id: 'Analysis & Reporting', en: 'Analysis & Reporting' } },
+  { name: { id: 'Sales & Business Development', en: 'Sales & Business Development' } },
+]
+
+export const jobOpenings = [
+  {
+    title: { id: 'Backend Engineer', en: 'Backend Engineer' },
+    slug: 'backend-engineer',
+    category: 0,
+    responsibilities: { id: 'Membangun dan memelihara layanan API yang digunakan oleh mitra lembaga keuangan. Menjaga kualitas kode melalui review dan dokumentasi.', en: 'Build and maintain the API services used by financial institution partners. Keep code quality high through review and documentation.' },
+    minimumQualifications: { id: 'Pengalaman minimal 3 tahun membangun layanan backend. Menguasai basis data relasional.', en: 'At least 3 years building backend services. Strong with relational databases.' },
+    education: { id: 'S1 Teknik Informatika atau bidang terkait.', en: 'Bachelor’s degree in Informatics or a related field.' },
+  },
+  {
+    title: { id: 'Credit Risk Analyst', en: 'Credit Risk Analyst' },
+    slug: 'credit-risk-analyst',
+    category: 1,
+    responsibilities: { id: 'Menganalisis portofolio kredit dan menyusun laporan berkala untuk mitra.', en: 'Analyse credit portfolios and prepare regular reports for partners.' },
+    minimumQualifications: { id: 'Pengalaman di analisis risiko kredit. Terbiasa dengan pengolahan data berskala besar.', en: 'Experience in credit risk analysis. Comfortable working with large datasets.' },
+    education: { id: 'S1 Statistika, Matematika, Ekonomi, atau bidang terkait.', en: 'Bachelor’s degree in Statistics, Mathematics, Economics or a related field.' },
+  },
+  {
+    title: { id: 'Business Development Manager', en: 'Business Development Manager' },
+    slug: 'business-development-manager',
+    category: 2,
+    responsibilities: { id: 'Mengembangkan hubungan dengan lembaga keuangan dan memperluas jangkauan layanan CLIK.', en: 'Develop relationships with financial institutions and widen the reach of CLIK services.' },
+    minimumQualifications: { id: 'Pengalaman penjualan B2B di industri keuangan minimal 5 tahun.', en: 'At least 5 years of B2B sales experience in the financial industry.' },
+    education: { id: 'S1 semua jurusan.', en: 'Bachelor’s degree in any field.' },
+  },
+]
+
+export const careerPage = {
+  heroTitle: { id: 'Bertumbuh Bersama CLIK Membangun Ekosistem Kredit Indonesia', en: 'Grow With CLIK, Building Indonesia’s Credit Ecosystem' },
+  heroSubtitle: { id: 'Bergabunglah dengan tim yang membangun infrastruktur informasi kredit Indonesia.', en: 'Join the team building Indonesia’s credit information infrastructure.' },
+  values: [
+    { title: { id: 'Supporting Trust & Passion', en: 'Supporting Trust & Passion' }, subtitle: { id: 'Kepercayaan sebagai fondasi', en: 'Trust as the foundation' }, description: { id: 'Kami membangun kepercayaan melalui keterbukaan dan konsistensi dalam bekerja.', en: 'We build trust through openness and consistency in how we work.' } },
+    { title: { id: 'Thinking Outside the Box', en: 'Thinking Outside the Box' }, subtitle: { id: 'Mencari cara yang lebih baik', en: 'Looking for a better way' }, description: { id: 'Kami mendorong cara pandang baru untuk menyelesaikan persoalan lama.', en: 'We encourage fresh perspectives on long-standing problems.' } },
+    { title: { id: 'Pursuing Excellence', en: 'Pursuing Excellence' }, subtitle: { id: 'Kualitas dalam setiap detail', en: 'Quality in every detail' }, description: { id: 'Kami menjaga standar tinggi dalam setiap layanan yang kami berikan.', en: 'We hold a high standard in every service we deliver.' } },
+    { title: { id: 'Embracing Diversity', en: 'Embracing Diversity' }, subtitle: { id: 'Beragam latar, satu tujuan', en: 'Many backgrounds, one goal' }, description: { id: 'Kami percaya keberagaman memperkuat cara kami mengambil keputusan.', en: 'We believe diversity strengthens how we make decisions.' } },
+  ],
+  benefits: [
+    { title: { id: 'Asuransi Kesehatan', en: 'Health Insurance' } },
+    { title: { id: 'Pengembangan Skill', en: 'Skill Development' } },
+    { title: { id: 'Jenjang Karir', en: 'Career Progression' } },
+    { title: { id: 'Jam Kerja Fleksibel', en: 'Flexible Working Hours' } },
+  ],
+  recruitmentSteps: [
+    { title: { id: 'Screening CV', en: 'CV Screening' }, description: { id: 'Tim HR meninjau kecocokan pengalaman Anda.', en: 'The HR team reviews how your experience fits.' } },
+    { title: { id: 'Interview HR', en: 'HR Interview' }, description: { id: 'Perkenalan dan pembahasan ekspektasi.', en: 'An introduction and a discussion of expectations.' } },
+    { title: { id: 'Interview User', en: 'User Interview' }, description: { id: 'Diskusi teknis bersama tim terkait.', en: 'A technical discussion with the relevant team.' } },
+    { title: { id: 'Pengecekan Credit Score', en: 'Credit Score Check' }, description: { id: 'Sesuai ketentuan industri keuangan.', en: 'In line with financial industry requirements.' } },
+    { title: { id: 'Penawaran', en: 'Offer' }, description: { id: 'Penyampaian penawaran kerja resmi.', en: 'A formal offer is made.' } },
+  ],
+  cvNote: { id: 'Tidak menemukan posisi yang sesuai? Kirimkan CV Anda ke', en: 'Not finding the right position? Send your CV to' },
+}

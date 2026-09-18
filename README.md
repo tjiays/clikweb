@@ -66,6 +66,9 @@ language lives in `src/i18n/routes.ts`.
 | [Auto-translate](./docs/auto-translate-and-glossary.md) | How English is drafted, and the glossary |
 | [Page implementation notes](./docs/page-implementation-notes.md) | How each page maps to Figma and the CMS |
 | [Seed data inventory](./docs/seed-data-inventory.md) | What is real, what is placeholder |
+| [Editor guide: Newsroom](./docs/editor-guide-newsroom.md) | Panduan News Admin (Bahasa Indonesia) |
+| [Editor guide: Karir](./docs/editor-guide-careers.md) | Panduan HR Admin (Bahasa Indonesia) |
+| [Editor guide: Marketing](./docs/editor-guide-marketing.md) | Panduan Marketing Admin (Bahasa Indonesia) |
 | [Phase plan](./docs/phase-plan.md) | The six delivery phases |
 
 ## Project specification

@@ -35,5 +35,35 @@
     "emailUs": "E-mail:",
     "callUs": "Telepon:",
     "copyright": "Hak cipta dilindungi undang-undang."
+  },
+  "newsroom": {
+    "featured": "Featured News",
+    "mediaList": "Daftar Media",
+    "pagination": "Navigasi halaman",
+    "empty": "Belum ada berita yang dipublikasikan.",
+    "related": "Anda mungkin juga tertarik dengan",
+    "coverage": "Liputan Media",
+    "openArticle": "Baca di situs aslinya",
+    "share": "Bagikan:"
+  },
+  "reports": {
+    "title": "Laporan",
+    "empty": "Belum ada laporan yang dipublikasikan."
+  },
+  "careers": {
+    "values": "Nilai-nilai kami",
+    "openings": "Lowongan Pekerjaan",
+    "benefits": "Benefits",
+    "process": "Proses Rekrutmen",
+    "apply": "Lamar",
+    "viewDetail": "Lihat Detail",
+    "detailTitle": "Detail pekerjaan",
+    "responsibilities": "Key Responsibilities",
+    "qualifications": "Minimum Qualifications",
+    "education": "Education",
+    "emailTo": "Email ke:",
+    "subjectNote": "Mohon cantumkan pada Subjek E-mail:",
+    "empty": "Saat ini belum ada lowongan yang dibuka.",
+    "category": "Kategori"
   }
 }

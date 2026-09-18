@@ -35,5 +35,35 @@
     "emailUs": "E-mail Us:",
     "callUs": "Call Us:",
     "copyright": "All rights reserved."
+  },
+  "newsroom": {
+    "featured": "Featured News",
+    "mediaList": "Media List",
+    "pagination": "Pagination",
+    "empty": "No news has been published yet.",
+    "related": "You may also be interested in",
+    "coverage": "Media Coverage",
+    "openArticle": "Read on the original site",
+    "share": "Share:"
+  },
+  "reports": {
+    "title": "Reports",
+    "empty": "No reports have been published yet."
+  },
+  "careers": {
+    "values": "Our values",
+    "openings": "Job Openings",
+    "benefits": "Benefits",
+    "process": "Recruitment Process",
+    "apply": "Apply",
+    "viewDetail": "View Detail",
+    "detailTitle": "Job detail",
+    "responsibilities": "Key Responsibilities",
+    "qualifications": "Minimum Qualifications",
+    "education": "Education",
+    "emailTo": "Email to:",
+    "subjectNote": "Please mention on Subject E-mail:",
+    "empty": "There are no open positions at the moment.",
+    "category": "Category"
   }
 }
