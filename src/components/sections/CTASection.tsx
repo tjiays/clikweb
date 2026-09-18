@@ -2,51 +2,64 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
 import { Container } from '@/components/layout/Container'
-import { imageAlt, imageUrl } from '@/lib/content'
+import type { Locale } from '@/i18n/config'
+import { t } from '@/lib/content'
 import styles from './CTASection.module.css'
 
+type Pair = { id: string; en: string }
+
+type Block = {
+  page: string
+  crossLink?: { label: Pair; title: Pair; image: string; targetUrl: string }
+  banner?: {
+    backgroundImage: string
+    title: Pair
+    text: Pair
+    buttonLabel: Pair
+    buttonLink: string
+  }
+}
+
 /**
- * The closing block used at the bottom of most pages: a cross-link card and a
- * "Siap…" banner. One reusable component, editable per page in the CMS, and
- * either half is optional (confirmed decision 7).
+ * The closing block at the bottom of most pages: a cross-link card and a
+ * "Siap…" banner. Either half is optional (confirmed decision 7).
+ *
+ * The blocks live in src/content/cta.ts.
  */
-export function CTASection({ block }: { block: any }) {
+export function CTASection({ block, locale }: { block?: Block; locale: Locale }) {
   if (!block) return null
 
   const cross = block.crossLink
   const banner = block.banner
-  const hasCross = cross && (cross.title || cross.label)
-  const hasBanner = banner && (banner.title || banner.buttonLabel)
-
-  if (!hasCross && !hasBanner) return null
+  const hasBanner = banner && (t(banner.title, locale) || t(banner.buttonLabel, locale))
 
   return (
     <>
-      {hasCross && (
+      {cross && (
         <Container>
           <Link href={cross.targetUrl || '#'} className={styles.cross}>
-            {imageUrl(cross.image) && (
+            {cross.image && (
               <Image
-                src={imageUrl(cross.image) as string}
-                alt={imageAlt(cross.image)}
+                src={cross.image}
+                alt=""
                 width={480}
                 height={320}
                 className={styles.crossImage}
               />
             )}
             <span className={styles.crossBody}>
-              {cross.label && <span className={styles.crossLabel}>{cross.label}</span>}
-              {cross.title && <span className="t-h3">{cross.title}</span>}
+              <span className={styles.crossLabel}>{t(cross.label, locale)}</span>
+              <span className="t-h3">{t(cross.title, locale)}</span>
             </span>
           </Link>
         </Container>
       )}
 
-      {hasBanner && (
+      {hasBanner && banner && (
         <section className={styles.banner}>
-          {imageUrl(banner.backgroundImage) && (
+          {banner.backgroundImage && (
             <Image
-              src={imageUrl(banner.backgroundImage) as string}
+              src={banner.backgroundImage}
               alt=""
               fill
               sizes="100vw"
@@ -55,11 +68,13 @@ export function CTASection({ block }: { block: any }) {
           )}
           <div className={styles.bannerOverlay} />
           <Container className={styles.bannerInner}>
-            {banner.title && <h2 className="t-cta-title">{banner.title}</h2>}
-            {banner.text && <p className={styles.bannerText}>{banner.text}</p>}
-            {banner.buttonLabel && (
+            <h2 className="t-cta-title">{t(banner.title, locale)}</h2>
+            {t(banner.text, locale) && (
+              <p className={styles.bannerText}>{t(banner.text, locale)}</p>
+            )}
+            {t(banner.buttonLabel, locale) && (
               <Button href={banner.buttonLink || '#'} size="lg">
-                {banner.buttonLabel}
+                {t(banner.buttonLabel, locale)}
               </Button>
             )}
           </Container>

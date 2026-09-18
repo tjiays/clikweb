@@ -6,6 +6,7 @@ import {
   CONSENT_VERSION,
   type ContactFormValues,
 } from '@/lib/contactForm'
+import { site } from '@/content/site'
 
 /**
  * Receives a contact form submission (intent/04 §1).
@@ -78,11 +79,8 @@ export async function POST(request: Request) {
 
   // The submission is safe by this point. An email failure must not lose it.
   try {
-    const settings = await payload.findGlobal({ slug: 'site-settings', depth: 0 })
     const recipient =
-      process.env.CONTACT_FORM_RECIPIENT ||
-      (settings as { salesEmail?: string })?.salesEmail ||
-      'sales@cbclik.com'
+      process.env.CONTACT_FORM_RECIPIENT || site.salesEmail || 'sales@cbclik.com'
 
     await payload.sendEmail({
       to: recipient,

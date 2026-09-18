@@ -4,7 +4,9 @@ import { Container } from './Container'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
 import type { Dictionary } from '@/i18n'
-import { getPartnerLogos, getSiteSettings, imageUrl, imageAlt } from '@/lib/content'
+import { site } from '@/content/site'
+import { partnerLogos } from '@/content/partners'
+import { t } from '@/lib/content'
 import styles from './Footer.module.css'
 
 /*
@@ -16,20 +18,9 @@ import styles from './Footer.module.css'
  * confirms them.
  */
 
-/** Icons for the social platforms the design shows. */
-const SOCIAL_ICON: Record<string, string> = {
-  whatsapp: '/brand/icon-social-whatsapp.svg',
-  instagram: '/brand/icon-social-instagram.svg',
-  linkedin: '/brand/icon-social-linkedin.svg',
-}
-
-export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const [site, members, regulators] = await Promise.all([
-    getSiteSettings(locale),
-    getPartnerLogos(locale, 'member'),
-    getPartnerLogos(locale, 'regulator'),
-  ])
-  const settings = site as any
+export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const members = partnerLogos.filter((p) => p.group === 'member')
+  const regulators = partnerLogos.filter((p) => p.group === 'regulator')
   const year = new Date().getFullYear()
 
   return (
@@ -39,7 +30,7 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
           <div className={styles.column}>
             <Link href={href('home', locale)} className={styles.logo}>
               <Image
-                src="/brand/logo-clik.png"
+                src="/images/shared/logo-clik.png"
                 alt="CLIK — CRIF Lembaga Informasi Keuangan"
                 width={354}
                 height={118}
@@ -47,35 +38,34 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
               />
             </Link>
             <address className={styles.address}>
-              {settings?.address && <p>{settings.address}</p>}
-              {settings?.phone && (
+              {site.address && <p>{t(site.address, locale)}</p>}
+              {site.phone && (
                 <p>
                   {dict.footer.callUs}{' '}
-                  <a href={`tel:${String(settings.phone).replace(/[^\d+]/g, '')}`}>
-                    {settings.phone}
+                  <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}>
+                    {site.phone}
                   </a>
                 </p>
               )}
-              {settings?.generalEmail && (
+              {site.generalEmail && (
                 <p>
                   {dict.footer.emailUs}{' '}
-                  <a href={`mailto:${settings.generalEmail}`}>{settings.generalEmail}</a>
+                  <a href={`mailto:${site.generalEmail}`}>{site.generalEmail}</a>
                 </p>
               )}
-              {settings?.websiteUrl && (
+              {site.websiteUrl && (
                 <p>
-                  <a href={settings.websiteUrl} target="_blank" rel="noopener noreferrer">
-                    {settings.websiteUrl.replace(/^https?:\/\//, '')}
+                  <a href={site.websiteUrl} target="_blank" rel="noopener noreferrer">
+                    {site.websiteUrl.replace(/^https?:\/\//, '')}
                   </a>
                 </p>
               )}
             </address>
 
-            {settings?.socialLinks?.length > 0 && (
+            {site.socialLinks.length > 0 && (
               <ul className={styles.socials}>
-                {settings.socialLinks.map((social: any) => {
-                  const icon = SOCIAL_ICON[social.platform]
-                  if (!icon) return null
+                {site.socialLinks.map((social) => {
+                  if (!social.icon) return null
                   return (
                     <li key={social.platform}>
                       <a
@@ -85,7 +75,7 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
                         aria-label={social.platform}
                         className={styles.social}
                       >
-                        <Image src={icon} alt="" width={28} height={28} />
+                        <Image src={social.icon} alt="" width={28} height={28} />
                       </a>
                     </li>
                   )
@@ -98,12 +88,11 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
             <div className={styles.column}>
               <h2 className={styles.heading}>{dict.footer.members}</h2>
               <ul className={styles.logoRow}>
-                {members.map((member: any) => {
-                  const url = imageUrl(member.logo)
-                  const image = url ? (
+                {members.map((member) => {
+                  const image = member.logo ? (
                     <Image
-                      src={url}
-                      alt={imageAlt(member.logo, member.name)}
+                      src={member.logo}
+                      alt={member.name}
                       width={150}
                       height={62}
                       className={styles.partnerLogo}
@@ -112,7 +101,7 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
                     <span className={styles.logoChip}>{member.name}</span>
                   )
                   return (
-                    <li key={member.id}>
+                    <li key={member.name}>
                       {member.url ? (
                         <a href={member.url} target="_blank" rel="noopener noreferrer">
                           {image}
@@ -129,28 +118,27 @@ export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionar
 
           <div className={styles.column}>
             <h2 className={styles.heading}>{dict.footer.supervised}</h2>
-            {regulators.map((regulator: any) => {
-              const url = imageUrl(regulator.logo)
-              return url ? (
+            {regulators.map((regulator) =>
+              regulator.logo ? (
                 <Image
-                  key={regulator.id}
-                  src={url}
-                  alt={imageAlt(regulator.logo, regulator.name)}
+                  key={regulator.name}
+                  src={regulator.logo}
+                  alt={regulator.name}
                   width={150}
                   height={62}
                   className={styles.partnerLogo}
                 />
-              ) : null
-            })}
-            {settings?.ojkLicenceNumber && (
-              <p className={styles.licence}>{settings.ojkLicenceNumber}</p>
+              ) : null,
+            )}
+            {site.ojkLicenceNumber && (
+              <p className={styles.licence}>{site.ojkLicenceNumber}</p>
             )}
           </div>
         </div>
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {year} {settings?.companyName ?? 'PT CRIF Lembaga Informasi Keuangan'}.{' '}
+            © {year} {site.companyName}.{' '}
             {dict.footer.copyright}
           </p>
         </div>

@@ -11,7 +11,7 @@ export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
   labels: { singular: 'Data Masuk', plural: 'Data Masuk (Hubungi Kami)' },
   admin: {
-    group: 'Pengaturan',
+    group: 'Data',
     useAsTitle: 'email',
     defaultColumns: ['email', 'companyName', 'interestedIn', 'followedUp', 'createdAt'],
   },

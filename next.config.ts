@@ -12,8 +12,10 @@ const nextConfig: NextConfig = {
     // picture silently fails to render. /api/media/file is the CMS media
     // library; /brand is the logo and social icons served from public/.
     localPatterns: [
+      // Uploaded media: article, report and product images.
       { pathname: '/api/media/file/**' },
-      { pathname: '/brand/**' },
+      // Everything in public/images: logos, icons and page photography.
+      { pathname: '/images/**' },
     ],
   },
   webpack: (webpackConfig) => {

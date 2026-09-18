@@ -7,31 +7,15 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import {
-  Users,
-  Media,
-  AuditLog,
   Articles,
-  Authors,
-  MediaOutlets,
-  MediaCoverage,
   Reports,
-  JobCategories,
   JobOpenings,
-  HeroSlides,
-  Stats,
-  Testimonials,
-  Milestones,
-  PartnerLogos,
-  ProductCategories,
   ProductItems,
-  CTABlocks,
-  StaticPages,
-  PageContent,
   ContactSubmissions,
+  Users,
+  AuditLog,
+  Media,
 } from './collections'
-import { SiteSettings } from './globals/SiteSettings'
-import { HomeSettings } from './globals/HomeSettings'
-import { CareerPage } from './globals/CareerPage'
 import { autoTranslateEndpoint } from './endpoints/autoTranslate'
 
 const filename = fileURLToPath(import.meta.url)
@@ -76,34 +60,20 @@ export default buildConfig({
   collections: [
     // Newsroom
     Articles,
-    Authors,
-    MediaOutlets,
-    MediaCoverage,
-    // Laporan
+    // Report
     Reports,
     // Karir
     JobOpenings,
-    JobCategories,
-    // Produk & Layanan
-    ProductCategories,
+    // Product
     ProductItems,
-    // Konten Website
-    HeroSlides,
-    Stats,
-    Testimonials,
-    Milestones,
-    PartnerLogos,
-    CTABlocks,
-    PageContent,
-    StaticPages,
-    // Pengaturan
+    // Data
     ContactSubmissions,
-    Users,
     AuditLog,
-    // Shared
+    // Pengaturan
+    Users,
+    // Shared — needed for article, report and product images
     Media,
   ],
-  globals: [HomeSettings, CareerPage, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -6,17 +6,6 @@ import { lockedForApprover } from '@/fields/approval'
 
 const owners = MODULE_OWNERS.karir
 
-export const JobCategories: CollectionConfig = contentCollection({
-  slug: 'job-categories',
-  labels: { singular: 'Kategori Lowongan', plural: 'Kategori Lowongan' },
-  group: 'Karir',
-  owners,
-  useAsTitle: 'name',
-  defaultColumns: ['name', 'updatedAt'],
-  approval: false,
-  fields: [localisedText('name', 'Nama kategori', true)],
-})
-
 export const JobOpenings: CollectionConfig = contentCollection({
   slug: 'job-openings',
   labels: { singular: 'Lowongan Pekerjaan', plural: 'Lowongan Pekerjaan' },
@@ -27,11 +16,18 @@ export const JobOpenings: CollectionConfig = contentCollection({
     localisedText('title', 'Nama posisi', true),
     slugField(),
     {
+      // The category list is fixed and lives in src/content/careers.ts, so it
+      // is a select rather than its own collection.
       name: 'category',
-      type: 'relationship',
-      relationTo: 'job-categories',
+      type: 'select',
+      label: 'Kategori',
       required: true,
       access: lockedForApprover,
+      options: [
+        { label: 'Information Technology', value: 'information-technology' },
+        { label: 'Analysis & Reporting', value: 'analysis-reporting' },
+        { label: 'Sales & Business Development', value: 'sales-business-development' },
+      ],
     },
     richText('responsibilities', 'Key Responsibilities'),
     richText('minimumQualifications', 'Minimum Qualifications'),

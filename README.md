@@ -59,7 +59,8 @@ language lives in `src/i18n/routes.ts`.
 | [Deployment](./docs/deployment.md) | Environments, staging, releases |
 | [Repository conventions](./docs/repository-conventions.md) | Branches, commits, what is committed |
 | [External links](./docs/external-links.md) | Every outbound URL and whether it is verified |
-| [CMS data model](./docs/cms-data-model.md) | Collections, globals and shared fields |
+| [Editing content](./docs/editing-content.md) | Changing page wording and images in code |
+| [CMS data model](./docs/cms-data-model.md) | The seven collections that remain |
 | [Roles and permissions](./docs/roles-and-permissions.md) | Who can reach what, and how it is enforced |
 | [Approval workflow](./docs/approval-workflow.md) | Draft to published, and the rules behind it |
 | [CMS user manual](./docs/cms-user-manual.md) | Panduan untuk tim pengisi konten (Bahasa Indonesia) |

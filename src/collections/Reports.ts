@@ -14,8 +14,8 @@ import { lockedForApprover } from '@/fields/approval'
 /** Laporan — managed by News Admin (confirmed decision 15). */
 export const Reports: CollectionConfig = contentCollection({
   slug: 'reports',
-  labels: { singular: 'Laporan', plural: 'Daftar Laporan' },
-  group: 'Laporan',
+  labels: { singular: 'Laporan', plural: 'Laporan' },
+  group: 'Report',
   owners: MODULE_OWNERS.laporan,
   defaultColumns: ['title', 'type', 'year', 'approvalStatus'],
   fields: [

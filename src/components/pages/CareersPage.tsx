@@ -10,14 +10,9 @@ import { Button } from '@/components/ui/Button'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getCareerPage,
-  getOpenJobs,
-  getJobBySlug,
-  getSiteSettings,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { careers, jobCategories } from '@/content/careers'
+import { site } from '@/content/site'
+import { getOpenJobs, getJobBySlug, t } from '@/lib/content'
 import styles from './CareersPage.module.css'
 
 /** Builds the mailto link for a job, with the subject pre-filled. */
@@ -31,28 +26,21 @@ function applyMailto(job: any, fallbackEmail: string) {
 
 /** Karir — Figma 415:2692, per intent/02 §2.16. */
 export async function CareersPage({ locale }: { locale: Locale }) {
-  const [dict, page, jobs, site] = await Promise.all([
-    getDictionary(locale),
-    getCareerPage(locale),
-    getOpenJobs(locale),
-    getSiteSettings(locale),
-  ])
-
-  const content = page as any
-  const careersEmail = (site as any)?.careersEmail ?? 'talent@cbclik.com'
-  const heroImages = (content?.heroImages ?? [])
-    .map((row: any) => imageUrl(row.image))
-    .filter(Boolean) as string[]
+  const [dict, jobs] = await Promise.all([getDictionary(locale), getOpenJobs(locale)])
+  const careersEmail = site.careersEmail || 'talent@cbclik.com'
+  const heroImages = careers.heroImages
+  const categoryName = (slug: string) => {
+    const found = jobCategories.find((c) => c.slug === slug)
+    return found ? t(found.name, locale) : slug
+  }
 
   return (
     <>
       {/* Hero with its auto-sliding image carousel */}
       <section className={styles.hero}>
         <Container>
-          <h1 className="t-h1">{content?.heroTitle ?? dict.nav.careers}</h1>
-          {content?.heroSubtitle && (
-            <p className={`t-lead ${styles.heroSubtitle}`}>{content.heroSubtitle}</p>
-          )}
+          <h1 className="t-h1">{t(careers.heroTitle, locale)}</h1>
+          <p className={`t-lead ${styles.heroSubtitle}`}>{t(careers.heroSubtitle, locale)}</p>
         </Container>
         {heroImages.length > 0 && (
           <div className={styles.heroStrip}>
@@ -74,15 +62,15 @@ export async function CareersPage({ locale }: { locale: Locale }) {
 
       <Container>
         {/* Nilai-nilai kami */}
-        {content?.values?.length > 0 && (
+        {careers.values.length > 0 && (
           <section className={styles.section}>
             <SectionTitle as="h2">{dict.careers.values}</SectionTitle>
             <div className={styles.valueGrid}>
-              {content.values.map((value: any, index: number) => (
+              {careers.values.map((value, index) => (
                 <article key={index} className={styles.value}>
-                  <h3 className="t-h4">{value.title}</h3>
-                  {value.subtitle && <p className={styles.valueSubtitle}>{value.subtitle}</p>}
-                  {value.description && <p>{value.description}</p>}
+                  <h3 className="t-h4">{t(value.title, locale)}</h3>
+                  <p className={styles.valueSubtitle}>{t(value.subtitle, locale)}</p>
+                  <p>{t(value.description, locale)}</p>
                 </article>
               ))}
             </div>
@@ -100,9 +88,7 @@ export async function CareersPage({ locale }: { locale: Locale }) {
                 <JobRow
                   key={job.id}
                   title={job.title}
-                  category={
-                    typeof job.category === 'object' ? job.category?.name : undefined
-                  }
+                  category={job.category ? categoryName(job.category) : undefined}
                   detailHref={detailHref('careers', job.slug, locale)}
                   applyMailto={applyMailto(job, careersEmail)}
                   applyLabel={dict.careers.apply}
@@ -112,30 +98,25 @@ export async function CareersPage({ locale }: { locale: Locale }) {
             </div>
           )}
 
-          {content?.cvNote && (
+          {careers.cvNote && (
             <p className={styles.cvNote}>
-              {content.cvNote}{' '}
+              {t(careers.cvNote, locale)}{' '}
               <a href={`mailto:${careersEmail}`}>{careersEmail}</a>
             </p>
           )}
         </section>
 
         {/* Benefits */}
-        {content?.benefits?.length > 0 && (
+        {careers.benefits.length > 0 && (
           <section className={styles.section}>
             <SectionTitle as="h2">{dict.careers.benefits}</SectionTitle>
             <div className={styles.benefitGrid}>
-              {content.benefits.map((benefit: any, index: number) => (
+              {careers.benefits.map((benefit, index) => (
                 <article key={index} className={styles.benefit}>
-                  {imageUrl(benefit.icon) && (
-                    <Image
-                      src={imageUrl(benefit.icon) as string}
-                      alt={imageAlt(benefit.icon)}
-                      width={56}
-                      height={56}
-                    />
+                  {benefit.icon && (
+                    <Image src={benefit.icon} alt="" width={56} height={56} />
                   )}
-                  <h3 className="t-h5">{benefit.title}</h3>
+                  <h3 className="t-h5">{t(benefit.title, locale)}</h3>
                 </article>
               ))}
             </div>
@@ -143,16 +124,16 @@ export async function CareersPage({ locale }: { locale: Locale }) {
         )}
 
         {/* Proses Rekrutmen */}
-        {content?.recruitmentSteps?.length > 0 && (
+        {careers.recruitmentSteps.length > 0 && (
           <section className={styles.section}>
             <SectionTitle as="h2">{dict.careers.process}</SectionTitle>
             <ol className={styles.steps}>
-              {content.recruitmentSteps.map((step: any, index: number) => (
+              {careers.recruitmentSteps.map((step, index) => (
                 <li key={index} className={styles.step}>
                   <span className={styles.stepNumber}>{index + 1}</span>
                   <div>
-                    <h3 className="t-h5">{step.title}</h3>
-                    {step.description && <p>{step.description}</p>}
+                    <h3 className="t-h5">{t(step.title, locale)}</h3>
+                    <p>{t(step.description, locale)}</p>
                   </div>
                 </li>
               ))}
@@ -166,14 +147,11 @@ export async function CareersPage({ locale }: { locale: Locale }) {
 
 /** Detail Lowongan — Figma 571:3858, per intent/02 §2.17. */
 export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: string }) {
-  const [dict, job, site] = await Promise.all([
-    getDictionary(locale),
-    getJobBySlug(locale, slug),
-    getSiteSettings(locale),
-  ])
+  const [dict, job] = await Promise.all([getDictionary(locale), getJobBySlug(locale, slug)])
   if (!job) notFound()
 
-  const careersEmail = job.applyEmail || (site as any)?.careersEmail || 'talent@cbclik.com'
+  const careersEmail = job.applyEmail || site.careersEmail || 'talent@cbclik.com'
+  const category = jobCategories.find((c) => c.slug === job.category)
 
   return (
     <>
@@ -192,9 +170,7 @@ export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: st
           <header className={styles.detailHead}>
             <div>
               <h2 className="t-h2">{job.title}</h2>
-              {typeof job.category === 'object' && job.category?.name && (
-                <p className={styles.detailCategory}>{job.category.name}</p>
-              )}
+              {category && <p className={styles.detailCategory}>{t(category.name, locale)}</p>}
             </div>
             <Button href={applyMailto(job, careersEmail)} external size="lg">
               {dict.careers.apply}

@@ -68,25 +68,12 @@ export interface Config {
   blocks: {};
   collections: {
     articles: Article;
-    authors: Author;
-    'media-outlets': MediaOutlet;
-    'media-coverage': MediaCoverage;
     reports: Report;
     'job-openings': JobOpening;
-    'job-categories': JobCategory;
-    'product-categories': ProductCategory;
     'product-items': ProductItem;
-    'hero-slides': HeroSlide;
-    stats: Stat;
-    testimonials: Testimonial;
-    milestones: Milestone;
-    'partner-logos': PartnerLogo;
-    'cta-blocks': CtaBlock;
-    'page-content': PageContent;
-    'static-pages': StaticPage;
     'contact-submissions': ContactSubmission;
-    users: User;
     'audit-log': AuditLog;
+    users: User;
     media: Media;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -96,25 +83,12 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
-    authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    'media-outlets': MediaOutletsSelect<false> | MediaOutletsSelect<true>;
-    'media-coverage': MediaCoverageSelect<false> | MediaCoverageSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
     'job-openings': JobOpeningsSelect<false> | JobOpeningsSelect<true>;
-    'job-categories': JobCategoriesSelect<false> | JobCategoriesSelect<true>;
-    'product-categories': ProductCategoriesSelect<false> | ProductCategoriesSelect<true>;
     'product-items': ProductItemsSelect<false> | ProductItemsSelect<true>;
-    'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
-    stats: StatsSelect<false> | StatsSelect<true>;
-    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
-    milestones: MilestonesSelect<false> | MilestonesSelect<true>;
-    'partner-logos': PartnerLogosSelect<false> | PartnerLogosSelect<true>;
-    'cta-blocks': CtaBlocksSelect<false> | CtaBlocksSelect<true>;
-    'page-content': PageContentSelect<false> | PageContentSelect<true>;
-    'static-pages': StaticPagesSelect<false> | StaticPagesSelect<true>;
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
-    users: UsersSelect<false> | UsersSelect<true>;
     'audit-log': AuditLogSelect<false> | AuditLogSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -125,16 +99,8 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('id' | 'en') | ('id' | 'en')[];
-  globals: {
-    'home-settings': HomeSetting;
-    'career-page': CareerPage;
-    'site-settings': SiteSetting;
-  };
-  globalsSelect: {
-    'home-settings': HomeSettingsSelect<false> | HomeSettingsSelect<true>;
-    'career-page': CareerPageSelect<false> | CareerPageSelect<true>;
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
-  };
+  globals: {};
+  globalsSelect: {};
   locale: 'id' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -191,7 +157,7 @@ export interface Article {
     [k: string]: unknown;
   };
   cover?: (number | null) | Media;
-  author?: (number | null) | Author;
+  author?: string | null;
   publishDate: string;
   /**
    * Shows in the Featured News list on the Newsroom page.
@@ -276,22 +242,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors".
- */
-export interface Author {
-  id: number;
-  name: string;
-  photo?: (number | null) | Media;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -319,70 +269,6 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media-outlets".
- */
-export interface MediaOutlet {
-  id: number;
-  name: string;
-  /**
-   * Used in the page address. Derived from name if left blank.
-   */
-  slug: string;
-  logo: number | Media;
-  /**
-   * The outlet’s own website. Opens in a new tab.
-   */
-  websiteUrl?: string | null;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media-coverage".
- */
-export interface MediaCoverage {
-  id: number;
-  title: string;
-  outlet: number | MediaOutlet;
-  excerpt?: string | null;
-  image?: (number | null) | Media;
-  /**
-   * The article on the outlet’s site. Opens in a new tab.
-   */
-  externalUrl: string;
-  publishDate: string;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -451,7 +337,7 @@ export interface JobOpening {
    * Used in the page address. Derived from title if left blank.
    */
   slug: string;
-  category: number | JobCategory;
+  category: 'information-technology' | 'analysis-reporting' | 'sales-business-development';
   responsibilities?: {
     root: {
       type: string;
@@ -534,89 +420,12 @@ export interface JobOpening {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "job-categories".
- */
-export interface JobCategory {
-  id: number;
-  name: string;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-categories".
- */
-export interface ProductCategory {
-  id: number;
-  name: string;
-  /**
-   * Used in the page address. Derived from name if left blank.
-   */
-  slug: string;
-  icon?: (number | null) | Media;
-  image?: (number | null) | Media;
-  shortDescription?: string | null;
-  lead?: string | null;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  advantages?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-items".
  */
 export interface ProductItem {
   id: number;
   name: string;
-  category: number | ProductCategory;
+  category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
   description?: {
     root: {
@@ -663,328 +472,6 @@ export interface ProductItem {
   reviewedBy?: (number | null) | User;
   reviewedAt?: string | null;
   publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hero-slides".
- */
-export interface HeroSlide {
-  id: number;
-  image: number | Media;
-  title: string;
-  subtitle?: string | null;
-  buttonLabel?: string | null;
-  buttonLink?: string | null;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "stats".
- */
-export interface Stat {
-  id: number;
-  icon?: (number | null) | Media;
-  /**
-   * For example 37, 10.500+ or 1jt+
-   */
-  value: string;
-  label: string;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials".
- */
-export interface Testimonial {
-  id: number;
-  partnerName: string;
-  logo?: (number | null) | Media;
-  quote: string;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "milestones".
- */
-export interface Milestone {
-  id: number;
-  year: number;
-  items?:
-    | {
-        text: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partner-logos".
- */
-export interface PartnerLogo {
-  id: number;
-  name: string;
-  logo: number | Media;
-  /**
-   * Opens in a new tab.
-   */
-  url?: string | null;
-  group: 'member' | 'regulator' | 'clik_member';
-  /**
-   * Lower numbers appear first.
-   */
-  sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cta-blocks".
- */
-export interface CtaBlock {
-  id: number;
-  page: 'home' | 'about' | 'products' | 'business-solution' | 'credit-scoring';
-  crossLink?: {
-    label?: string | null;
-    title?: string | null;
-    image?: (number | null) | Media;
-    targetUrl?: string | null;
-  };
-  banner?: {
-    backgroundImage?: (number | null) | Media;
-    title?: string | null;
-    text?: string | null;
-    buttonLabel?: string | null;
-    buttonLink?: string | null;
-  };
-  isActive?: boolean | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-content".
- */
-export interface PageContent {
-  id: number;
-  page: 'about' | 'products' | 'business-solution' | 'credit-scoring';
-  title?: string | null;
-  heroImage?: (number | null) | Media;
-  lead?: string | null;
-  /**
-   * One entry per section on the page. The key is what the page template looks for.
-   */
-  sections?:
-    | {
-        /**
-         * For example visi, misi, tentang-crif, cara-kerja.
-         */
-        key: string;
-        title?: string | null;
-        lead?: string | null;
-        body?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        image?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * About Us only — "Kenali CLIK Lebih Dekat" embed URL.
-   */
-  videoUrl?: string | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  publishedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "static-pages".
- */
-export interface StaticPage {
-  id: number;
-  key: 'information_security_policy' | 'privacy_policy' | 'how_to_get_credit_report' | 'complaint_resolution';
-  title: string;
-  body: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  /**
-   * Shown as "Terakhir Diperbarui" on the Privacy page.
-   */
-  lastUpdatedDate?: string | null;
-  /**
-   * For example the Formulir Permintaan Data.
-   */
-  attachments?:
-    | {
-        file: number | Media;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
-  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1080,18 +567,6 @@ export interface PayloadLockedDocument {
         value: number | Article;
       } | null)
     | ({
-        relationTo: 'authors';
-        value: number | Author;
-      } | null)
-    | ({
-        relationTo: 'media-outlets';
-        value: number | MediaOutlet;
-      } | null)
-    | ({
-        relationTo: 'media-coverage';
-        value: number | MediaCoverage;
-      } | null)
-    | ({
         relationTo: 'reports';
         value: number | Report;
       } | null)
@@ -1100,60 +575,20 @@ export interface PayloadLockedDocument {
         value: number | JobOpening;
       } | null)
     | ({
-        relationTo: 'job-categories';
-        value: number | JobCategory;
-      } | null)
-    | ({
-        relationTo: 'product-categories';
-        value: number | ProductCategory;
-      } | null)
-    | ({
         relationTo: 'product-items';
         value: number | ProductItem;
-      } | null)
-    | ({
-        relationTo: 'hero-slides';
-        value: number | HeroSlide;
-      } | null)
-    | ({
-        relationTo: 'stats';
-        value: number | Stat;
-      } | null)
-    | ({
-        relationTo: 'testimonials';
-        value: number | Testimonial;
-      } | null)
-    | ({
-        relationTo: 'milestones';
-        value: number | Milestone;
-      } | null)
-    | ({
-        relationTo: 'partner-logos';
-        value: number | PartnerLogo;
-      } | null)
-    | ({
-        relationTo: 'cta-blocks';
-        value: number | CtaBlock;
-      } | null)
-    | ({
-        relationTo: 'page-content';
-        value: number | PageContent;
-      } | null)
-    | ({
-        relationTo: 'static-pages';
-        value: number | StaticPage;
       } | null)
     | ({
         relationTo: 'contact-submissions';
         value: number | ContactSubmission;
       } | null)
     | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
         relationTo: 'audit-log';
         value: number | AuditLog;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
@@ -1234,56 +669,6 @@ export interface ArticlesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
- */
-export interface AuthorsSelect<T extends boolean = true> {
-  name?: T;
-  photo?: T;
-  isSample?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media-outlets_select".
- */
-export interface MediaOutletsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  logo?: T;
-  websiteUrl?: T;
-  sortOrder?: T;
-  isSample?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media-coverage_select".
- */
-export interface MediaCoverageSelect<T extends boolean = true> {
-  title?: T;
-  outlet?: T;
-  excerpt?: T;
-  image?: T;
-  externalUrl?: T;
-  publishDate?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
@@ -1338,49 +723,6 @@ export interface JobOpeningsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "job-categories_select".
- */
-export interface JobCategoriesSelect<T extends boolean = true> {
-  name?: T;
-  isSample?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "product-categories_select".
- */
-export interface ProductCategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  icon?: T;
-  image?: T;
-  shortDescription?: T;
-  lead?: T;
-  description?: T;
-  advantages?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        id?: T;
-      };
-  sortOrder?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "product-items_select".
  */
 export interface ProductItemsSelect<T extends boolean = true> {
@@ -1406,200 +748,6 @@ export interface ProductItemsSelect<T extends boolean = true> {
   reviewedBy?: T;
   reviewedAt?: T;
   publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "hero-slides_select".
- */
-export interface HeroSlidesSelect<T extends boolean = true> {
-  image?: T;
-  title?: T;
-  subtitle?: T;
-  buttonLabel?: T;
-  buttonLink?: T;
-  sortOrder?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "stats_select".
- */
-export interface StatsSelect<T extends boolean = true> {
-  icon?: T;
-  value?: T;
-  label?: T;
-  sortOrder?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "testimonials_select".
- */
-export interface TestimonialsSelect<T extends boolean = true> {
-  partnerName?: T;
-  logo?: T;
-  quote?: T;
-  sortOrder?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "milestones_select".
- */
-export interface MilestonesSelect<T extends boolean = true> {
-  year?: T;
-  items?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
-  sortOrder?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "partner-logos_select".
- */
-export interface PartnerLogosSelect<T extends boolean = true> {
-  name?: T;
-  logo?: T;
-  url?: T;
-  group?: T;
-  sortOrder?: T;
-  isSample?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "cta-blocks_select".
- */
-export interface CtaBlocksSelect<T extends boolean = true> {
-  page?: T;
-  crossLink?:
-    | T
-    | {
-        label?: T;
-        title?: T;
-        image?: T;
-        targetUrl?: T;
-      };
-  banner?:
-    | T
-    | {
-        backgroundImage?: T;
-        title?: T;
-        text?: T;
-        buttonLabel?: T;
-        buttonLink?: T;
-      };
-  isActive?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "page-content_select".
- */
-export interface PageContentSelect<T extends boolean = true> {
-  page?: T;
-  title?: T;
-  heroImage?: T;
-  lead?: T;
-  sections?:
-    | T
-    | {
-        key?: T;
-        title?: T;
-        lead?: T;
-        body?: T;
-        image?: T;
-        id?: T;
-      };
-  videoUrl?: T;
-  isSample?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  publishedAt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "static-pages_select".
- */
-export interface StaticPagesSelect<T extends boolean = true> {
-  key?: T;
-  title?: T;
-  body?: T;
-  lastUpdatedDate?: T;
-  attachments?:
-    | T
-    | {
-        file?: T;
-        label?: T;
-        id?: T;
-      };
-  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1633,6 +781,21 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audit-log_select".
+ */
+export interface AuditLogSelect<T extends boolean = true> {
+  action?: T;
+  collectionSlug?: T;
+  documentId?: T;
+  documentTitle?: T;
+  user?: T;
+  userEmail?: T;
+  detail?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -1654,21 +817,6 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "audit-log_select".
- */
-export interface AuditLogSelect<T extends boolean = true> {
-  action?: T;
-  collectionSlug?: T;
-  documentId?: T;
-  documentTitle?: T;
-  user?: T;
-  userEmail?: T;
-  detail?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1762,233 +910,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-settings".
- */
-export interface HomeSetting {
-  id: number;
-  aboutTitle?: string | null;
-  aboutText?: string | null;
-  trustBarText?: string | null;
-  solutionsTitle?: string | null;
-  solutionsSubtitle?: string | null;
-  testimonialsTitle?: string | null;
-  testimonialsSubtitle?: string | null;
-  newsTitle?: string | null;
-  newsSubtitle?: string | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "career-page".
- */
-export interface CareerPage {
-  id: number;
-  heroTitle?: string | null;
-  heroSubtitle?: string | null;
-  heroImages?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
-  values?:
-    | {
-        title: string;
-        subtitle?: string | null;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  benefits?:
-    | {
-        icon?: (number | null) | Media;
-        title: string;
-        id?: string | null;
-      }[]
-    | null;
-  recruitmentSteps?:
-    | {
-        title: string;
-        description?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  cvNote?: string | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
-  /**
-   * Required when rejecting. The editor sees this.
-   */
-  rejectionReason?: string | null;
-  submittedBy?: (number | null) | User;
-  submittedAt?: string | null;
-  reviewedBy?: (number | null) | User;
-  reviewedAt?: string | null;
-  _status?: ('draft' | 'published') | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings".
- */
-export interface SiteSetting {
-  id: number;
-  companyName: string;
-  address?: string | null;
-  phone?: string | null;
-  generalEmail?: string | null;
-  /**
-   * Contact form submissions are sent here.
-   */
-  salesEmail?: string | null;
-  careersEmail?: string | null;
-  websiteUrl?: string | null;
-  /**
-   * Google Maps embed URL for the Contact page.
-   */
-  mapEmbedUrl?: string | null;
-  ojkLicenceNumber?: string | null;
-  /**
-   * Official CRIF Global website.
-   */
-  crifUrl?: string | null;
-  socialLinks?:
-    | {
-        platform: 'linkedin' | 'instagram' | 'facebook' | 'x' | 'whatsapp' | 'youtube';
-        url: string;
-        id?: string | null;
-      }[]
-    | null;
-  defaultSeo?: {
-    title?: string | null;
-    description?: string | null;
-  };
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-settings_select".
- */
-export interface HomeSettingsSelect<T extends boolean = true> {
-  aboutTitle?: T;
-  aboutText?: T;
-  trustBarText?: T;
-  solutionsTitle?: T;
-  solutionsSubtitle?: T;
-  testimonialsTitle?: T;
-  testimonialsSubtitle?: T;
-  newsTitle?: T;
-  newsSubtitle?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "career-page_select".
- */
-export interface CareerPageSelect<T extends boolean = true> {
-  heroTitle?: T;
-  heroSubtitle?: T;
-  heroImages?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
-  values?:
-    | T
-    | {
-        title?: T;
-        subtitle?: T;
-        description?: T;
-        id?: T;
-      };
-  benefits?:
-    | T
-    | {
-        icon?: T;
-        title?: T;
-        id?: T;
-      };
-  recruitmentSteps?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        id?: T;
-      };
-  cvNote?: T;
-  approvalStatus?: T;
-  rejectionReason?: T;
-  submittedBy?: T;
-  submittedAt?: T;
-  reviewedBy?: T;
-  reviewedAt?: T;
-  _status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
- */
-export interface SiteSettingsSelect<T extends boolean = true> {
-  companyName?: T;
-  address?: T;
-  phone?: T;
-  generalEmail?: T;
-  salesEmail?: T;
-  careersEmail?: T;
-  websiteUrl?: T;
-  mapEmbedUrl?: T;
-  ojkLicenceNumber?: T;
-  crifUrl?: T;
-  socialLinks?:
-    | T
-    | {
-        platform?: T;
-        url?: T;
-        id?: T;
-      };
-  defaultSeo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

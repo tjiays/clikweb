@@ -2,21 +2,16 @@ import Image from 'next/image'
 import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
-import { RichText } from '@/components/ui/RichText'
+import { Prose } from '@/components/ui/Prose'
 import { Button } from '@/components/ui/Button'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getPageContent,
-  getProductCategories,
-  getProductItems,
-  getCTABlock,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { productCategories, businessSolutionPage } from '@/content/products'
+import { ctaBlocks } from '@/content/cta'
+import { getProductItems, t } from '@/lib/content'
 import styles from './BusinessSolutionPage.module.css'
 
 /**
@@ -26,26 +21,15 @@ import styles from './BusinessSolutionPage.module.css'
  * page; the others list their advantages and products in place.
  */
 export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
-  const [dict, page, categories, items, cta] = await Promise.all([
-    getDictionary(locale),
-    getPageContent(locale, 'business-solution'),
-    getProductCategories(locale),
-    getProductItems(locale),
-    getCTABlock(locale, 'business-solution'),
-  ])
-
-  const itemsFor = (categoryId: string | number) =>
-    items.filter((item: any) => {
-      const category = item.category
-      const id = typeof category === 'object' ? category?.id : category
-      return id === categoryId
-    })
+  const [dict, items] = await Promise.all([getDictionary(locale), getProductItems(locale)])
+  const cta = ctaBlocks.find((b) => b.page === 'business-solution')
+  const itemsFor = (slug: string) => items.filter((item: any) => item.category === slug)
 
   return (
     <>
       <PageHeader
-        title={page?.title ?? dict.dropdown.businessSolution}
-        lead={page?.lead}
+        title={t(businessSolutionPage.title, locale)}
+        lead={t(businessSolutionPage.lead, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.dropdown.products, href: href('products', locale) },
@@ -55,10 +39,10 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
       />
 
       <Container>
-        {imageUrl(page?.heroImage) && (
+        {businessSolutionPage.heroImage && (
           <Image
-            src={imageUrl(page.heroImage) as string}
-            alt={imageAlt(page.heroImage)}
+            src={businessSolutionPage.heroImage}
+            alt=""
             width={1300}
             height={600}
             className={styles.hero}
@@ -66,27 +50,27 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
           />
         )}
 
-        {categories.map((category: any) => {
-          const products = itemsFor(category.id)
+        {productCategories.map((category) => {
+          const products = itemsFor(category.slug)
           const isCreditScoring = category.slug === 'credit-scoring'
 
           return (
-            <section key={category.id} id={category.slug} className={styles.solution}>
+            <section key={category.slug} id={category.slug} className={styles.solution}>
               <div className={styles.solutionHead}>
-                {imageUrl(category.image) && (
+                {category.image && (
                   <Image
-                    src={imageUrl(category.image) as string}
-                    alt={imageAlt(category.image)}
+                    src={category.image}
+                    alt=""
                     width={560}
                     height={380}
                     className={styles.solutionImage}
                   />
                 )}
                 <div>
-                  <SectionTitle as="h2" subtitle={category.lead}>
-                    {category.name}
+                  <SectionTitle as="h2" subtitle={t(category.lead, locale)}>
+                    {t(category.name, locale)}
                   </SectionTitle>
-                  <RichText data={category.description} />
+                  <Prose body={category.description} locale={locale} />
                   {isCreditScoring && (
                     <Button href={href('creditScoring', locale)}>
                       {dict.common.learnMore}
@@ -96,16 +80,16 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
               </div>
 
               {/* Keunggulan Utama */}
-              {!isCreditScoring && category.advantages?.length > 0 && (
+              {!isCreditScoring && category.advantages.length > 0 && (
                 <div className={styles.advantages}>
                   <h3 className="t-h3-soft">
                     {locale === 'id' ? 'Keunggulan Utama:' : 'Key Advantages:'}
                   </h3>
                   <div className={styles.advantageGrid}>
-                    {category.advantages.map((advantage: any, index: number) => (
+                    {category.advantages.map((advantage, index) => (
                       <article key={index} className={styles.advantage}>
-                        <h4 className="t-h4">{advantage.title}</h4>
-                        {advantage.description && <p>{advantage.description}</p>}
+                        <h4 className="t-h4">{t(advantage.title, locale)}</h4>
+                        <p>{t(advantage.description, locale)}</p>
                       </article>
                     ))}
                   </div>
@@ -134,7 +118,7 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
         })}
       </Container>
 
-      <CTASection block={cta} />
+      <CTASection block={cta} locale={locale} />
     </>
   )
 }

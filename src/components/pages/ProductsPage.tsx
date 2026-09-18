@@ -4,32 +4,23 @@ import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
 import { SolutionCard } from '@/components/sections/Cards'
-import { RichText } from '@/components/ui/RichText'
+import { Prose } from '@/components/ui/Prose'
 import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getPageContent,
-  getProductCategories,
-  getCTABlock,
-  section,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { productCategories, productsPage } from '@/content/products'
+import { ctaBlocks } from '@/content/cta'
+import { t } from '@/lib/content'
 import styles from './ProductsPage.module.css'
 
 /** Layanan dan Produk — Figma 427:2795. Follows intent/02 §2.7. */
 export async function ProductsPage({ locale }: { locale: Locale }) {
-  const [dict, page, categories, cta] = await Promise.all([
-    getDictionary(locale),
-    getPageContent(locale, 'products'),
-    getProductCategories(locale),
-    getCTABlock(locale, 'products'),
-  ])
-
-  const dataList = section(page, 'data-list')
-  const creditScore = section(page, 'apa-itu-skor-kredit')
+  const dict = await getDictionary(locale)
+  const cta = ctaBlocks.find((b) => b.page === 'products')
+  const find = (key: string) => productsPage.sections.find((s) => s.key === key)
+  const dataList = find('data-list')
+  const creditScore = find('apa-itu-skor-kredit')
 
   const routes = [
     {
@@ -45,8 +36,8 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
   return (
     <>
       <PageHeader
-        title={page?.title ?? dict.dropdown.products}
-        lead={page?.lead}
+        title={t(productsPage.title, locale)}
+        lead={t(productsPage.lead, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.dropdown.products },
@@ -55,10 +46,10 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
       />
 
       <Container>
-        {imageUrl(page?.heroImage) && (
+        {productsPage.heroImage && (
           <Image
-            src={imageUrl(page.heroImage) as string}
-            alt={imageAlt(page.heroImage)}
+            src={productsPage.heroImage}
+            alt=""
             width={1300}
             height={600}
             className={styles.hero}
@@ -67,25 +58,25 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
         )}
 
         {/* Layanan Kami */}
-        {categories.length > 0 && (
+        {productCategories.length > 0 && (
           <section className={styles.section}>
             <SectionTitle as="h2">
               {locale === 'id' ? 'Layanan Kami' : 'Our Services'}
             </SectionTitle>
             <div className={styles.grid}>
-              {categories.map((category: any) => (
+              {productCategories.map((category) => (
                 <SolutionCard
-                  key={category.id}
-                  title={category.name}
-                  text={category.shortDescription}
+                  key={category.slug}
+                  title={t(category.name, locale)}
+                  text={t(category.shortDescription, locale)}
                   href={
                     category.slug === 'credit-scoring'
                       ? href('creditScoring', locale)
                       : href('businessSolution', locale)
                   }
                   linkLabel={dict.common.seeMore}
-                  iconUrl={imageUrl(category.icon)}
-                  iconAlt={imageAlt(category.icon)}
+                  iconUrl={category.icon}
+                  iconAlt=""
                 />
               ))}
             </div>
@@ -95,9 +86,9 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
         {/* The two-column data list */}
         {dataList && (
           <section className={styles.section}>
-            <SectionTitle as="h2">{dataList.title}</SectionTitle>
+            <SectionTitle as="h2">{t(dataList.title, locale)}</SectionTitle>
             <div className={styles.dataList}>
-              <RichText data={dataList.body} />
+              <Prose body={dataList.body} locale={locale} />
             </div>
           </section>
         )}
@@ -106,18 +97,18 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
         {creditScore && (
           <section className={styles.section}>
             <div className={styles.split}>
-              {imageUrl(creditScore.image) && (
+              {productsPage.heroImage && (
                 <Image
-                  src={imageUrl(creditScore.image) as string}
-                  alt={imageAlt(creditScore.image)}
+                  src="/images/products/credit-scoring.png"
+                  alt=""
                   width={620}
                   height={420}
                   className={styles.splitImage}
                 />
               )}
               <div>
-                <SectionTitle as="h2">{creditScore.title}</SectionTitle>
-                <RichText data={creditScore.body} />
+                <SectionTitle as="h2">{t(creditScore.title, locale)}</SectionTitle>
+                <Prose body={creditScore.body} locale={locale} />
                 <Link href={href('creditScoring', locale)} className={`t-body-strong ${styles.inlineLink}`}>
                   {dict.common.learnMore} →
                 </Link>
@@ -146,7 +137,7 @@ export async function ProductsPage({ locale }: { locale: Locale }) {
         </section>
       </Container>
 
-      <CTASection block={cta} />
+      <CTASection block={cta} locale={locale} />
     </>
   )
 }

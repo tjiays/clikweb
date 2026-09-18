@@ -9,30 +9,24 @@ import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getPageContent,
-  getProductCategories,
-  getProductItems,
-  getCTABlock,
-  section,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { productCategories, creditScoringPage } from '@/content/products'
+import { ctaBlocks } from '@/content/cta'
+import { getProductItems, t } from '@/lib/content'
+import { Prose } from '@/components/ui/Prose'
 import styles from './CreditScoringPage.module.css'
 
 /** Credit Scoring — Figma 859:4489, per intent/02 §2.9. */
 export async function CreditScoringPage({ locale }: { locale: Locale }) {
-  const [dict, page, categories, products, cta] = await Promise.all([
+  const [dict, products] = await Promise.all([
     getDictionary(locale),
-    getPageContent(locale, 'credit-scoring'),
-    getProductCategories(locale),
     getProductItems(locale, 'credit-scoring'),
-    getCTABlock(locale, 'credit-scoring'),
   ])
 
-  const category = categories.find((c: any) => c.slug === 'credit-scoring')
-  const what = section(page, 'apa-itu')
-  const howItWorks = section(page, 'cara-kerja')
+  const cta = ctaBlocks.find((b) => b.page === 'credit-scoring')
+  const category = productCategories.find((c) => c.slug === 'credit-scoring')
+  const find = (key: string) => creditScoringPage.sections.find((s) => s.key === key)
+  const what = find('apa-itu')
+  const howItWorks = find('cara-kerja')
   const features = category?.advantages ?? []
 
   const steps = [
@@ -52,7 +46,7 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
   return (
     <>
       <PageHeader
-        title={page?.title ?? dict.dropdown.creditScoring}
+        title={t(creditScoringPage.title, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.dropdown.products, href: href('products', locale) },
@@ -66,10 +60,7 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
         <section className={styles.hero}>
           <div>
             <h2 className="t-h1">
-              {page?.lead ??
-                (locale === 'id'
-                  ? 'Keputusan Kredit yang Lebih Cerdas, Lebih Cepat, Lebih Terpercaya.'
-                  : 'Smarter, Faster, More Trusted Credit Decisions.')}
+              {t(creditScoringPage.lead, locale)}
             </h2>
             <div className={styles.heroAction}>
               <Button href={href('contact', locale)} size="lg">
@@ -77,10 +68,10 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
               </Button>
             </div>
           </div>
-          {imageUrl(page?.heroImage) && (
+          {creditScoringPage.heroImage && (
             <Image
-              src={imageUrl(page.heroImage) as string}
-              alt={imageAlt(page.heroImage)}
+              src={creditScoringPage.heroImage}
+              alt=""
               width={620}
               height={420}
               className={styles.heroImage}
@@ -90,13 +81,10 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
         </section>
 
         {/* Apa Itu CLIK Credit Scoring? */}
-        {(what || category) && (
+        {what && (
           <section className={styles.section}>
-            <SectionTitle as="h2">
-              {what?.title ??
-                (locale === 'id' ? 'Apa Itu CLIK Credit Scoring?' : 'What Is CLIK Credit Scoring?')}
-            </SectionTitle>
-            <RichText data={what?.body ?? category?.description} />
+            <SectionTitle as="h2">{t(what.title, locale)}</SectionTitle>
+            <Prose body={what.body} locale={locale} />
           </section>
         )}
 
@@ -107,10 +95,10 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
               {locale === 'id' ? 'Fitur Utama & Keunggulan' : 'Key Features & Advantages'}
             </SectionTitle>
             <div className={styles.featureGrid}>
-              {features.map((feature: any, index: number) => (
+              {features.map((feature, index) => (
                 <article key={index} className={styles.feature}>
-                  <h3 className="t-h3-soft">{feature.title}</h3>
-                  {feature.description && <p>{feature.description}</p>}
+                  <h3 className="t-h3-soft">{t(feature.title, locale)}</h3>
+                  <p>{t(feature.description, locale)}</p>
                 </article>
               ))}
             </div>
@@ -120,7 +108,7 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
         {/* Cara Kerja — four numbered steps */}
         <section className={styles.section}>
           <SectionTitle as="h2">
-            {howItWorks?.title ?? (locale === 'id' ? 'Cara Kerja' : 'How It Works')}
+            {howItWorks ? t(howItWorks.title, locale) : locale === 'id' ? 'Cara Kerja' : 'How It Works'}
           </SectionTitle>
           <ol className={styles.steps}>
             {steps.map((step, index) => (
@@ -178,7 +166,7 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
         )}
       </Container>
 
-      <CTASection block={cta} />
+      <CTASection block={cta} locale={locale} />
     </>
   )
 }

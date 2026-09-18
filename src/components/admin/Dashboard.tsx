@@ -37,51 +37,38 @@ const GROUPS: Group[] = [
     title: 'Newsroom',
     cards: [
       { label: 'Artikel', description: 'Berita dan insight', slug: 'articles', roles: EDITORS.news, colour: 'orange' },
-      { label: 'Author', description: 'Penulis artikel', slug: 'authors', roles: EDITORS.news, colour: 'orange-soft' },
-      { label: 'Partner Logo (Media)', description: 'Daftar media', slug: 'media-outlets', roles: EDITORS.news, colour: 'orange-soft' },
-      { label: 'Liputan Media', description: 'Liputan dari media luar', slug: 'media-coverage', roles: EDITORS.news, colour: 'orange-soft' },
+      { label: 'Media Library', description: 'Gambar untuk artikel dan laporan', slug: 'media', roles: [ROLES.newsAdmin, ROLES.hrAdmin, ROLES.marketingAdmin], colour: 'orange-soft' },
     ],
   },
   {
-    title: 'Laporan',
+    title: 'Report',
     cards: [
-      { label: 'Daftar Laporan', description: 'Laporan tahunan dan perkembangan usaha', slug: 'reports', roles: EDITORS.news, colour: 'navy' },
+      { label: 'Laporan', description: 'Laporan tahunan dan perkembangan usaha', slug: 'reports', roles: EDITORS.news, colour: 'navy' },
+    ],
+  },
+  {
+    title: 'Product',
+    cards: [
+      { label: 'Item Produk', description: 'Produk yang ditawarkan Business Solution', slug: 'product-items', roles: EDITORS.marketing, colour: 'purple' },
     ],
   },
   {
     title: 'Karir',
     cards: [
       { label: 'Lowongan Pekerjaan', description: 'Posisi yang sedang dibuka', slug: 'job-openings', roles: EDITORS.hr, colour: 'teal' },
-      { label: 'Kategori Lowongan', description: 'Pengelompokan posisi', slug: 'job-categories', roles: EDITORS.hr, colour: 'teal-soft' },
     ],
   },
   {
-    title: 'Produk & Layanan',
+    title: 'Data',
     cards: [
-      { label: 'Kategori Produk', description: 'Lima kategori layanan', slug: 'product-categories', roles: EDITORS.marketing, colour: 'purple' },
-      { label: 'Item Produk', description: 'Produk di dalam kategori', slug: 'product-items', roles: EDITORS.marketing, colour: 'purple-soft' },
-    ],
-  },
-  {
-    title: 'Konten Website',
-    cards: [
-      { label: 'Homepage Hero', description: 'Slide di bagian paling atas', slug: 'hero-slides', roles: EDITORS.marketing, colour: 'blue' },
-      { label: 'Homepage Stats', description: 'Tiga kartu angka', slug: 'stats', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'Testimoni Mitra', description: 'Kutipan dari klien', slug: 'testimonials', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'Timeline Pencapaian', description: 'Milestone per tahun', slug: 'milestones', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'Partner Logo', description: 'Logo anggota dan regulator', slug: 'partner-logos', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'CTA Blocks', description: 'Blok penutup tiap halaman', slug: 'cta-blocks', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'Page Content', description: 'Naskah halaman utama', slug: 'page-content', roles: EDITORS.marketing, colour: 'blue-soft' },
-      { label: 'Halaman Statis', description: 'Kebijakan dan cara', slug: 'static-pages', roles: [], colour: 'grey' },
+      { label: 'Data Masuk', description: 'Kiriman formulir Hubungi Kami', slug: 'contact-submissions', roles: [ROLES.salesAdmin], colour: 'green' },
+      { label: 'Audit Trail', description: 'Riwayat perubahan konten', slug: 'audit-log', roles: [], colour: 'grey' },
     ],
   },
   {
     title: 'Pengaturan',
     cards: [
-      { label: 'Data Masuk', description: 'Kiriman formulir Hubungi Kami', slug: 'contact-submissions', roles: [ROLES.salesAdmin], colour: 'green' },
-      { label: 'Users & Roles', description: 'Pengguna CMS', slug: 'users', roles: [], colour: 'grey' },
-      { label: 'Audit Log', description: 'Riwayat perubahan', slug: 'audit-log', roles: [], colour: 'grey' },
-      { label: 'Media Library', description: 'Gambar dan berkas', slug: 'media', roles: [ROLES.newsAdmin, ROLES.hrAdmin, ROLES.marketingAdmin], colour: 'grey' },
+      { label: 'Users', description: 'Pengguna CMS dan perannya', slug: 'users', roles: [], colour: 'grey' },
     ],
   },
 ]
@@ -107,7 +94,10 @@ export default function Dashboard({ user }: AdminViewServerProps) {
     <div className="clik-dashboard">
       <header className="clik-dashboard__head">
         <h1>Selamat datang{user?.name ? `, ${user.name}` : ''}</h1>
-        <p>Pilih bagian yang ingin Anda kelola.</p>
+        <p>
+          Pilih bagian yang ingin Anda kelola. Teks dan gambar halaman lain
+          diatur langsung di kode oleh tim teknis.
+        </p>
       </header>
 
       {groups.length === 0 ? (

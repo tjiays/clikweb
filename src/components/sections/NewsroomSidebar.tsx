@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { detailHref, mediaOutletHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { imageUrl, imageAlt } from '@/lib/content'
+
 import styles from './NewsroomSidebar.module.css'
 
 /**
@@ -18,7 +18,7 @@ export function NewsroomSidebar({
 }: {
   locale: Locale
   featured: any[]
-  outlets: any[]
+  outlets: { slug: string; name: string; logo: string }[]
   featuredLabel: string
   outletsLabel: string
 }) {
@@ -44,12 +44,12 @@ export function NewsroomSidebar({
           <h2 className={`t-h4 section-rule ${styles.heading}`}>{outletsLabel}</h2>
           <ul className={styles.outlets}>
             {outlets.map((outlet) => (
-              <li key={outlet.id}>
+              <li key={outlet.slug}>
                 <Link href={mediaOutletHref(outlet.slug, locale)} className={styles.outlet}>
-                  {imageUrl(outlet.logo) ? (
+                  {outlet.logo ? (
                     <Image
-                      src={imageUrl(outlet.logo) as string}
-                      alt={imageAlt(outlet.logo, outlet.name)}
+                      src={outlet.logo}
+                      alt={outlet.name}
                       width={120}
                       height={48}
                     />
@@ -67,17 +67,23 @@ export function NewsroomSidebar({
 }
 
 /** The scrolling row of media logos across the top of the Newsroom. */
-export function MediaLogoStrip({ outlets, label }: { outlets: any[]; label: string }) {
+export function MediaLogoStrip({
+  outlets,
+  label,
+}: {
+  outlets: { slug: string; name: string; logo: string }[]
+  label: string
+}) {
   if (outlets.length === 0) return null
   return (
     <div className={styles.strip} aria-label={label}>
       <ul className={styles.stripList}>
         {outlets.map((outlet) => (
-          <li key={outlet.id}>
-            {imageUrl(outlet.logo) ? (
+          <li key={outlet.slug}>
+            {outlet.logo ? (
               <Image
-                src={imageUrl(outlet.logo) as string}
-                alt={imageAlt(outlet.logo, outlet.name)}
+                src={outlet.logo}
+                alt={outlet.name}
                 width={130}
                 height={52}
               />

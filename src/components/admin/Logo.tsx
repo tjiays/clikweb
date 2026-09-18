@@ -15,7 +15,7 @@ export default function Logo() {
       {/* A plain img, not next/image: the admin panel renders outside the
           site's image pipeline. */}
       <img
-        src="/brand/logo-clik.png"
+        src="/images/shared/logo-clik.png"
         alt="CLIK — CRIF Lembaga Informasi Keuangan"
         style={{ height: 64, width: 'auto' }}
       />

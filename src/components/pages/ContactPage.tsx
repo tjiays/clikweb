@@ -4,13 +4,13 @@ import { ContactForm } from '@/components/sections/ContactForm'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { getSiteSettings } from '@/lib/content'
+import { site } from '@/content/site'
+import { t } from '@/lib/content'
 import styles from './ContactPage.module.css'
 
 /** Hubungi Kami — Figma 284:1397, per intent/02 §2.15. */
 export async function ContactPage({ locale }: { locale: Locale }) {
-  const [dict, site] = await Promise.all([getDictionary(locale), getSiteSettings(locale)])
-  const settings = site as any
+  const dict = await getDictionary(locale)
 
   return (
     <>
@@ -30,34 +30,34 @@ export async function ContactPage({ locale }: { locale: Locale }) {
           </div>
 
           <aside className={styles.details}>
-            {settings?.address && (
+            {site.address && (
               <section className={styles.block}>
                 <h2 className="t-h5">{dict.contact.visitUs}</h2>
-                <address>{settings.address}</address>
-                {settings.companyName && <p className={styles.company}>{settings.companyName}</p>}
+                <address>{t(site.address, locale)}</address>
+                {site.companyName && <p className={styles.company}>{site.companyName}</p>}
               </section>
             )}
 
-            {settings?.generalEmail && (
+            {site.generalEmail && (
               <section className={styles.block}>
                 <h2 className="t-h5">{dict.contact.emailUs}</h2>
-                <a href={`mailto:${settings.generalEmail}`}>{settings.generalEmail}</a>
+                <a href={`mailto:${site.generalEmail}`}>{site.generalEmail}</a>
               </section>
             )}
 
-            {settings?.phone && (
+            {site.phone && (
               <section className={styles.block}>
                 <h2 className="t-h5">{dict.contact.callUs}</h2>
-                <a href={`tel:${String(settings.phone).replace(/[^\d+]/g, '')}`}>
-                  {settings.phone}
+                <a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}>
+                  {site.phone}
                 </a>
               </section>
             )}
 
-            {settings?.mapEmbedUrl ? (
+            {site.mapEmbedUrl ? (
               <div className={styles.map}>
                 <iframe
-                  src={settings.mapEmbedUrl}
+                  src={site.mapEmbedUrl}
                   title={dict.contact.visitUs}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

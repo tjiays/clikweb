@@ -9,7 +9,7 @@ export const AuditLog: CollectionConfig = {
   slug: 'audit-log',
   labels: { singular: 'Audit Log Entry', plural: 'Audit Log' },
   admin: {
-    group: 'Pengaturan',
+    group: 'Data',
     defaultColumns: ['action', 'collectionSlug', 'user', 'createdAt'],
     useAsTitle: 'action',
   },

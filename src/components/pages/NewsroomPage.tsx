@@ -6,24 +6,19 @@ import { Pagination } from '@/components/ui/Pagination'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getArticlesPage,
-  getFeaturedArticles,
-  getMediaOutlets,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { mediaOutlets } from '@/content/newsroom'
+import { getArticlesPage, getFeaturedArticles, imageUrl, imageAlt } from '@/lib/content'
 import { formatDate } from '@/lib/format'
 import styles from './NewsroomPage.module.css'
 
 /** Newsroom — Figma 305:1082. One paginated page (confirmed decision 5). */
 export async function NewsroomPage({ locale, page }: { locale: Locale; page: number }) {
-  const [dict, articles, featured, outlets] = await Promise.all([
+  const [dict, articles, featured] = await Promise.all([
     getDictionary(locale),
     getArticlesPage(locale, page),
     getFeaturedArticles(locale),
-    getMediaOutlets(locale),
   ])
+  const outlets = mediaOutlets
 
   return (
     <>
@@ -60,7 +55,7 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
                     excerpt={article.excerpt}
                     href={detailHref('newsroom', article.slug, locale)}
                     date={formatDate(article.publishDate, locale)}
-                    author={typeof article.author === 'object' ? article.author?.name : null}
+                    author={article.author}
                     imageUrl={imageUrl(article.cover)}
                     imageAlt={imageAlt(article.cover)}
                     readMoreLabel={dict.common.readMore}

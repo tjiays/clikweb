@@ -7,14 +7,8 @@ import { Pagination } from '@/components/ui/Pagination'
 import { getDictionary } from '@/i18n'
 import { href, mediaOutletHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getOutletBySlug,
-  getCoverageForOutlet,
-  getFeaturedArticles,
-  getMediaOutlets,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { mediaOutlets, mediaCoverage } from '@/content/newsroom'
+import { getFeaturedArticles, t } from '@/lib/content'
 import { formatDate } from '@/lib/format'
 import styles from './MediaCoveragePage.module.css'
 
@@ -31,15 +25,25 @@ export async function MediaCoveragePage({
   slug: string
   page: number
 }) {
-  const [dict, outlet, featured, outlets] = await Promise.all([
+  const [dict, featured] = await Promise.all([
     getDictionary(locale),
-    getOutletBySlug(locale, slug),
     getFeaturedArticles(locale),
-    getMediaOutlets(locale),
   ])
+  const outlet = mediaOutlets.find((o) => o.slug === slug)
   if (!outlet) notFound()
 
-  const coverage = await getCoverageForOutlet(locale, outlet.id, page)
+  const outlets = mediaOutlets
+  // Coverage is a fixed list in src/content/newsroom.ts, so it is paged here
+  // rather than by the database.
+  const all = mediaCoverage.filter((c) => c.outlet === slug)
+  const perPage = 6
+  const totalPages = Math.max(1, Math.ceil(all.length / perPage))
+  const current = Math.min(Math.max(1, page), totalPages)
+  const coverage = {
+    docs: all.slice((current - 1) * perPage, current * perPage),
+    page: current,
+    totalPages,
+  }
 
   return (
     <>
@@ -73,31 +77,28 @@ export async function MediaCoveragePage({
               <p className={styles.empty}>{dict.newsroom.empty}</p>
             ) : (
               <ul className={styles.list}>
-                {coverage.docs.map((item: any) => (
-                  <li key={item.id}>
+                {coverage.docs.map((item) => (
+                  <li key={item.externalUrl + item.title.id}>
                     <a
                       href={item.externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={styles.card}
                     >
-                      {imageUrl(item.image) && (
-                        <Image
-                          src={imageUrl(item.image) as string}
-                          alt={imageAlt(item.image)}
-                          width={320}
-                          height={220}
-                          className={styles.cardImage}
-                        />
-                      )}
+                      <Image
+                        src={outlet.logo}
+                        alt={outlet.name}
+                        width={320}
+                        height={220}
+                        className={styles.cardImage}
+                      />
                       <span className={styles.cardBody}>
                         {item.publishDate && (
                           <span className={styles.cardDate}>
                             {formatDate(item.publishDate, locale)}
                           </span>
                         )}
-                        <span className="t-card-title">{item.title}</span>
-                        {item.excerpt && <span className={styles.cardExcerpt}>{item.excerpt}</span>}
+                        <span className="t-card-title">{t(item.title, locale)}</span>
                         <span className={`t-link-caps ${styles.cardLink}`}>
                           {dict.newsroom.openArticle} →
                         </span>

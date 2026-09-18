@@ -14,7 +14,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Media', plural: 'Media Library' },
-  admin: { group: 'Shared', useAsTitle: 'filename' },
+  admin: { group: 'Newsroom', useAsTitle: 'filename' },
   access: {
     read: () => true,
     create: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),

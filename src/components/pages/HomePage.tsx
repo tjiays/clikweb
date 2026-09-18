@@ -9,75 +9,61 @@ import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getHeroSlides,
-  getStats,
-  getHomeSettings,
-  getTestimonials,
-  getProductCategories,
-  getLatestArticles,
-  getPartnerLogos,
-  getCTABlock,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { heroSlides, stats, home } from '@/content/home'
+import { testimonials } from '@/content/testimonials'
+import { partnerLogos } from '@/content/partners'
+import { productCategories } from '@/content/products'
+import { ctaBlocks } from '@/content/cta'
+import { getLatestArticles, imageUrl, imageAlt, t } from '@/lib/content'
 import { formatDate } from '@/lib/format'
 import styles from './HomePage.module.css'
 
 /** Home — Figma 156:1049. Section order follows intent/02 §2.1. */
 export async function HomePage({ locale }: { locale: Locale }) {
-  const [dict, slides, stats, home, testimonials, categories, articles, regulators, cta] =
-    await Promise.all([
-      getDictionary(locale),
-      getHeroSlides(locale),
-      getStats(locale),
-      getHomeSettings(locale),
-      getTestimonials(locale),
-      getProductCategories(locale),
-      getLatestArticles(locale, 3),
-      getPartnerLogos(locale, 'regulator'),
-      getCTABlock(locale, 'home'),
-    ])
+  const [dict, articles] = await Promise.all([
+    getDictionary(locale),
+    getLatestArticles(locale, 3),
+  ])
 
-  const settings = home as any
-  const ojk = regulators[0]
+  const ojk = partnerLogos.find((p) => p.group === 'regulator')
+  const cta = ctaBlocks.find((b) => b.page === 'home')
 
   return (
     <>
       <HeroSlider
-        slides={slides.map((slide: any) => ({
-          id: slide.id,
-          title: slide.title,
-          subtitle: slide.subtitle,
-          buttonLabel: slide.buttonLabel,
+        slides={heroSlides.map((slide, index) => ({
+          id: index,
+          title: t(slide.title, locale),
+          subtitle: t(slide.subtitle, locale),
+          buttonLabel: t(slide.buttonLabel, locale),
           buttonLink: slide.buttonLink,
-          imageUrl: imageUrl(slide.image),
-          imageAlt: imageAlt(slide.image),
+          imageUrl: slide.image,
+          imageAlt: '',
         }))}
       />
 
       {/* 2. Tentang Kami snippet */}
-      {settings?.aboutText && (
+      {home.aboutText && (
         <Container>
           <section className={styles.about}>
             <SectionTitle align="center">
-              {settings.aboutTitle ?? dict.nav.about}
+              {t(home.aboutTitle, locale)}
             </SectionTitle>
-            <p className={`t-lead ${styles.aboutText}`}>{settings.aboutText}</p>
+            <p className={`t-lead ${styles.aboutText}`}>{t(home.aboutText, locale)}</p>
             <Button href={href('about', locale)}>{dict.common.learnMore}</Button>
           </section>
         </Container>
       )}
 
       {/* 3. Trust bar */}
-      {settings?.trustBarText && (
+      {home.trustBarText && (
         <Container>
           <div className={styles.trustBar}>
-            <span>{settings.trustBarText}</span>
-            {imageUrl(ojk?.logo) && (
+            <span>{t(home.trustBarText, locale)}</span>
+            {ojk && (
               <Image
-                src={imageUrl(ojk.logo) as string}
-                alt={imageAlt(ojk.logo, 'OJK')}
+                src={ojk.logo}
+                alt={ojk.name}
                 width={90}
                 height={38}
                 className={styles.trustLogo}
@@ -91,13 +77,13 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {stats.length > 0 && (
         <Container>
           <section className={styles.stats}>
-            {stats.map((stat: any) => (
+            {stats.map((stat) => (
               <StatCard
-                key={stat.id}
+                key={stat.value}
                 value={stat.value}
-                label={stat.label}
-                iconUrl={imageUrl(stat.icon)}
-                iconAlt={imageAlt(stat.icon)}
+                label={t(stat.label, locale)}
+                iconUrl={stat.icon}
+                iconAlt=""
               />
             ))}
           </section>
@@ -105,26 +91,26 @@ export async function HomePage({ locale }: { locale: Locale }) {
       )}
 
       {/* 5. Solutions carousel */}
-      {categories.length > 0 && (
+      {productCategories.length > 0 && (
         <Container>
           <section className={styles.section}>
-            <SectionTitle align="center" subtitle={settings?.solutionsSubtitle}>
-              {settings?.solutionsTitle ?? dict.dropdown.products}
+            <SectionTitle align="center" subtitle={t(home.solutionsSubtitle, locale)}>
+              {t(home.solutionsTitle, locale)}
             </SectionTitle>
-            <Carousel label={settings?.solutionsTitle ?? 'Solutions'} perView={3}>
-              {categories.map((category: any) => (
+            <Carousel label={t(home.solutionsTitle, locale)} perView={3}>
+              {productCategories.map((category) => (
                 <SolutionCard
-                  key={category.id}
-                  title={category.name}
-                  text={category.shortDescription}
+                  key={category.slug}
+                  title={t(category.name, locale)}
+                  text={t(category.shortDescription, locale)}
                   href={
                     category.slug === 'credit-scoring'
                       ? href('creditScoring', locale)
                       : href('businessSolution', locale)
                   }
                   linkLabel={dict.common.seeMore}
-                  iconUrl={imageUrl(category.icon)}
-                  iconAlt={imageAlt(category.icon)}
+                  iconUrl={category.icon}
+                  iconAlt=""
                 />
               ))}
             </Carousel>
@@ -136,22 +122,20 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {testimonials.length > 0 && (
         <section className={styles.testimonialBand}>
           <Container>
-            <SectionTitle align="center" subtitle={settings?.testimonialsSubtitle}>
-              {settings?.testimonialsTitle ?? dict.nav.about}
+            <SectionTitle align="center" subtitle={t(home.testimonialsSubtitle, locale)}>
+              {t(home.testimonialsTitle, locale)}
             </SectionTitle>
             <Carousel
-              label={settings?.testimonialsTitle ?? 'Testimonials'}
+              label={t(home.testimonialsTitle, locale)}
               perView={3}
               autoAdvance
               showArrows={false}
             >
-              {testimonials.map((item: any) => (
+              {testimonials.map((item) => (
                 <TestimonialCard
-                  key={item.id}
+                  key={item.partnerName}
                   partnerName={item.partnerName}
-                  quote={item.quote}
-                  logoUrl={imageUrl(item.logo)}
-                  logoAlt={imageAlt(item.logo, item.partnerName)}
+                  quote={t(item.quote, locale)}
                 />
               ))}
             </Carousel>
@@ -163,8 +147,8 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {articles.length > 0 && (
         <Container>
           <section className={styles.section}>
-            <SectionTitle align="center" subtitle={settings?.newsSubtitle}>
-              {settings?.newsTitle ?? dict.nav.newsroom}
+            <SectionTitle align="center" subtitle={t(home.newsSubtitle, locale)}>
+              {t(home.newsTitle, locale)}
             </SectionTitle>
             <div className={styles.newsGrid}>
               {articles.map((article: any) => (
@@ -174,7 +158,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                   excerpt={article.excerpt}
                   href={`${href('newsroom', locale)}/${article.slug}`}
                   date={formatDate(article.publishDate, locale)}
-                  author={typeof article.author === 'object' ? article.author?.name : null}
+                  author={article.author}
                   imageUrl={imageUrl(article.cover)}
                   imageAlt={imageAlt(article.cover)}
                   readMoreLabel={dict.common.readMore}
@@ -188,7 +172,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
         </Container>
       )}
 
-      <CTASection block={cta} />
+      <CTASection block={cta} locale={locale} />
     </>
   )
 }

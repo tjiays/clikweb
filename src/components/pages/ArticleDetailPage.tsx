@@ -9,13 +9,8 @@ import { SectionTitle } from '@/components/sections/SectionTitle'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getArticleBySlug,
-  getRelatedArticles,
-  getSiteSettings,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { site } from '@/content/site'
+import { getArticleBySlug, getRelatedArticles, imageUrl, imageAlt } from '@/lib/content'
 import { formatDate } from '@/lib/format'
 import styles from './ArticleDetailPage.module.css'
 
@@ -27,15 +22,14 @@ export async function ArticleDetailPage({
   locale: Locale
   slug: string
 }) {
-  const [dict, article, site] = await Promise.all([
+  const [dict, article] = await Promise.all([
     getDictionary(locale),
     getArticleBySlug(locale, slug),
-    getSiteSettings(locale),
   ])
   if (!article) notFound()
 
   const related = await getRelatedArticles(locale, article.id, 3)
-  const base = (site as any)?.websiteUrl?.replace(/\/$/, '') ?? ''
+  const base = site.websiteUrl.replace(/\/$/, '')
   const shareUrl = `${base}${detailHref('newsroom', article.slug, locale)}`
 
   return (
@@ -65,9 +59,7 @@ export async function ArticleDetailPage({
 
           <div className={styles.meta}>
             {article.publishDate && <time>{formatDate(article.publishDate, locale)}</time>}
-            {typeof article.author === 'object' && article.author?.name && (
-              <span>{article.author.name}</span>
-            )}
+            {article.author && <span>{article.author}</span>}
           </div>
 
           <ShareBar url={shareUrl} title={article.title} label={dict.newsroom.share} />
@@ -88,7 +80,7 @@ export async function ArticleDetailPage({
                   excerpt={item.excerpt}
                   href={detailHref('newsroom', item.slug, locale)}
                   date={formatDate(item.publishDate, locale)}
-                  author={typeof item.author === 'object' ? item.author?.name : null}
+                  author={item.author}
                   imageUrl={imageUrl(item.cover)}
                   imageAlt={imageAlt(item.cover)}
                   readMoreLabel={dict.common.readMore}

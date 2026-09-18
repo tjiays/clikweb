@@ -63,7 +63,7 @@ export function Header({ locale, dict, variant }: Props) {
         <Link href={href('home', locale)} className={styles.logo} aria-label="CLIK">
           {/* White over the hero on the homepage, navy on inner pages. */}
           <Image
-            src={resolved === 'dark' ? '/brand/logo-clik-white.png' : '/brand/logo-clik.png'}
+            src={resolved === 'dark' ? '/images/shared/logo-clik-white.png' : '/images/shared/logo-clik.png'}
             alt="CLIK — CRIF Lembaga Informasi Keuangan"
             width={354}
             height={118}

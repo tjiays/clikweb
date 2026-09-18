@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { routes, type RouteKey } from '@/i18n/routes'
 import { locales } from '@/i18n/config'
+import { mediaOutlets } from '@/content/newsroom'
 
 /**
  * sitemap.xml covering both languages.
@@ -86,15 +87,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    // Media outlet pages share one slug across both languages.
-    const { docs: outlets } = await payload.find({
-      collection: 'media-outlets',
-      limit: 200,
-      depth: 0,
-      where: { _status: { equals: 'published' } } as never,
-    })
-    for (const outlet of outlets as { slug?: string }[]) {
-      if (!outlet.slug) continue
+    // Media outlet pages share one slug across both languages. The outlet
+    // list lives in src/content/newsroom.ts, not the CMS.
+    for (const outlet of mediaOutlets) {
       entries.push({
         url: absolute(`/newsroom/media/${outlet.slug}`),
         changeFrequency: 'monthly',

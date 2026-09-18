@@ -2,44 +2,34 @@ import Image from 'next/image'
 import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
-import { RichText } from '@/components/ui/RichText'
+import { Prose } from '@/components/ui/Prose'
 import { Button } from '@/components/ui/Button'
 import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import {
-  getPageContent,
-  getMilestones,
-  getPartnerLogos,
-  getSiteSettings,
-  getCTABlock,
-  section,
-  imageUrl,
-  imageAlt,
-} from '@/lib/content'
+import { about, milestones } from '@/content/about'
+import { partnerLogos } from '@/content/partners'
+import { site } from '@/content/site'
+import { ctaBlocks } from '@/content/cta'
+import { t } from '@/lib/content'
 import styles from './AboutPage.module.css'
 
 /** Tentang CLIK — Figma 333:2672. Section order follows intent/02 §2.2. */
 export async function AboutPage({ locale }: { locale: Locale }) {
-  const [dict, page, milestones, members, site, cta] = await Promise.all([
-    getDictionary(locale),
-    getPageContent(locale, 'about'),
-    getMilestones(locale),
-    getPartnerLogos(locale, 'clik_member'),
-    getSiteSettings(locale),
-    getCTABlock(locale, 'about'),
-  ])
-
-  const visi = section(page, 'visi')
-  const misi = section(page, 'misi')
-  const crif = section(page, 'tentang-crif')
+  const dict = await getDictionary(locale)
+  const members = partnerLogos.filter((p) => p.group === 'clik_member')
+  const cta = ctaBlocks.find((b) => b.page === 'about')
+  const find = (key: string) => about.sections.find((s) => s.key === key)
+  const visi = find('visi')
+  const misi = find('misi')
+  const crif = find('tentang-crif')
 
   return (
     <>
       <PageHeader
-        title={page?.title ?? dict.dropdown.aboutClik}
-        lead={page?.lead}
+        title={t(about.title, locale)}
+        lead={t(about.lead, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.nav.about },
@@ -48,10 +38,10 @@ export async function AboutPage({ locale }: { locale: Locale }) {
       />
 
       <Container>
-        {imageUrl(page?.heroImage) && (
+        {about.heroImage && (
           <Image
-            src={imageUrl(page.heroImage) as string}
-            alt={imageAlt(page.heroImage)}
+            src={about.heroImage}
+            alt=""
             width={1300}
             height={600}
             className={styles.hero}
@@ -62,31 +52,31 @@ export async function AboutPage({ locale }: { locale: Locale }) {
         {/* Visi and Misi, each an image beside its text */}
         {(visi || misi) && (
           <div className={styles.split}>
-            {[visi, misi].filter(Boolean).map((block: any) => (
-              <section key={block.key} className={styles.splitItem}>
-                {imageUrl(block.image) && (
+            {[visi, misi].filter(Boolean).map((block) => (
+              <section key={block!.key} className={styles.splitItem}>
+                {block!.image && (
                   <Image
-                    src={imageUrl(block.image) as string}
-                    alt={imageAlt(block.image)}
+                    src={block!.image}
+                    alt=""
                     width={640}
                     height={420}
                     className={styles.splitImage}
                   />
                 )}
-                <SectionTitle as="h2">{block.title}</SectionTitle>
-                <RichText data={block.body} />
+                <SectionTitle as="h2">{t(block!.title, locale)}</SectionTitle>
+                <Prose body={block!.body} locale={locale} />
               </section>
             ))}
           </div>
         )}
 
         {/* Kenali CLIK Lebih Dekat */}
-        {page?.videoUrl && (
+        {about.videoUrl && (
           <section className={styles.section}>
             <SectionTitle as="h2">Kenali CLIK Lebih Dekat</SectionTitle>
             <div className={styles.video}>
               <iframe
-                src={page.videoUrl}
+                src={about.videoUrl}
                 title="CLIK"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
                 allowFullScreen
@@ -102,12 +92,12 @@ export async function AboutPage({ locale }: { locale: Locale }) {
               {locale === 'id' ? 'Pencapaian Perusahaan Kami' : 'Our Milestones'}
             </SectionTitle>
             <ol className={styles.timeline}>
-              {milestones.map((milestone: any) => (
-                <li key={milestone.id} className={styles.milestone}>
+              {milestones.map((milestone) => (
+                <li key={milestone.year} className={styles.milestone}>
                   <span className={styles.year}>{milestone.year}</span>
                   <ul className={styles.milestoneItems}>
-                    {(milestone.items ?? []).map((item: any, index: number) => (
-                      <li key={index}>{item.text}</li>
+                    {milestone.items.map((item, index) => (
+                      <li key={index}>{t(item, locale)}</li>
                     ))}
                   </ul>
                 </li>
@@ -121,12 +111,12 @@ export async function AboutPage({ locale }: { locale: Locale }) {
           <section className={styles.section}>
             <SectionTitle as="h2">Member CLIK</SectionTitle>
             <ul className={styles.logoStrip}>
-              {members.map((member: any) => (
-                <li key={member.id}>
-                  {imageUrl(member.logo) ? (
+              {members.map((member) => (
+                <li key={member.name}>
+                  {member.logo ? (
                     <Image
-                      src={imageUrl(member.logo) as string}
-                      alt={imageAlt(member.logo, member.name)}
+                      src={member.logo}
+                      alt={member.name}
                       width={160}
                       height={70}
                     />
@@ -142,21 +132,21 @@ export async function AboutPage({ locale }: { locale: Locale }) {
         {/* Tentang CRIF, linking out to the global site */}
         {crif && (
           <section className={styles.section}>
-            <SectionTitle as="h2">{crif.title}</SectionTitle>
+            <SectionTitle as="h2">{t(crif.title, locale)}</SectionTitle>
             <div className={styles.crif}>
-              {imageUrl(crif.image) && (
+              {crif.image && (
                 <Image
-                  src={imageUrl(crif.image) as string}
-                  alt={imageAlt(crif.image)}
+                  src={crif.image}
+                  alt=""
                   width={600}
                   height={400}
                   className={styles.crifImage}
                 />
               )}
               <div>
-                <RichText data={crif.body} />
-                {(site as any)?.crifUrl && (
-                  <Button href={(site as any).crifUrl} external variant="outline">
+                <Prose body={crif.body} locale={locale} />
+                {site.crifUrl && (
+                  <Button href={site.crifUrl} external variant="outline">
                     {dict.common.learnMore}
                   </Button>
                 )}
@@ -166,7 +156,7 @@ export async function AboutPage({ locale }: { locale: Locale }) {
         )}
       </Container>
 
-      <CTASection block={cta} />
+      <CTASection block={cta} locale={locale} />
     </>
   )
 }
