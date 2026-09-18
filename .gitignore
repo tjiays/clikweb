@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Environment files — never commit real credentials
+.env
+.env.local
+.env.*.local
+.env.development
+.env.staging
+.env.production
+!.env.example
+
+# Uploaded media — lives on disk / object storage, backed up separately
+public/media/
+media/
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Runtime / process manager
+.pm2/
+*.pid
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Test and coverage output
+coverage/
+.nyc_output/
+
+# Payload / Next generated caches (types and migrations ARE committed)
+.turbo/
+*.tsbuildinfo

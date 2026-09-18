@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Layanan dan Produk",
+    "about": "Tentang Kami",
+    "newsroom": "Newsroom",
+    "contact": "Hubungi Kami",
+    "careers": "Karir",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu"
+  },
+  "dropdown": {
+    "products": "Layanan dan Produk",
+    "businessSolution": "Business Solution",
+    "creditScoring": "Credit Scoring",
+    "aboutClik": "Tentang CLIK",
+    "reports": "Laporan",
+    "infoSecurityPolicy": "Kebijakan Keamanan Informasi",
+    "privacyPolicy": "Kebijakan Privasi"
+  },
+  "common": {
+    "learnMore": "Pelajari selengkapnya",
+    "seeMore": "Lihat selengkapnya",
+    "readMore": "Read More",
+    "contactUs": "Hubungi Kami",
+    "backToTop": "Kembali ke atas",
+    "breadcrumb": "Remah roti",
+    "skipToContent": "Lewati ke konten utama",
+    "languageSwitch": "Ganti bahasa"
+  },
+  "footer": {
+    "members": "ANGGOTA DARI",
+    "supervised": "TERDAFTAR & DIAWASI OLEH OJK",
+    "visitUs": "Kunjungi Kami:",
+    "emailUs": "E-mail:",
+    "callUs": "Telepon:",
+    "copyright": "Hak cipta dilindungi undang-undang."
+  }
+}

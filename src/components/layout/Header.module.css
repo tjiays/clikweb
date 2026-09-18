@@ -1,0 +1,233 @@
+.header {
+  width: 100%;
+  z-index: 50;
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+/* Inner pages: solid white bar that stays put while scrolling (open item O5). */
+.light {
+  position: sticky;
+  top: 0;
+  background: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-secondary);
+}
+
+/* Home: transparent, overlaying the hero image in white text. */
+.dark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  color: #fff;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  min-height: var(--header-height);
+}
+
+.logo {
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.logoMark {
+  font-size: 1.5rem;
+  font-weight: var(--fw-black);
+  letter-spacing: 0.02em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navList {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navList > li {
+  position: relative;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+  transition: color var(--transition);
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+}
+
+.chevron {
+  transition: transform var(--transition);
+}
+
+/* ---- Dropdowns: open on mouse enter, and on keyboard focus ---- */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 260px;
+  margin: 0;
+  padding: 0.5rem 0;
+  list-style: none;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card-hover);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition:
+    opacity var(--transition),
+    transform var(--transition),
+    visibility var(--transition);
+}
+
+.hasDropdown:hover .dropdown,
+.hasDropdown:focus-within .dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.hasDropdown:hover .chevron,
+.hasDropdown:focus-within .chevron {
+  transform: rotate(180deg);
+}
+
+.dropdownLink {
+  display: block;
+  padding: 0.6rem 1.25rem;
+  color: var(--color-secondary);
+  font-size: var(--fs-small);
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+
+.dropdownLink:hover {
+  background: var(--color-bg-tint);
+  color: var(--color-primary);
+}
+
+/* ---- Hamburger, shown once the full menu no longer fits ---- */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+.hamburgerBar {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.menuOpen .hamburgerBar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.menuOpen .hamburgerBar:nth-child(2) {
+  opacity: 0;
+}
+.menuOpen .hamburgerBar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 1100px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav {
+    position: fixed;
+    inset: var(--header-height) 0 0 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 1.5rem var(--gutter) 3rem;
+    background: var(--color-bg-surface);
+    color: var(--color-secondary);
+    overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform var(--transition), visibility var(--transition);
+  }
+
+  .menuOpen .nav {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .navList {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+  }
+
+  .navList > li {
+    width: 100%;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .navLink {
+    width: 100%;
+    justify-content: space-between;
+    padding: 1rem 0;
+    min-height: 44px;
+  }
+
+  /* On a touch screen there is no hover, so sub-items are simply shown. */
+  .dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 0 0 0.75rem 1rem;
+    min-width: 0;
+  }
+
+  .chevron {
+    display: none;
+  }
+
+  .dropdownLink {
+    padding: 0.5rem 0;
+  }
+}

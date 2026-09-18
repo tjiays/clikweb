@@ -1,0 +1,30 @@
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+
+.slot {
+  display: inline-flex;
+  align-items: center;
+}
+
+.divider {
+  margin-inline: 0.5rem;
+  opacity: 0.5;
+}
+
+.active {
+  color: var(--color-primary);
+}
+
+.inactive {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.inactive:hover {
+  color: var(--color-primary);
+  opacity: 1;
+}

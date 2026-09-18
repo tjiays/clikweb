@@ -1,0 +1,60 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: var(--fs-button);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  border-radius: var(--radius-pill);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition);
+  /* Comfortable touch target on phones */
+  min-height: 44px;
+}
+
+.md { padding: 0.75rem 1.75rem; }
+.lg { padding: 1rem 2.25rem; }
+
+.primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.primary:hover:not(:disabled) {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+  color: var(--color-secondary);
+}
+
+.outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.outline:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--color-secondary);
+  border-color: transparent;
+}
+.ghost:hover:not(:disabled) {
+  color: var(--color-primary);
+}
+
+.button:disabled {
+  background: var(--color-disabled);
+  border-color: var(--color-disabled);
+  color: #fff;
+  cursor: not-allowed;
+}

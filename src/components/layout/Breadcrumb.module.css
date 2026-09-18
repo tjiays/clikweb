@@ -1,0 +1,38 @@
+.breadcrumb {
+  padding-block: 0;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-body);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+}
+
+.item a {
+  color: var(--color-text-muted);
+}
+
+.item a:hover {
+  color: var(--color-primary);
+}
+
+.item [aria-current='page'] {
+  color: var(--color-secondary);
+  font-weight: var(--fw-bold);
+}
+
+.separator {
+  color: var(--color-disabled);
+}

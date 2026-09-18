@@ -1,0 +1,39 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products & Services",
+    "about": "About Us",
+    "newsroom": "Newsroom",
+    "contact": "Contact Us",
+    "careers": "Careers",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "dropdown": {
+    "products": "Products & Services",
+    "businessSolution": "Business Solution",
+    "creditScoring": "Credit Scoring",
+    "aboutClik": "About CLIK",
+    "reports": "Reports",
+    "infoSecurityPolicy": "Information Security Policy",
+    "privacyPolicy": "Privacy Policy"
+  },
+  "common": {
+    "learnMore": "Learn more",
+    "seeMore": "See more",
+    "readMore": "Read More",
+    "contactUs": "Contact Us",
+    "backToTop": "Back to top",
+    "breadcrumb": "Breadcrumb",
+    "skipToContent": "Skip to main content",
+    "languageSwitch": "Switch language"
+  },
+  "footer": {
+    "members": "MEMBER OF",
+    "supervised": "REGISTERED & SUPERVISED BY OJK",
+    "visitUs": "Visit Us:",
+    "emailUs": "E-mail Us:",
+    "callUs": "Call Us:",
+    "copyright": "All rights reserved."
+  }
+}

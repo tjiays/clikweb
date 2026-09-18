@@ -1,0 +1,44 @@
+# External links register
+
+Every outbound URL the site uses, with its status.
+
+**TO VERIFY** means the AI coder found the URL and implemented it, but nobody at
+CLIK has confirmed it is the official destination. These must all be checked
+before go-live.
+
+| Where | Link | Value | Status |
+| --- | --- | --- | --- |
+| Footer | Website | https://www.cbclik.com | TO VERIFY |
+| Footer, Contact | Email | mailto:info@cbclik.com | Confirmed (from design) |
+| Footer, Contact | Phone | tel:+622180604228 | Confirmed (from design) |
+| Footer | LinkedIn | https://www.linkedin.com/company/clik-indonesia/ | TO VERIFY |
+| Footer | Instagram | https://www.instagram.com/clik.indonesia/ | TO VERIFY |
+| Footer | Facebook | https://www.facebook.com/clikindonesia/ | TO VERIFY |
+| Footer | OJK logo link | Official OJK website | Not yet implemented |
+| Footer | AFPI logo link | Official AFPI website | Not yet implemented |
+| Footer | BIIA logo link | Official BIIA website | Not yet implemented |
+| Footer | AFTECH logo link | Official AFTECH website | Not yet implemented |
+| Footer | APPI logo link | Official APPI website | Not yet implemented |
+| Home, About Us | CRIF Global | Official CRIF website | Not yet implemented |
+| Contact | Map | Menara Dea Tower 2, Jakarta | Not yet implemented |
+| Careers | Apply | mailto:talent@cbclik.com | Confirmed |
+| Contact form | Recipient | sales@cbclik.com | Confirmed |
+
+## Still unknown
+
+| Item | Needed from |
+| --- | --- |
+| OJK licence number | CLIK — shown in the footer and on the homepage trust bar |
+| Which three platforms the footer's social icons represent | The design team |
+| "Kenali CLIK Lebih Dekat" video URL | Marketing |
+| "Formulir Permintaan Data" downloadable form | Operations |
+
+The three social URLs above are the accounts that match CLIK's naming pattern.
+They are implemented so the footer is complete, but a person must confirm each
+one before launch — an incorrect social link on a regulated company's website
+is a real reputational risk, not a cosmetic bug.
+
+## Rule
+
+Any new external URL added to the site is added to this table in the same pull
+request, with a status. Nothing ships pointing at an unrecorded destination.
