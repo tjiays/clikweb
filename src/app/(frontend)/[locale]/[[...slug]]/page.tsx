@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { isLocale, type Locale } from '@/i18n/config'
 import { getDictionary } from '@/i18n'
-import { matchRoute, type RouteKey } from '@/i18n/routes'
+import { matchRoute, routes, type RouteKey } from '@/i18n/routes'
 import { HomePage } from '@/components/pages/HomePage'
 import { AboutPage } from '@/components/pages/AboutPage'
 import { ProductsPage } from '@/components/pages/ProductsPage'
@@ -72,6 +72,19 @@ export async function generateMetadata({
   const key = matchRoute(pathOf(slug), locale)
   if (!key) return {}
   const dict = await getDictionary(locale)
+  // hreflang: tells search engines these two URLs are the same page in
+  // different languages, so the right one is served to the right reader.
+  const idPath = routes[key].id
+  const enPath = routes[key].en === '/' ? '/en' : `/en${routes[key].en}`
+  const alternates = {
+    canonical: locale === 'id' ? idPath : enPath,
+    languages: {
+      'id-ID': idPath,
+      'en': enPath,
+      'x-default': idPath,
+    },
+  }
+
   const titles: Partial<Record<RouteKey, string>> = {
     home: dict.nav.home,
     newsroom: dict.nav.newsroom,
@@ -85,7 +98,7 @@ export async function generateMetadata({
     infoSecurityPolicy: dict.dropdown.infoSecurityPolicy,
     privacyPolicy: dict.dropdown.privacyPolicy,
   }
-  return titles[key] ? { title: titles[key] } : {}
+  return titles[key] ? { title: titles[key], alternates } : { alternates }
 }
 
 export default async function Page({

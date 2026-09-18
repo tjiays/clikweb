@@ -69,7 +69,7 @@ English translation pass, and the responsive implementation.
 **Documentation:** contact form and email configuration, rate limiting policy,
 translation process, responsive behaviour reference.
 
-### Phase 6 — Migration and cutover
+### Phase 6 — Migration and cutover ✅ (prepared; cutover is yours to schedule)
 
 Old-site URL inventory, 301 redirect map, sitemap and robots, production
 deployment, DNS switch, rollback plan, handover.

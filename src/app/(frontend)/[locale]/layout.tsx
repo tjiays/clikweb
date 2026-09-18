@@ -20,7 +20,17 @@ const nunitoSans = Nunito_Sans({
   variable: '--font-nunito-sans',
 })
 
+// SITE_URL is read at runtime; NEXT_PUBLIC_SERVER_URL is inlined at build
+// time. Using the runtime value first means the canonical and hreflang tags
+// are right without rebuilding for each environment.
+const siteUrl = (
+  process.env.SITE_URL ||
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  'https://cbclik.com'
+).replace(/\/$/, '')
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: 'CLIK — PT CRIF Lembaga Informasi Keuangan',
     template: '%s — CLIK',
@@ -28,9 +38,11 @@ export const metadata: Metadata = {
   description:
     'PT CRIF Lembaga Informasi Keuangan (CLIK) adalah biro kredit swasta berizin dan diawasi OJK.',
   robots: {
-    // Staging must never be indexed. Relaxed at go-live in Phase 6.
-    index: false,
-    follow: false,
+    // Staging must never be indexed. SITE_ENV=production opens it at go-live,
+    // so a deployment missing the variable stays closed rather than opening
+    // by accident.
+    index: process.env.SITE_ENV === 'production',
+    follow: process.env.SITE_ENV === 'production',
   },
 }
 

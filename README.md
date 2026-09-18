@@ -72,6 +72,10 @@ language lives in `src/i18n/routes.ts`.
 | [Contact form](./docs/contact-form.md) | Submission flow, email, rate limits |
 | [Responsive behaviour](./docs/responsive.md) | Small-screen specification |
 | [Translation process](./docs/translation-process.md) | How English is produced and checked |
+| [Cutover runbook](./docs/cutover-runbook.md) | Step by step for replacing the live site |
+| [Migration redirect map](./docs/migration-redirect-map.md) | All 161 old URLs and where they go |
+| [Operations handbook](./docs/operations.md) | Releasing, backups, environment variables |
+| [Deferred items](./docs/deferred-items.md) | What was set aside, and why |
 | [Phase plan](./docs/phase-plan.md) | The six delivery phases |
 
 ## Project specification
