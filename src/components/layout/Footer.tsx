@@ -1,8 +1,10 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Container } from './Container'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
 import type { Dictionary } from '@/i18n'
+import { getPartnerLogos, getSiteSettings, imageUrl, imageAlt } from '@/lib/content'
 import styles from './Footer.module.css'
 
 /*
@@ -14,28 +16,20 @@ import styles from './Footer.module.css'
  * confirms them.
  */
 
-const SITE = {
-  address:
-    'Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No 1-2, Kuningan Timur, Setiabudi, Jakarta 12950',
-  phone: '(+62) 21 8060 4228',
-  phoneHref: 'tel:+622180604228',
-  email: 'info@cbclik.com',
-  website: 'https://www.cbclik.com',
-  websiteLabel: 'www.cbclik.com',
-  ojkLicence: 'TODO: OJK licence number',
+/** Icons for the social platforms the design shows. */
+const SOCIAL_ICON: Record<string, string> = {
+  whatsapp: '/brand/icon-social-whatsapp.svg',
+  instagram: '/brand/icon-social-instagram.svg',
+  linkedin: '/brand/icon-social-linkedin.svg',
 }
 
-// TODO: confirm which platforms the three icons in the design represent.
-const SOCIALS = [
-  { name: 'LinkedIn', url: 'https://www.linkedin.com/company/clik-indonesia/' },
-  { name: 'Instagram', url: 'https://www.instagram.com/clik.indonesia/' },
-  { name: 'Facebook', url: 'https://www.facebook.com/clikindonesia/' },
-]
-
-// TODO: replace with logo images from the CMS media library in Phase 2.
-const MEMBER_ORGS = ['AFPI', 'BIIA', 'AFTECH', 'APPI']
-
-export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+export async function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const [site, members, regulators] = await Promise.all([
+    getSiteSettings(locale),
+    getPartnerLogos(locale, 'member'),
+    getPartnerLogos(locale, 'regulator'),
+  ])
+  const settings = site as any
   const year = new Date().getFullYear()
 
   return (
@@ -44,63 +38,120 @@ export function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
         <div className={styles.grid}>
           <div className={styles.column}>
             <Link href={href('home', locale)} className={styles.logo}>
-              CLIK
+              <Image
+                src="/brand/logo-clik.png"
+                alt="CLIK — CRIF Lembaga Informasi Keuangan"
+                width={354}
+                height={118}
+                className={styles.logoImage}
+              />
             </Link>
             <address className={styles.address}>
-              <p>{SITE.address}</p>
-              <p>
-                {dict.footer.callUs}{' '}
-                <a href={SITE.phoneHref}>{SITE.phone}</a>
-              </p>
-              <p>
-                {dict.footer.emailUs}{' '}
-                <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-              </p>
-              <p>
-                <a href={SITE.website} target="_blank" rel="noopener noreferrer">
-                  {SITE.websiteLabel}
-                </a>
-              </p>
+              {settings?.address && <p>{settings.address}</p>}
+              {settings?.phone && (
+                <p>
+                  {dict.footer.callUs}{' '}
+                  <a href={`tel:${String(settings.phone).replace(/[^\d+]/g, '')}`}>
+                    {settings.phone}
+                  </a>
+                </p>
+              )}
+              {settings?.generalEmail && (
+                <p>
+                  {dict.footer.emailUs}{' '}
+                  <a href={`mailto:${settings.generalEmail}`}>{settings.generalEmail}</a>
+                </p>
+              )}
+              {settings?.websiteUrl && (
+                <p>
+                  <a href={settings.websiteUrl} target="_blank" rel="noopener noreferrer">
+                    {settings.websiteUrl.replace(/^https?:\/\//, '')}
+                  </a>
+                </p>
+              )}
             </address>
 
-            <ul className={styles.socials}>
-              {SOCIALS.map((social) => (
-                <li key={social.name}>
-                  <a
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.name}
-                    className={styles.social}
-                  >
-                    {social.name.charAt(0)}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            {settings?.socialLinks?.length > 0 && (
+              <ul className={styles.socials}>
+                {settings.socialLinks.map((social: any) => {
+                  const icon = SOCIAL_ICON[social.platform]
+                  if (!icon) return null
+                  return (
+                    <li key={social.platform}>
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.platform}
+                        className={styles.social}
+                      >
+                        <Image src={icon} alt="" width={28} height={28} />
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
           </div>
 
-          <div className={styles.column}>
-            <h2 className={styles.heading}>{dict.footer.members}</h2>
-            <ul className={styles.logoRow}>
-              {MEMBER_ORGS.map((org) => (
-                <li key={org} className={styles.logoChip}>
-                  {org}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {members.length > 0 && (
+            <div className={styles.column}>
+              <h2 className={styles.heading}>{dict.footer.members}</h2>
+              <ul className={styles.logoRow}>
+                {members.map((member: any) => {
+                  const url = imageUrl(member.logo)
+                  const image = url ? (
+                    <Image
+                      src={url}
+                      alt={imageAlt(member.logo, member.name)}
+                      width={150}
+                      height={62}
+                      className={styles.partnerLogo}
+                    />
+                  ) : (
+                    <span className={styles.logoChip}>{member.name}</span>
+                  )
+                  return (
+                    <li key={member.id}>
+                      {member.url ? (
+                        <a href={member.url} target="_blank" rel="noopener noreferrer">
+                          {image}
+                        </a>
+                      ) : (
+                        image
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
 
           <div className={styles.column}>
             <h2 className={styles.heading}>{dict.footer.supervised}</h2>
-            <div className={styles.logoChip}>OJK</div>
-            <p className={styles.licence}>{SITE.ojkLicence}</p>
+            {regulators.map((regulator: any) => {
+              const url = imageUrl(regulator.logo)
+              return url ? (
+                <Image
+                  key={regulator.id}
+                  src={url}
+                  alt={imageAlt(regulator.logo, regulator.name)}
+                  width={150}
+                  height={62}
+                  className={styles.partnerLogo}
+                />
+              ) : null
+            })}
+            {settings?.ojkLicenceNumber && (
+              <p className={styles.licence}>{settings.ojkLicenceNumber}</p>
+            )}
           </div>
         </div>
 
         <div className={styles.bottom}>
           <p className={styles.copyright}>
-            © {year} PT CRIF Lembaga Informasi Keuangan. {dict.footer.copyright}
+            © {year} {settings?.companyName ?? 'PT CRIF Lembaga Informasi Keuangan'}.{' '}
+            {dict.footer.copyright}
           </p>
         </div>
       </Container>

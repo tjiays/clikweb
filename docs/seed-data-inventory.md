@@ -49,9 +49,28 @@ the team supplies reviewed copy.**
 
 ## Images
 
-All 21 images are generated placeholders — brand-coloured panels with a label —
-produced by `scripts/make-placeholders.ts`. They exist so layouts can be judged
-at the right proportions. Every one is flagged as sample.
+**The real assets are now in.** Logos, photography and icons were exported from
+the Figma file by `scripts/import-assets.ts` and are no longer placeholders:
+
+| | |
+| --- | --- |
+| CLIK logo | Real, in navy and a white version for the dark header |
+| Partner logos | Real — OJK, AFPI, BIIA, Fintech Indonesia, APPI |
+| Social icons | Real — WhatsApp, Instagram, LinkedIn |
+| Hero photography | Real, three slides |
+| Stat, solution and benefit icons | Real |
+| Article, report and career imagery | Real CLIK marketing images |
+
+**Four placeholders remain, deliberately:** the media outlet logos for
+Kumparan, Kontan, Katadata and Bisnis Indonesia. Those are third-party
+publisher marks, not present in the Figma file, and not ours to invent. They
+are replaced when the real coverage is added.
+
+To re-import after changing `.assets/`:
+
+```bash
+npx tsx --env-file=.env scripts/import-assets.ts
+```
 
 ## Before launch
 
@@ -60,7 +79,7 @@ at the right proportions. Every one is flagged as sample.
 - [ ] Replace the seven sample articles with real press releases
 - [ ] Supply real report bodies, including the financial statement tables
 - [ ] Replace the four lorem ipsum testimonials with approved client quotes
-- [ ] Replace all placeholder images with real photography and logos
+- [ ] Replace the four media outlet logos with the publishers' real marks
 - [ ] Supply reviewed text for the four policy and how-to pages
 - [ ] Confirm the OJK licence number, currently blank in site settings
 - [ ] Verify every URL in [external links](./external-links.md)

@@ -11,9 +11,9 @@ before go-live.
 | Footer | Website | https://www.cbclik.com | TO VERIFY |
 | Footer, Contact | Email | mailto:info@cbclik.com | Confirmed (from design) |
 | Footer, Contact | Phone | tel:+622180604228 | Confirmed (from design) |
-| Footer | LinkedIn | https://www.linkedin.com/company/clik-indonesia/ | TO VERIFY |
+| Footer | WhatsApp | https://wa.me/622180604228 | TO VERIFY |
 | Footer | Instagram | https://www.instagram.com/clik.indonesia/ | TO VERIFY |
-| Footer | Facebook | https://www.facebook.com/clikindonesia/ | TO VERIFY |
+| Footer | LinkedIn | https://www.linkedin.com/company/clik-indonesia/ | TO VERIFY |
 | Footer | OJK | Set per logo in the CMS | Not yet set — add in Partner Logos |
 | Footer | AFPI | Set per logo in the CMS | Not yet set — add in Partner Logos |
 | Footer | BIIA | Set per logo in the CMS | Not yet set — add in Partner Logos |
@@ -29,7 +29,6 @@ before go-live.
 | Item | Needed from |
 | --- | --- |
 | OJK licence number | CLIK — shown in the footer and on the homepage trust bar |
-| Which three platforms the footer's social icons represent | The design team |
 | "Kenali CLIK Lebih Dekat" video URL | Marketing |
 | "Formulir Permintaan Data" downloadable form | Operations |
 
@@ -38,7 +37,9 @@ so the team sets them in the CMS rather than in code. They are deliberately
 left blank rather than guessed: an incorrect link to a regulator from a
 supervised company's website is worse than no link at all.
 
-The three social URLs above are the accounts that match CLIK's naming pattern.
+The three platforms were **confirmed** by exporting the icons from the Figma
+file: WhatsApp, Instagram and LinkedIn. An earlier guess of Facebook was wrong.
+The URLs themselves are still the accounts that match CLIK's naming pattern.
 They are implemented so the footer is complete, but a person must confirm each
 one before launch — an incorrect social link on a regulated company's website
 is a real reputational risk, not a cosmetic bug.

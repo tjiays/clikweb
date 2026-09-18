@@ -560,10 +560,12 @@ const run = async () => {
       careersEmail: 'talent@cbclik.com',
       websiteUrl: 'https://www.cbclik.com',
       crifUrl: 'https://www.crif.com',
+      // The three icons in the footer design are WhatsApp, Instagram and
+      // LinkedIn — confirmed by exporting them from the Figma file.
       socialLinks: [
-        { platform: 'linkedin', url: 'https://www.linkedin.com/company/clik-indonesia/' },
+        { platform: 'whatsapp', url: 'https://wa.me/622180604228' },
         { platform: 'instagram', url: 'https://www.instagram.com/clik.indonesia/' },
-        { platform: 'facebook', url: 'https://www.facebook.com/clikindonesia/' },
+        { platform: 'linkedin', url: 'https://www.linkedin.com/company/clik-indonesia/' },
       ],
     } as never,
     overrideAccess: true,

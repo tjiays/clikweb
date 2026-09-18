@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Container } from './Container'
@@ -58,8 +59,15 @@ export function Header({ locale, dict, variant }: Props) {
     <header className={`${styles.header} ${styles[resolved]} ${menuOpen ? styles.menuOpen : ''}`}>
       <Container className={styles.inner}>
         <Link href={href('home', locale)} className={styles.logo} aria-label="CLIK">
-          {/* TODO: replace with the official CLIK logo asset once supplied */}
-          <span className={styles.logoMark}>CLIK</span>
+          {/* White over the hero on the homepage, navy on inner pages. */}
+          <Image
+            src={resolved === 'dark' ? '/brand/logo-clik-white.png' : '/brand/logo-clik.png'}
+            alt="CLIK — CRIF Lembaga Informasi Keuangan"
+            width={354}
+            height={118}
+            priority
+            className={styles.logoImage}
+          />
         </Link>
 
         <nav className={styles.nav} aria-label={dict.nav.home}>

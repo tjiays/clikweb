@@ -36,10 +36,16 @@
   flex-shrink: 0;
 }
 
-.logoMark {
-  font-size: 1.5rem;
-  font-weight: var(--fw-black);
-  letter-spacing: 0.02em;
+.logoImage {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .logoImage {
+    height: 36px;
+  }
 }
 
 .nav {

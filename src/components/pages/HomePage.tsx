@@ -73,14 +73,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
       {settings?.trustBarText && (
         <Container>
           <div className={styles.trustBar}>
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5l8-3z"
-                stroke="var(--color-primary)"
-                strokeWidth="1.8"
-                strokeLinejoin="round"
-              />
-            </svg>
             <span>{settings.trustBarText}</span>
             {imageUrl(ojk?.logo) && (
               <Image

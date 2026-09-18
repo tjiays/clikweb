@@ -17,10 +17,13 @@
 
 .logo {
   display: inline-block;
-  font-size: 1.5rem;
-  font-weight: var(--fw-black);
-  color: var(--color-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.logoImage {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
 }
 
 .address {
@@ -60,25 +63,33 @@
 .social {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--color-secondary);
-  color: #fff;
-  font-size: var(--fs-small);
-  font-weight: var(--fw-bold);
-  transition: background-color var(--transition);
+  width: 40px;
+  height: 40px;
+  transition: opacity var(--transition), transform var(--transition);
 }
 
 .social:hover {
-  background: var(--color-primary);
-  color: #fff;
+  opacity: 0.75;
+  transform: translateY(-2px);
+}
+
+.social img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.partnerLogo {
+  height: 46px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logoRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.625rem;
+  align-items: center;
+  gap: 1.25rem 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;

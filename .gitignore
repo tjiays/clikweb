@@ -47,3 +47,8 @@ coverage/
 .turbo/
 *.tsbuildinfo
 .placeholders/
+
+# Figma asset downloads and the staging area they are curated into.
+# The real assets live in the CMS media library, which is backed up separately.
+.figma-assets/
+.assets/
