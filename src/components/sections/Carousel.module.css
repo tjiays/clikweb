@@ -1,0 +1,84 @@
+.wrap {
+  position: relative;
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - (var(--per-view) - 1) * 1.5rem) / var(--per-view));
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 0.5rem;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  right: -22px;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  transition: background-color var(--transition);
+}
+
+.arrow:hover {
+  background: var(--color-secondary);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-border);
+  cursor: pointer;
+  transition: background-color var(--transition), width var(--transition);
+}
+
+.dotActive {
+  width: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+}
+
+@media (max-width: 1000px) {
+  .track {
+    grid-auto-columns: calc((100% - 1.5rem) / 2);
+  }
+  .arrow {
+    right: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .track {
+    grid-auto-columns: 88%;
+  }
+}

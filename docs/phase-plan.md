@@ -45,7 +45,7 @@ media library, auto-translate.
 **Documentation:** data model, role matrix, approval workflow guide, a CMS user
 manual in plain Indonesian, auto-translate and glossary guide.
 
-### Phase 3 — Core public pages
+### Phase 3 — Core public pages ✅
 
 Home, Tentang CLIK, Layanan dan Produk, Business Solution, Credit Scoring, and
 the four policy and how-to pages. Seed data imported. External URLs

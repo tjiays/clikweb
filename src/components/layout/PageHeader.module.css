@@ -1,0 +1,13 @@
+.wrap {
+  padding-top: var(--space-header-to-breadcrumb);
+  padding-bottom: var(--space-breadcrumb-to-content);
+}
+
+.title {
+  margin-top: var(--space-breadcrumb-to-title);
+}
+
+.lead {
+  margin: 1.25rem 0 0;
+  max-width: 900px;
+}

@@ -14,12 +14,12 @@ before go-live.
 | Footer | LinkedIn | https://www.linkedin.com/company/clik-indonesia/ | TO VERIFY |
 | Footer | Instagram | https://www.instagram.com/clik.indonesia/ | TO VERIFY |
 | Footer | Facebook | https://www.facebook.com/clikindonesia/ | TO VERIFY |
-| Footer | OJK logo link | Official OJK website | Not yet implemented |
-| Footer | AFPI logo link | Official AFPI website | Not yet implemented |
-| Footer | BIIA logo link | Official BIIA website | Not yet implemented |
-| Footer | AFTECH logo link | Official AFTECH website | Not yet implemented |
-| Footer | APPI logo link | Official APPI website | Not yet implemented |
-| Home, About Us | CRIF Global | Official CRIF website | Not yet implemented |
+| Footer | OJK | Set per logo in the CMS | Not yet set — add in Partner Logos |
+| Footer | AFPI | Set per logo in the CMS | Not yet set — add in Partner Logos |
+| Footer | BIIA | Set per logo in the CMS | Not yet set — add in Partner Logos |
+| Footer | AFTECH | Set per logo in the CMS | Not yet set — add in Partner Logos |
+| Footer | APPI | Set per logo in the CMS | Not yet set — add in Partner Logos |
+| About Us | CRIF Global | https://www.crif.com | TO VERIFY — implemented in site settings |
 | Contact | Map | Menara Dea Tower 2, Jakarta | Not yet implemented |
 | Careers | Apply | mailto:talent@cbclik.com | Confirmed |
 | Contact form | Recipient | sales@cbclik.com | Confirmed |
@@ -32,6 +32,11 @@ before go-live.
 | Which three platforms the footer's social icons represent | The design team |
 | "Kenali CLIK Lebih Dekat" video URL | Marketing |
 | "Formulir Permintaan Data" downloadable form | Operations |
+
+Partner and regulator links are now a `url` field on each Partner Logo record,
+so the team sets them in the CMS rather than in code. They are deliberately
+left blank rather than guessed: an incorrect link to a regulator from a
+supervised company's website is worse than no link at all.
 
 The three social URLs above are the accounts that match CLIK's naming pattern.
 They are implemented so the footer is complete, but a person must confirm each

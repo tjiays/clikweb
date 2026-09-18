@@ -99,6 +99,10 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },
+    // Schema changes go through committed migrations, never an implicit dev
+    // push. A stray push leaves a "dev" marker that makes `payload migrate`
+    // stop and ask whether to risk data loss.
+    push: false,
   }),
   /*
    * On staging SMTP points at Mailpit, which captures every message instead of

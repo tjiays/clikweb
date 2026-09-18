@@ -1,0 +1,112 @@
+.hero {
+  position: relative;
+  min-height: 860px;
+  background: var(--color-secondary);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 700ms ease, visibility 700ms ease;
+}
+
+.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image {
+  object-fit: cover;
+  z-index: -2;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay);
+  z-index: -1;
+}
+
+.inner {
+  position: relative;
+  padding-top: var(--header-height);
+}
+
+.copy {
+  max-width: 820px;
+  color: #fff;
+}
+
+.copy h1,
+.copy p {
+  color: #fff;
+  margin: 0;
+}
+
+.copy p {
+  margin-top: 1rem;
+}
+
+.action {
+  margin-top: 2.5rem;
+}
+
+.dots {
+  position: absolute;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.6rem;
+  z-index: 2;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background-color var(--transition), width var(--transition);
+}
+
+.dotActive {
+  width: 28px;
+  border-radius: var(--radius-pill);
+  background: var(--color-primary);
+}
+
+/* The curved bottom edge the design uses under the hero */
+.curve {
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: -80px;
+  height: 160px;
+  background: var(--color-bg-page);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    min-height: 620px;
+  }
+  .copy :global(.t-display) {
+    font-size: 2.5rem;
+  }
+  .copy :global(.t-display-sub) {
+    font-size: 1.25rem;
+  }
+  .dots {
+    bottom: 90px;
+  }
+}

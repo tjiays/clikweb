@@ -1,0 +1,80 @@
+.hero {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+}
+
+.section {
+  margin-top: var(--space-section);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.dataList :global(ul) {
+  columns: 2;
+  column-gap: 3rem;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.splitImage {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+.inlineLink {
+  color: var(--color-primary);
+}
+
+.routeCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.routeCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2.5rem 2rem;
+  background: var(--color-bg-tint);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-secondary);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.routeCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  color: var(--color-secondary);
+}
+
+.routeCta {
+  font-weight: var(--fw-bold);
+  color: var(--color-primary);
+}
+
+@media (max-width: 1000px) {
+  .grid,
+  .routeCards,
+  .split {
+    grid-template-columns: 1fr;
+  }
+  .dataList :global(ul) {
+    columns: 1;
+  }
+}

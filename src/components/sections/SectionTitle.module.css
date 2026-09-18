@@ -1,0 +1,14 @@
+.header {
+  margin-bottom: 2.5rem;
+  max-width: 820px;
+}
+
+.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 1rem 0 0;
+  color: var(--color-text-body);
+}

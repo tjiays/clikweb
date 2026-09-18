@@ -202,6 +202,10 @@ export interface Article {
     description?: string | null;
   };
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -224,7 +228,14 @@ export interface Article {
  */
 export interface Media {
   id: number;
+  /**
+   * Describes the image for readers using a screen reader, and shows if the image fails to load.
+   */
   alt: string;
+  /**
+   * Placeholder from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -236,6 +247,32 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    wide?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -245,6 +282,10 @@ export interface Author {
   id: number;
   name: string;
   photo?: (number | null) | Media;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -299,6 +340,10 @@ export interface MediaOutlet {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -318,6 +363,10 @@ export interface MediaCoverage {
    */
   externalUrl: string;
   publishDate: string;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -370,6 +419,10 @@ export interface Report {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -459,6 +512,10 @@ export interface JobOpening {
    */
   sortOrder?: number | null;
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -482,6 +539,10 @@ export interface JobOpening {
 export interface JobCategory {
   id: number;
   name: string;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -527,6 +588,10 @@ export interface ProductCategory {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -582,6 +647,10 @@ export interface ProductItem {
    */
   sortOrder?: number | null;
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -613,6 +682,10 @@ export interface HeroSlide {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -647,6 +720,10 @@ export interface Stat {
    */
   sortOrder?: number | null;
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -676,6 +753,10 @@ export interface Testimonial {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -711,6 +792,10 @@ export interface Milestone {
    */
   sortOrder?: number | null;
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -744,6 +829,10 @@ export interface PartnerLogo {
    * Lower numbers appear first.
    */
   sortOrder?: number | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -769,6 +858,10 @@ export interface CtaBlock {
     buttonLink?: string | null;
   };
   isActive?: boolean | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
@@ -831,6 +924,10 @@ export interface PageContent {
    */
   videoUrl?: string | null;
   /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
+  /**
    * Editors submit for review. Only the Approver approves or rejects.
    */
   approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
@@ -884,6 +981,10 @@ export interface StaticPage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Seed content from the design. Replace before launch.
+   */
+  isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1119,6 +1220,7 @@ export interface ArticlesSelect<T extends boolean = true> {
         title?: T;
         description?: T;
       };
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1137,6 +1239,7 @@ export interface ArticlesSelect<T extends boolean = true> {
 export interface AuthorsSelect<T extends boolean = true> {
   name?: T;
   photo?: T;
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1151,6 +1254,7 @@ export interface MediaOutletsSelect<T extends boolean = true> {
   logo?: T;
   websiteUrl?: T;
   sortOrder?: T;
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1166,6 +1270,7 @@ export interface MediaCoverageSelect<T extends boolean = true> {
   image?: T;
   externalUrl?: T;
   publishDate?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1191,6 +1296,7 @@ export interface ReportsSelect<T extends boolean = true> {
   body?: T;
   publishDate?: T;
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1218,6 +1324,7 @@ export interface JobOpeningsSelect<T extends boolean = true> {
   isOpen?: T;
   postedDate?: T;
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1235,6 +1342,7 @@ export interface JobOpeningsSelect<T extends boolean = true> {
  */
 export interface JobCategoriesSelect<T extends boolean = true> {
   name?: T;
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1259,6 +1367,7 @@ export interface ProductCategoriesSelect<T extends boolean = true> {
         id?: T;
       };
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1289,6 +1398,7 @@ export interface ProductItemsSelect<T extends boolean = true> {
         id?: T;
       };
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1311,6 +1421,7 @@ export interface HeroSlidesSelect<T extends boolean = true> {
   buttonLabel?: T;
   buttonLink?: T;
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1331,6 +1442,7 @@ export interface StatsSelect<T extends boolean = true> {
   value?: T;
   label?: T;
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1351,6 +1463,7 @@ export interface TestimonialsSelect<T extends boolean = true> {
   logo?: T;
   quote?: T;
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1375,6 +1488,7 @@ export interface MilestonesSelect<T extends boolean = true> {
         id?: T;
       };
   sortOrder?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1396,6 +1510,7 @@ export interface PartnerLogosSelect<T extends boolean = true> {
   url?: T;
   group?: T;
   sortOrder?: T;
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1424,6 +1539,7 @@ export interface CtaBlocksSelect<T extends boolean = true> {
         buttonLink?: T;
       };
   isActive?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1455,6 +1571,7 @@ export interface PageContentSelect<T extends boolean = true> {
         id?: T;
       };
   videoUrl?: T;
+  isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
   submittedBy?: T;
@@ -1482,6 +1599,7 @@ export interface StaticPagesSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1558,6 +1676,7 @@ export interface AuditLogSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  isSample?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1569,6 +1688,40 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        wide?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

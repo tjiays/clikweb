@@ -11,6 +11,7 @@ import { approvalFields, publishedAtField } from '@/fields/approval'
 import { enforceApprovalRules, syncPublishState } from '@/hooks/approval'
 import { recordAudit, recordDeletion } from '@/hooks/audit'
 import { autoTranslateField } from '@/fields/autoTranslate'
+import { isSampleField } from '@/fields/common'
 
 type Options = {
   slug: string
@@ -70,11 +71,20 @@ export const contentCollection = ({
         afterDelete: [recordDeletion],
       }
     : {
+        // Reference data (authors, outlets, categories, logos, policy pages)
+        // has no review step, so saving it publishes it. Without this it would
+        // stay a draft for ever and never appear on the website.
+        beforeChange: [
+          ({ data }) => {
+            if (data) data._status = 'published'
+            return data
+          },
+        ],
         afterChange: [recordAudit],
         afterDelete: [recordDeletion],
       },
   fields: approval
-    ? [...fields, autoTranslateField, ...approvalFields, publishedAtField]
-    : fields,
+    ? [...fields, isSampleField, autoTranslateField, ...approvalFields, publishedAtField]
+    : [...fields, isSampleField],
   timestamps: true,
 })

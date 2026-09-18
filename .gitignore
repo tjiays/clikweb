@@ -46,3 +46,4 @@ coverage/
 # Payload / Next generated caches (types and migrations ARE committed)
 .turbo/
 *.tsbuildinfo
+.placeholders/

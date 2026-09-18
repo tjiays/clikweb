@@ -8,12 +8,14 @@ const HAS_EXTENSION = /\.[^/]+$/
 const RESERVED = ['/admin', '/api', '/_next', '/media']
 
 /**
+ * Next 16 renamed this convention from `middleware` to `proxy`.
+ *
  * Indonesian is the default language and carries no prefix in the URL, so
  * `/tentang-kami` is rewritten internally to `/id/tentang-kami`. English is
  * already prefixed and passes through untouched. The visitor's address bar
  * never shows the `/id` segment.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (RESERVED.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {

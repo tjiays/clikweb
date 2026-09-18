@@ -56,3 +56,10 @@ export function switchLocalePath(pathname: string, target: Locale): string {
   if (!match) return target === 'en' ? '/en' : '/'
   return href(match, target)
 }
+
+/** Finds the page whose slug in this language matches the given path. */
+export function matchRoute(pathname: string, locale: Locale): RouteKey | null {
+  const normalised = pathname === '' ? '/' : pathname
+  const keys = Object.keys(routes) as RouteKey[]
+  return keys.find((key) => routes[key][locale] === normalised) ?? null
+}

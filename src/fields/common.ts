@@ -91,3 +91,19 @@ export const localisedTextarea = (name: string, label?: string, required = false
   localized: true,
   access: lockedForApprover,
 })
+
+/**
+ * Marks content imported from the Figma design as sample rather than real,
+ * so the team can find and replace it later (confirmed decision 8).
+ */
+export const isSampleField: Field = {
+  name: 'isSample',
+  type: 'checkbox',
+  label: 'Sample content',
+  defaultValue: false,
+  access: lockedForApprover,
+  admin: {
+    position: 'sidebar',
+    description: 'Seed content from the design. Replace before launch.',
+  },
+}

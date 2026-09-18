@@ -64,6 +64,8 @@ language lives in `src/i18n/routes.ts`.
 | [Approval workflow](./docs/approval-workflow.md) | Draft to published, and the rules behind it |
 | [CMS user manual](./docs/cms-user-manual.md) | Panduan untuk tim pengisi konten (Bahasa Indonesia) |
 | [Auto-translate](./docs/auto-translate-and-glossary.md) | How English is drafted, and the glossary |
+| [Page implementation notes](./docs/page-implementation-notes.md) | How each page maps to Figma and the CMS |
+| [Seed data inventory](./docs/seed-data-inventory.md) | What is real, what is placeholder |
 | [Phase plan](./docs/phase-plan.md) | The six delivery phases |
 
 ## Project specification
