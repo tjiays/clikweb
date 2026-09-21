@@ -9,6 +9,8 @@ import {
   seoFields,
   slugField,
   imageGuidance,
+  authorField,
+  publishDateField,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 
@@ -95,26 +97,13 @@ export const Articles: CollectionConfig = contentCollection({
         },
       ],
     },
-    {
-      // A name rather than a relationship: one less collection for a byline.
-      name: 'author',
-      type: 'text',
-      label: 'Penulis',
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
-    },
+    // A name rather than a relationship: one less collection for a byline.
+    authorField(),
     slugField(),
-    {
-      name: 'publishDate',
-      type: 'date',
-      required: true,
-      access: lockedForApprover,
-      admin: {
-        position: 'sidebar',
-        description: 'Newest first on the Newsroom and Home. Same day: the later time comes first.',
-        date: { pickerAppearance: 'dayAndTime' },
-      },
-    },
+    publishDateField(
+      true,
+      'Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.',
+    ),
     {
       name: 'isFeatured',
       type: 'checkbox',

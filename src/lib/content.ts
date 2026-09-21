@@ -189,8 +189,14 @@ export const getRelatedArticles = async (
 }
 
 /* ---- Report ---- */
+/*
+ * Urutan first, then newest. Every report defaults to rank 0, so in practice
+ * the list is newest-first on its own and a new report lands at the top
+ * without anyone renumbering the ones already there. A lower rank pins a
+ * report above that block.
+ */
 export const getReportsPage = (locale: Locale, page = 1) =>
-  listPaged<any>('reports', locale, page, 6, 'sortOrder')
+  listPaged<any>('reports', locale, page, 6, ['sortOrder', '-createdAt'])
 
 export const getReportBySlug = (locale: Locale, slug: string) =>
   findOne<any>('reports', 'slug', slug, locale)

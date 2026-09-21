@@ -9,6 +9,8 @@ import {
   slugField,
   sortOrderField,
   imageGuidance,
+  authorField,
+  publishDateField,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 
@@ -122,23 +124,9 @@ export const Reports: CollectionConfig = contentCollection({
       ],
     },
     slugField(),
-    {
-      // A name rather than a relationship, as on Newsroom articles.
-      name: 'author',
-      type: 'text',
-      label: 'Penulis',
-      access: lockedForApprover,
-      admin: {
-        position: 'sidebar',
-        description: 'Shown on the report card, left of the date.',
-      },
-    },
-    {
-      name: 'publishDate',
-      type: 'date',
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
-    },
+    // A name rather than a relationship, as on Newsroom articles.
+    authorField('Penulis', 'Terisi otomatis dengan nama Anda. Tampil di kartu laporan, di kiri tanggal.'),
+    publishDateField(false, 'Terisi otomatis dengan hari ini. Tampil di kartu laporan.'),
     sortOrderField,
   ],
 })

@@ -174,13 +174,16 @@ export interface Article {
     title?: string | null;
     description?: string | null;
   };
+  /**
+   * Terisi otomatis dengan nama Anda. Ubah bila perlu.
+   */
   author?: string | null;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
    */
   slug: string;
   /**
-   * Newest first on the Newsroom and Home. Same day: the later time comes first.
+   * Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.
    */
   publishDate: string;
   /**
@@ -350,16 +353,19 @@ export interface Report {
     | null;
   type: 'annual_report' | 'business_development';
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
    */
   slug: string;
   /**
-   * Shown on the report card, left of the date.
+   * Terisi otomatis dengan nama Anda. Tampil di kartu laporan, di kiri tanggal.
    */
   author?: string | null;
+  /**
+   * Terisi otomatis dengan hari ini. Tampil di kartu laporan.
+   */
   publishDate?: string | null;
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
   /**
@@ -391,7 +397,7 @@ export interface JobOpening {
   id: number;
   title: string;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
    */
   slug: string;
   category: 'information-technology' | 'analysis-reporting' | 'sales-business-development';
@@ -451,7 +457,7 @@ export interface JobOpening {
   isOpen?: boolean | null;
   postedDate?: string | null;
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
   /**
@@ -527,7 +533,7 @@ export interface ProductItem {
       }[]
     | null;
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
   /**
