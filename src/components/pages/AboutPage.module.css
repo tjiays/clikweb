@@ -1,121 +1,567 @@
-.hero {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  object-fit: cover;
+/*
+ * Tentang CLIK — Figma 333:2672 (1440 wide). Comments give the Figma y of
+ * each element so spacing can be checked against the frame.
+ */
+
+/* White bands: intro (y94–660) and Visi/Misi (y1076–1726). */
+.band {
+  background: var(--color-bg-surface);
 }
 
-.section {
-  margin-top: var(--space-section);
+/* ---- Intro: title y210, image 501x282 at x823 y315, text 707 wide at y352 ---- */
+.band .header {
+  padding-bottom: 63px; /* image bottom 597 → band end 660 */
 }
 
-.split {
+.intro {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 3rem;
-  margin-top: var(--space-section);
+  grid-template-columns: minmax(0, 707px) 501px;
+  column-gap: 46px; /* 70 + 707 + 46 = 823 */
+  align-items: start;
+  margin-top: 52px; /* title box bottom 263 → image top 315 */
 }
 
-.splitImage {
-  width: 100%;
+.introText {
+  margin: 37px 0 0; /* text y352 */
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text-body);
+}
+
+.introImage {
+  display: block;
+  width: 501px;
+  max-width: 100%;
   height: auto;
-  border-radius: var(--radius-md);
-  margin-bottom: 1.5rem;
+}
+
+/* ---- 2,688 highlight: bar y708, title y731 (38/700 line 30), lead y803, text y909 ---- */
+.highlight {
+  padding: 48px 0 47px;
+}
+
+.highlightTitle {
+  margin-bottom: 41px;
+}
+
+.highlightTitle h2 {
+  line-height: 30px;
+}
+
+.highlightTitle p {
+  max-width: 634px;
+  margin: 42px auto 0;
+}
+
+.highlightText {
+  margin: 0 -13px 0 0; /* Figma text box is 1313 wide */
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text-body);
+}
+
+/* Section titles 24/800 navy sitting straight on their text. */
+.smallTitle {
+  margin-bottom: 0;
+}
+
+/* ---- Visi / Misi (white band y1076–1726) ---- */
+.visionRow {
+  display: grid;
+  grid-template-columns: minmax(0, 752px) 459px; /* image at x822 */
+  align-items: start;
+  padding-top: 23px; /* image y1099 */
+}
+
+.visionText {
+  max-width: 585px;
+  margin-top: 15px; /* bar y1114 */
+}
+
+.visionProse,
+.missionList {
+  font-size: var(--fs-body);
+  line-height: 25px;
+  color: var(--color-text-body);
+}
+
+.visionText .visionProse {
+  --prose-gap: 25px;
+}
+
+/* Figma leaves an empty line between the Visi sentence and its bullets. */
+.visionText .visionProse p {
+  margin-bottom: 25px;
+}
+
+.visiImage {
+  display: block;
+  width: 459px;
+  max-width: 100%;
+  height: 265px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.missionRow {
+  display: grid;
+  grid-template-columns: minmax(0, 728px) minmax(0, 1fr); /* text at x798 */
+  align-items: start;
+  margin-top: 39px; /* image y1403 */
+  padding-bottom: 32px; /* image bottom 1694 → band end 1726 */
+}
+
+.misiImage {
+  display: block;
+  width: 547px;
+  max-width: 100%;
+  height: 291px;
   object-fit: cover;
 }
 
-.video {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  max-height: 600px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--color-bg-tint);
+.missionText {
+  width: 585px;
+  max-width: 100%;
+  margin-top: 9px; /* bar y1412 */
 }
 
-.video iframe {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
+.missionList {
+  margin: 0;
+  padding-left: 24px;
+  list-style: disc;
+}
+
+.missionList li + li {
+  margin-top: 25px; /* one empty line between the three points */
+}
+
+/* ---- Kenali CLIK Lebih Dekat: bar y1748, title y1771, box 1000x600 at y1857 ---- */
+.video {
+  padding: 22px 0 60px;
+}
+
+.videoTitle {
+  margin-bottom: 53px;
+}
+
+.videoBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1000px;
+  max-width: 100%;
+  aspect-ratio: 1000 / 600;
+  margin-inline: auto;
+  border-radius: 20px;
+  background: #dde1e6;
+  color: var(--color-disabled); /* #C1C7CD play icon */
+}
+
+a.videoBox {
+  transition: color var(--transition-figma);
+}
+
+a.videoBox:hover,
+a.videoBox:focus-visible {
+  color: var(--color-primary);
+}
+
+.play {
+  width: 96px;
+  height: 96px;
+}
+
+/* ---- Pencapaian: bar y2517, title y2530, years y2608, markers y2656, text y2692 ---- */
+.milestones {
+  padding-bottom: 64px; /* tallest column ends y2846 → photo y2908 */
+}
+
+.milestones .smallTitle {
+  margin-bottom: 45px;
+}
+
+.timelineScroll {
+  overflow-x: auto;
 }
 
 .timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(200px, 1fr);
-  gap: 1.5rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
+  grid-template-columns: repeat(7, 183px); /* 183px pitch, year centred on its marker */
+  width: max-content;
+  margin: 0 0 0 -4px; /* first marker centre at x158 */
+  padding: 0;
+  list-style: none;
 }
 
 .milestone {
-  border-top: 3px solid var(--color-border);
-  padding-top: 1.25rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.milestone::before {
+/* Grey connector to the next year: 8px dots at both ends, 2px line (Group 2296). */
+.milestone:not(:last-child)::after {
   content: '';
   position: absolute;
-  top: -8px;
-  left: 0;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--color-primary);
+  top: 49px;
+  left: calc(50% + 19px);
+  width: 145px;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='145' height='8'%3E%3Cg fill='%23D9D9D9'%3E%3Ccircle cx='4' cy='4' r='4'/%3E%3Ccircle cx='141' cy='4' r='4'/%3E%3Crect x='7' y='3' width='131' height='2'/%3E%3C/g%3E%3C/svg%3E")
+    no-repeat;
 }
 
 .year {
-  display: block;
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-black);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-extrabold);
+  line-height: 21.824px;
   color: var(--color-primary);
-  margin-bottom: 0.5rem;
 }
 
-.milestoneItems {
+/* 10px #D9D9D9 dot with a 6px navy ring outside it. */
+.marker {
+  width: 22px;
+  height: 22px;
+  margin-top: 20px;
+  border: 6px solid var(--color-secondary);
+  border-radius: 50%;
+  background: var(--color-tile-disabled);
+}
+
+.milestoneBody {
+  width: max-content;
+  max-width: 183px;
+  margin-top: 20px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+.milestoneLine {
   margin: 0;
-  padding-left: 1rem;
-  font-size: var(--fs-small);
 }
 
-.logoStrip {
-  list-style: none;
+.accent {
+  color: var(--color-primary);
+}
+
+.strong {
+  font-weight: var(--fw-bold);
+}
+
+.gapBefore {
+  margin-top: 21.824px;
+}
+
+.productList {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2rem;
+  padding-left: 24px;
+  list-style: disc;
+  color: var(--color-primary);
 }
 
-.logoStrip img {
-  object-fit: contain;
+/* ---- Perkembangan Usaha LPIP: 1440x655 photo, black 50% overlay ---- */
+.lpip {
+  position: relative;
+  min-height: 655px;
+  overflow: hidden;
+  background: var(--color-secondary);
 }
 
-.crif {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
+.lpip::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--color-overlay);
 }
 
-.crifImage {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
+.lpipImage {
   object-fit: cover;
 }
 
-@media (max-width: 900px) {
-  .split,
-  .crif {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+.lpipInner {
+  position: relative;
+  z-index: 2;
+}
+
+.lpipContent {
+  max-width: 569px;
+  margin-left: 720px; /* x790 */
+  padding: 94px 0 74px; /* bar y3002; button bottom 3489 → 3563 */
+  color: #ffffff;
+}
+
+.lpipTitle {
+  margin-bottom: 29px;
+}
+
+.lpipTitle h2 {
+  color: #ffffff;
+  line-height: 30px;
+}
+
+.lpipText {
+  margin: 0 0 38px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.lpipText:nth-of-type(2) {
+  margin-bottom: 23px;
+}
+
+/* ---- Tentang CRIF: bar y3613, title y3666, globe 604x606 at x732 y3684 ---- */
+.crif {
+  padding: 50px 0 37px;
+}
+
+.crifRule {
+  margin-bottom: 50px;
+}
+
+.crifGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 567px) 604px;
+  column-gap: 95px;
+  align-items: start;
+}
+
+.crifTitle {
+  margin-bottom: 30px;
+}
+
+.crifTitle h2 {
+  line-height: 30px;
+}
+
+.crifProse {
+  margin-bottom: 16px;
+}
+
+/* Empty line between the second paragraph and the bullet list, as in Figma. */
+.crifGrid .crifProse p {
+  margin-bottom: 30px;
+}
+
+.crifGrid .crifProse > :last-child {
+  margin-bottom: 0;
+}
+
+.crifImage {
+  display: block;
+  width: 604px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 604 / 606;
+  margin-top: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ---- CRIF infographic (Group 385:2422): 952x451 + 355x451 at x65, on white ---- */
+.strip {
+  padding: 33px 0 25px;
+  background: var(--color-bg-surface);
+}
+
+.stripRow {
+  display: flex;
+  align-items: flex-start;
+  width: 1307px; /* x65–1372, 5px either side of the 1300 column */
+  margin-left: -5px;
+}
+
+.stripImage {
+  display: block;
+  flex-basis: 0;
+  min-width: 0;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Member CLIK: band #E0F1FC y4874–5567 ---- */
+.members {
+  padding: 54px 0 78px;
+  background: #e0f1fc;
+}
+
+.membersTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  line-height: 30px;
+  color: var(--color-secondary);
+  text-align: center;
+}
+
+.memberGroups {
+  display: grid;
+  grid-template-columns: repeat(2, 645px);
+  column-gap: 79px;
+  margin: 33px 0 0 -25px; /* grids span x45–690 and x769–1414 */
+}
+
+.memberLabel {
+  margin: 0 0 33px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-text-body);
+  text-align: center;
+}
+
+.logoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 215px);
+  row-gap: 24px;
+  justify-items: center;
+  align-items: start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logoGrid img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---- Below the 1440 design ---- */
+@media (max-width: 1439px) {
+  .memberGroups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 40px;
+    margin-left: 0;
+  }
+
+  .logoGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stripRow {
+    width: auto;
+    margin-left: 0;
+  }
+
+  .lpipContent {
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  .intro,
+  .visionRow,
+  .missionRow,
+  .crifGrid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+
+  .introText,
+  .visionText,
+  .missionText {
+    margin-top: 0;
+    width: auto;
+    max-width: 707px;
+  }
+
+  .introImage {
+    justify-self: center;
+  }
+
+  /* Image above its text for Misi too once stacked is fine; keep text first for Visi. */
+  .highlightText {
+    margin-right: 0;
+  }
+
+  .crifImage {
+    width: min(480px, 100%);
+    justify-self: center;
+    margin-top: 0;
+  }
+
+  .memberGroups {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 48px;
+  }
+
+  .lpipContent {
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .stripRow {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .stripImage {
+    flex: none !important;
+    max-width: 100%;
+  }
+}
+
+/* Phones: the timeline turns vertical (year, ring and text in a column). */
+@media (max-width: 768px) {
+  .timelineScroll {
+    overflow: visible;
+  }
+
+  .timeline {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+    width: auto;
+    margin-left: 0;
+  }
+
+  .milestone {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: start;
+  }
+
+  .milestone:not(:last-child)::after {
+    top: 22px;
+    left: 10px;
+    width: 2px;
+    height: calc(100% + 6px);
+    background: var(--color-tile-disabled);
+  }
+
+  .marker {
+    grid-column: 1;
+    grid-row: 1;
+    margin-top: 0;
+  }
+
+  .year {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .milestoneBody {
+    grid-column: 2;
+    width: auto !important;
+    max-width: none;
+    margin-top: 6px;
+  }
+
+  .video {
+    padding-bottom: 48px;
+  }
+
+  .lpipContent {
+    padding: 56px 0;
+  }
+
+  .logoGrid {
+    row-gap: 20px;
+    column-gap: 12px;
   }
 }
