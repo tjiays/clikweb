@@ -1,0 +1,55 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Figma: 20x21 share glyph, #000 @ 50%; label 16/400 line 21.8, 8px after the icon. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(0, 0, 0, 0.5);
+  font: inherit;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  cursor: pointer;
+  transition: color var(--transition-figma);
+}
+
+.button:hover,
+.button:focus-visible {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 21px;
+}
+
+.toast {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-secondary);
+  color: #fff;
+  font-size: var(--fs-caption);
+  line-height: 1.6;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.toast:empty {
+  padding: 0;
+}
+
+.visible {
+  opacity: 1;
+}

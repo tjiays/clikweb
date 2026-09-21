@@ -1,85 +1,154 @@
+import type { CSSProperties } from 'react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
-import { JobRow } from '@/components/sections/JobRow'
-import { Carousel } from '@/components/sections/Carousel'
+import { JobRow, BriefcaseIcon } from '@/components/sections/JobRow'
+import { JobShare } from '@/components/sections/JobShare'
+import { Marquee } from '@/components/sections/Marquee'
 import { RichText } from '@/components/ui/RichText'
 import { Button } from '@/components/ui/Button'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { careers, jobCategories } from '@/content/careers'
+import { careers, jobCategories, jobDetail } from '@/content/careers'
 import { site } from '@/content/site'
 import { getOpenJobs, getJobBySlug, t } from '@/lib/content'
 import styles from './CareersPage.module.css'
 
-/** Builds the mailto link for a job, with the subject pre-filled. */
+/**
+ * Builds the mailto link for a job. Subject follows the note on the detail
+ * page, "Source Vacancy – Position Applied" (e.g. "Website – Sales Operations");
+ * a CMS subject that already names the position is used as it is.
+ */
 function applyMailto(job: any, fallbackEmail: string) {
   const email = job?.applyEmail || fallbackEmail
-  const subject = job?.emailSubjectFormat
-    ? `${job.emailSubjectFormat} - ${job.title}`
-    : job?.title
-  return `mailto:${email}?subject=${encodeURIComponent(subject ?? '')}`
+  const format = String(job?.emailSubjectFormat ?? '').trim()
+  const title = String(job?.title ?? '')
+  const subject = format && title && format.includes(title) ? format : `${format || 'Website'} – ${title}`
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}`
 }
+
+/** Photo band (Figma Component 10): one set of six photos is 3161px wide
+ *  (sizes + 48px gaps) and moves by one set every 10s. */
+const STRIP_GAP = 48
+const STRIP_SECONDS = 10
 
 /** Karir — Figma 415:2692, per intent/02 §2.16. */
 export async function CareersPage({ locale }: { locale: Locale }) {
   const [dict, jobs] = await Promise.all([getDictionary(locale), getOpenJobs(locale)])
   const careersEmail = site.careersEmail || 'talent@cbclik.com'
-  const heroImages = careers.heroImages
   const categoryName = (slug: string) => {
     const found = jobCategories.find((c) => c.slug === slug)
     return found ? t(found.name, locale) : slug
   }
+  const [firstSteps, lastSteps] = [
+    careers.recruitmentSteps.slice(0, 3),
+    careers.recruitmentSteps.slice(3),
+  ]
+
+  const step = (item: (typeof careers.recruitmentSteps)[number], index: number) => (
+    <li key={index} className={styles.step} style={{ width: item.width }}>
+      <Image
+        src={item.image}
+        alt=""
+        width={item.imageWidth}
+        height={item.imageHeight}
+        className={styles.stepImage}
+        style={{ marginBottom: item.gap }}
+      />
+      <div className={styles.stepHead}>
+        <span className={styles.stepNumber} aria-hidden="true">
+          {index + 1}
+        </span>
+        <h3 className={styles.stepTitle}>
+          <span className="sr-only">{index + 1}. </span>
+          {t(item.title, locale)}
+        </h3>
+      </div>
+      <p className={styles.stepBody}>{t(item.description, locale)}</p>
+    </li>
+  )
 
   return (
     <>
-      {/* Hero with its auto-sliding image carousel */}
+      {/* Hero: navy title + subtitle, then the navy wave band with the photo marquee */}
       <section className={styles.hero}>
         <Container>
-          <h1 className="t-h1">{t(careers.heroTitle, locale)}</h1>
-          <p className={`t-lead ${styles.heroSubtitle}`}>{t(careers.heroSubtitle, locale)}</p>
+          <h1 className={styles.heroTitle}>
+            {careers.heroTitle[locale].map((line, index) => (
+              <span key={index} className={styles.heroLine}>
+                {line}
+              </span>
+            ))}
+          </h1>
+          <p className={styles.heroSubtitle}>{t(careers.heroSubtitle, locale)}</p>
         </Container>
-        {heroImages.length > 0 && (
-          <div className={styles.heroStrip}>
-            <Carousel label={dict.nav.careers} perView={3} autoAdvance showArrows={false}>
-              {heroImages.map((url, index) => (
-                <Image
-                  key={index}
-                  src={url}
-                  alt=""
-                  width={480}
-                  height={320}
-                  className={styles.heroImage}
-                />
-              ))}
-            </Carousel>
-          </div>
-        )}
+
+        <div className={styles.band}>
+          <span className={styles.bandOverlay} aria-hidden="true" />
+          <svg className={styles.waveTop} viewBox="0 0 1441 63" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 0H1441V53C1330 40 1205 19 1105 10.5C1080 8.5 1060 8.5 1040 9.5L205 51C125 53.5 60 56 0 63Z" />
+          </svg>
+          <Marquee
+            duration={STRIP_SECONDS}
+            gap={STRIP_GAP}
+            label={dict.nav.careers}
+            className={styles.strip}
+          >
+            {careers.heroPhotos.map((photo, index) => (
+              <Image
+                key={index}
+                src={photo.src}
+                alt=""
+                width={photo.width}
+                height={photo.height}
+                sizes={`${photo.width}px`}
+                className={styles.stripPhoto}
+                style={{ '--w': photo.width, '--h': photo.height } as CSSProperties}
+                priority={index < 3}
+              />
+            ))}
+          </Marquee>
+          <svg className={styles.waveBottom} viewBox="0 0 1441 63" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 9C125 25 250 44 330 52C360 55 390 55 420 53L1300 10.5C1370 7.5 1410 4 1441 0V63H0Z" />
+          </svg>
+        </div>
       </section>
 
       <Container>
-        {/* Nilai-nilai kami */}
+        {/* Nilai-Nilai Kami: 2x2 centred text */}
         {careers.values.length > 0 && (
-          <section className={styles.section}>
-            <SectionTitle as="h2">{dict.careers.values}</SectionTitle>
+          <section className={styles.values}>
+            <SectionTitle as="h2" align="center" size="md" ruleGap={5} className={styles.valuesTitle}>
+              {t(careers.titles.values, locale)}
+            </SectionTitle>
             <div className={styles.valueGrid}>
               {careers.values.map((value, index) => (
                 <article key={index} className={styles.value}>
-                  <h3 className="t-h4">{t(value.title, locale)}</h3>
+                  <h3 className={styles.valueTitle}>{t(value.title, locale)}</h3>
                   <p className={styles.valueSubtitle}>{t(value.subtitle, locale)}</p>
-                  <p>{t(value.description, locale)}</p>
+                  <p className={styles.valueBody} style={{ maxWidth: value.width }}>
+                    {t(value.description, locale)}
+                  </p>
                 </article>
               ))}
             </div>
           </section>
         )}
 
-        {/* Lowongan Pekerjaan — only open positions */}
-        <section className={styles.section} id="lowongan">
-          <SectionTitle as="h2">{dict.careers.openings}</SectionTitle>
+        {/* Lowongan Pekerjaan: title + CV note left, 2-column card grid right */}
+        <section className={styles.openings} id="lowongan">
+          <div className={styles.openingsSide}>
+            <SectionTitle as="h2" size="md" ruleGap={5} className={styles.openingsTitle}>
+              {t(careers.titles.openings, locale)}
+            </SectionTitle>
+            <p className={styles.cvNote}>
+              <strong>{t(careers.cvNote.lead, locale)}</strong> {t(careers.cvNote.before, locale)}{' '}
+              <a href={`mailto:${careersEmail}`}>{careersEmail}</a> {t(careers.cvNote.after, locale)}
+            </p>
+          </div>
           {jobs.length === 0 ? (
             <p className={styles.empty}>{dict.careers.empty}</p>
           ) : (
@@ -93,51 +162,52 @@ export async function CareersPage({ locale }: { locale: Locale }) {
                   applyMailto={applyMailto(job, careersEmail)}
                   applyLabel={dict.careers.apply}
                   detailLabel={dict.careers.viewDetail}
+                  shareLabel={t(careers.share, locale)}
+                  copiedLabel={t(careers.linkCopied, locale)}
                 />
               ))}
             </div>
-          )}
-
-          {careers.cvNote && (
-            <p className={styles.cvNote}>
-              {t(careers.cvNote, locale)}{' '}
-              <a href={`mailto:${careersEmail}`}>{careersEmail}</a>
-            </p>
           )}
         </section>
 
         {/* Benefits */}
         {careers.benefits.length > 0 && (
-          <section className={styles.section}>
-            <SectionTitle as="h2">{dict.careers.benefits}</SectionTitle>
+          <section className={styles.benefits}>
+            <SectionTitle as="h2" align="center" ruleGap={5} className={styles.benefitsTitle}>
+              {t(careers.titles.benefits, locale)}
+            </SectionTitle>
             <div className={styles.benefitGrid}>
               {careers.benefits.map((benefit, index) => (
                 <article key={index} className={styles.benefit}>
-                  {benefit.icon && (
-                    <Image src={benefit.icon} alt="" width={56} height={56} />
-                  )}
-                  <h3 className="t-h5">{t(benefit.title, locale)}</h3>
+                  <Image
+                    src={benefit.icon}
+                    alt=""
+                    width={benefit.iconWidth}
+                    height={benefit.iconHeight}
+                    className={styles.benefitIcon}
+                    style={{ top: benefit.iconTop }}
+                  />
+                  <h3 className={styles.benefitTitle}>{t(benefit.title, locale)}</h3>
                 </article>
               ))}
             </div>
           </section>
         )}
 
-        {/* Proses Rekrutmen */}
+        {/* Proses Rekrutmen: 3 + 2 steps with illustrations */}
         {careers.recruitmentSteps.length > 0 && (
-          <section className={styles.section}>
-            <SectionTitle as="h2">{dict.careers.process}</SectionTitle>
-            <ol className={styles.steps}>
-              {careers.recruitmentSteps.map((step, index) => (
-                <li key={index} className={styles.step}>
-                  <span className={styles.stepNumber}>{index + 1}</span>
-                  <div>
-                    <h3 className="t-h5">{t(step.title, locale)}</h3>
-                    <p>{t(step.description, locale)}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
+          <section className={styles.process}>
+            <SectionTitle as="h2" align="center" ruleGap={5} className={styles.processTitle}>
+              {t(careers.titles.process, locale)}
+            </SectionTitle>
+            <div className={styles.steps}>
+              <ol className={styles.stepRowFirst}>{firstSteps.map((item, i) => step(item, i))}</ol>
+              {lastSteps.length > 0 && (
+                <ol className={styles.stepRowSecond} start={4}>
+                  {lastSteps.map((item, i) => step(item, i + 3))}
+                </ol>
+              )}
+            </div>
           </section>
         )}
       </Container>
@@ -156,49 +226,61 @@ export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: st
   return (
     <>
       <PageHeader
-        title={dict.careers.detailTitle}
+        title={t(jobDetail.title, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.nav.careers, href: href('careers', locale) },
-          { label: dict.careers.detailTitle },
+          { label: t(jobDetail.crumb, locale) },
         ]}
         breadcrumbLabel={dict.common.breadcrumb}
+        className={styles.detailHeader}
       />
 
       <Container>
         <article className={styles.detail}>
           <header className={styles.detailHead}>
-            <div>
-              <h2 className="t-h2">{job.title}</h2>
-              {category && <p className={styles.detailCategory}>{t(category.name, locale)}</p>}
+            <h2 className={styles.detailTitle}>{job.title}</h2>
+            {category && (
+              <p className={styles.detailCategory}>
+                <BriefcaseIcon className={styles.detailBriefcase} />
+                {t(category.name, locale)}
+              </p>
+            )}
+            <div className={styles.detailActions}>
+              <Button href={applyMailto(job, careersEmail)} external size="sm" className={styles.detailApply}>
+                {dict.careers.apply}
+              </Button>
+              <JobShare
+                url={detailHref('careers', job.slug, locale)}
+                title={job.title}
+                label={t(careers.share, locale)}
+                copiedLabel={t(careers.linkCopied, locale)}
+                showLabel
+              />
             </div>
-            <Button href={applyMailto(job, careersEmail)} external size="lg">
-              {dict.careers.apply}
-            </Button>
           </header>
 
           {[
-            { title: dict.careers.responsibilities, body: job.responsibilities },
-            { title: dict.careers.qualifications, body: job.minimumQualifications },
-            { title: dict.careers.education, body: job.education },
+            { title: t(jobDetail.responsibilities, locale), body: job.responsibilities },
+            { title: t(jobDetail.qualifications, locale), body: job.minimumQualifications },
+            { title: t(jobDetail.education, locale), body: job.education },
           ]
             .filter((block) => block.body)
             .map((block) => (
               <section key={block.title} className={styles.detailSection}>
-                <h3 className="t-h4 section-rule">{block.title}</h3>
-                <RichText data={block.body} />
+                <h3 className={`${styles.detailSectionTitle} section-rule`}>{block.title}</h3>
+                <RichText data={block.body} className={styles.detailBody} />
               </section>
             ))}
 
           <footer className={styles.detailFooter}>
             <p>
-              {dict.careers.emailTo} <a href={`mailto:${careersEmail}`}>{careersEmail}</a>
+              {t(jobDetail.emailTo, locale)} <a href={`mailto:${careersEmail}`}>{careersEmail}</a>
+              <br />
+              {t(jobDetail.subjectNote, locale)}
+              <br />
+              {t(jobDetail.example, locale)}
             </p>
-            {job.emailSubjectFormat && (
-              <p>
-                {dict.careers.subjectNote} <strong>{job.emailSubjectFormat}</strong>
-              </p>
-            )}
           </footer>
         </article>
       </Container>
