@@ -48,6 +48,21 @@ body {
 
 /* The sidebar is a custom component: see components/admin/Nav.tsx */
 
+/* ---- Sidebar toggle ----
+   Payload pins it to the top-left, which is exactly where the CLIK logo sits,
+   so it covered the brand. Moved to the sidebar's outer edge, where it reads
+   as a handle on the panel rather than an overlay on the logo.
+
+   Left alone below 769px: there the sidebar is full width, so the outer edge
+   would be off screen. */
+@media (min-width: 769px) {
+  .template-default__nav-toggler-wrapper {
+    left: var(--nav-width);
+    right: auto;
+    padding-left: 6px;
+  }
+}
+
 /* ---- Login ---- */
 .login .form-header h1 {
   color: var(--clik-navy);

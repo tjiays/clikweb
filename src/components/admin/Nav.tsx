@@ -57,13 +57,17 @@ const I = (d: string, filled = false) => (
   </svg>
 )
 
-const DASHBOARD: Item = {
-  slug: '',
-  label: 'Dashboard',
-  icon: I('M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6v-9h-6v9zm0-16v5h6V4h-6z', true),
-}
-
 const GROUPS: { title: string; items: Item[] }[] = [
+  {
+    title: 'Dashboard',
+    items: [
+      {
+        slug: '',
+        label: 'Dashboard',
+        icon: I('M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6v-9h-6v9zm0-16v5h6V4h-6z', true),
+      },
+    ],
+  },
   {
     title: 'Newsroom',
     items: [
@@ -132,9 +136,6 @@ export default function Nav() {
       <Link href="/admin" className="cnav__brand">
         <img src="/images/shared/logo-clik-white.png" alt="CLIK" />
       </Link>
-
-      {/* Dashboard is an item like any other, not a special case above them. */}
-      <div className="cnav__group">{renderItem(DASHBOARD)}</div>
 
       {GROUPS.map((group) => {
         const items = group.items.filter((item) => canSee(item.slug))
