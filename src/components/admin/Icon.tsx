@@ -1,34 +1,15 @@
 /**
- * The mark at the start of the breadcrumb trail, which links back to the
- * dashboard — on a nested page the trail reads "⌂ › Artikel › Edit".
+ * Payload puts a mark at the start of the breadcrumb trail, top-left of the
+ * main area, linking back to the dashboard.
  *
- * It used to be the full CLIK wordmark, which duplicated the logo already in
- * the sidebar a few centimetres to its left. A home glyph keeps the link
- * working without repeating the branding.
+ * It is removed: the sidebar carries the CLIK logo and a Dashboard entry a
+ * few centimetres to its left, so this was a second logo and a second link to
+ * the same place. On list views the trail holds nothing else, so it was
+ * usually anchoring an empty breadcrumb.
+ *
+ * Returning null leaves Payload's wrapper behind as an empty box, so
+ * `.step-nav__home` is hidden in custom.scss to close the gap.
  */
 export default function Icon() {
-  return (
-    <span
-      aria-label="Dashboard"
-      style={{
-        display: 'grid',
-        placeItems: 'center',
-        width: 26,
-        height: 26,
-        borderRadius: 6,
-        background: '#eef3f9',
-        color: '#003a79',
-      }}
-    >
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M3 11l9-8 9 8M6 10v9a1 1 0 001 1h3v-6h4v6h3a1 1 0 001-1v-9"
-          stroke="currentColor"
-          strokeWidth="1.9"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </span>
-  )
+  return null
 }

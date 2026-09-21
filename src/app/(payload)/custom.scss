@@ -89,6 +89,14 @@ body {
   }
 }
 
+/* ---- Breadcrumb ----
+   The home mark is removed (see components/admin/Icon.tsx). Payload still
+   renders its wrapper, so hide it — otherwise an empty box sits where the
+   logo was and the trail starts with a gap. */
+.step-nav__home {
+  display: none;
+}
+
 /* ---- Login ---- */
 .login .form-header h1 {
   color: var(--clik-navy);
