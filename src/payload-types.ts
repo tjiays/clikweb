@@ -195,14 +195,8 @@ export interface Article {
    * Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.
    */
   hideFromList?: boolean | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -226,9 +220,6 @@ export interface Media {
    * Describes the image for readers using a screen reader, and shows if the image fails to load.
    */
   alt: string;
-  /**
-   * Placeholder from the design. Replace before launch.
-   */
   isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -356,14 +347,8 @@ export interface Report {
    * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -445,14 +430,8 @@ export interface JobOpening {
    * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -521,14 +500,8 @@ export interface ProductItem {
    * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */

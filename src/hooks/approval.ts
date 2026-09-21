@@ -50,20 +50,40 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     return data
   }
 
-  // Editors from here on.
+  /*
+   * Editors from here on. They no longer choose a status — the field is not
+   * on their form — so saving is the act of submitting, and anything they
+   * save goes to In Review.
+   */
+  const target = next ?? APPROVAL_STATUSES.inReview
+
+  /*
+   * An item in review is still off limits to everyone else, so the approver
+   * is not reading a moving target. The exception is the person who
+   * submitted it: without it, a single save would lock an editor out of
+   * their own half-finished article until someone else acted on it.
+   */
   if (previous === APPROVAL_STATUSES.inReview) {
-    throw new APIError('This item is locked while it is in review.', 423)
+    const submitter = originalDoc?.submittedBy
+    const submitterId = typeof submitter === 'object' && submitter
+      ? (submitter as { id?: unknown }).id
+      : submitter
+    if (String(submitterId ?? '') !== String(user.id)) {
+      throw new APIError('This item is locked while it is in review.', 423)
+    }
   }
 
   const editorAllowed: string[] = [APPROVAL_STATUSES.draft, APPROVAL_STATUSES.inReview]
-  if (next && !editorAllowed.includes(next)) {
+  if (!editorAllowed.includes(target)) {
     throw new APIError(
       'Only the Approver can approve or reject. Submit it for review instead.',
       403,
     )
   }
 
-  if (next === APPROVAL_STATUSES.inReview && previous !== APPROVAL_STATUSES.inReview) {
+  data.approvalStatus = target
+
+  if (target === APPROVAL_STATUSES.inReview && previous !== APPROVAL_STATUSES.inReview) {
     data.submittedBy = user.id
     data.submittedAt = new Date().toISOString()
     data.rejectionReason = null

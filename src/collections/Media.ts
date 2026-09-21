@@ -61,14 +61,12 @@ export const Media: CollectionConfig = {
       },
     },
     {
+      // Hidden like the one on content collections; the seed scripts use it.
       name: 'isSample',
       type: 'checkbox',
       label: 'Sample content',
       defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'Placeholder from the design. Replace before launch.',
-      },
+      admin: { position: 'sidebar', hidden: true },
     },
   ],
   upload: {

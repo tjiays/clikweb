@@ -114,16 +114,20 @@ export const localisedTextarea = (name: string, label?: string, required = false
  * Marks content imported from the Figma design as sample rather than real,
  * so the team can find and replace it later (confirmed decision 8).
  */
+/*
+ * Hidden, not dropped. Nobody needs to see or set it, but the seed scripts
+ * match on it to find the placeholder content they are allowed to overwrite
+ * (scripts/seed-*.ts, src/migrations/seeds). Removing the column would take
+ * away the only thing distinguishing seeded filler from real work — 21
+ * records still carry the flag.
+ */
 export const isSampleField: Field = {
   name: 'isSample',
   type: 'checkbox',
   label: 'Sample content',
   defaultValue: false,
   access: lockedForApprover,
-  admin: {
-    position: 'sidebar',
-    description: 'Seed content from the design. Replace before launch.',
-  },
+  admin: { position: 'sidebar', hidden: true },
 }
 
 /**

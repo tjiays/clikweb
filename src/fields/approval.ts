@@ -30,8 +30,20 @@ export const approvalFields: Field[] = [
     ],
     admin: {
       position: 'sidebar',
-      description:
-        'Editors submit for review. Only the Approver approves or rejects.',
+      /*
+       * Only the people who decide see the control. An editor has no choice
+       * to make — saving submits the item for review — so the box was three
+       * options they could not pick and one they could. They still see where
+       * an item stands in the list column, and a rejection reason still
+       * appears on the form.
+       *
+       * The role is read off the user rather than through @/access because
+       * this function is serialised to the browser.
+       */
+      condition: (_data, _siblingData, { user }) =>
+        ['approver', 'super_admin'].includes(
+          String((user as { role?: string } | null | undefined)?.role ?? ''),
+        ),
     },
     index: true,
   },
