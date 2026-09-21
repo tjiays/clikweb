@@ -1,202 +1,586 @@
+/*
+ * Karir — Figma 415:2692 (page #FAFAFA). Vertical offsets below are the
+ * Figma distances between sections at 1440px.
+ */
+
+/* ---- Hero ---- */
 .hero {
-  padding-top: 3.5rem;
-  padding-bottom: 2.5rem;
-  background: var(--color-bg-tint);
+  position: relative;
+  padding-top: 91px; /* title at y=181, header is 90 */
+  overflow-x: clip;
   text-align: center;
 }
 
+/* 38/800, line 51.8, navy, two centred lines */
+.heroTitle {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-extrabold);
+  line-height: 51.832px;
+  color: var(--color-secondary);
+}
+
+.heroLine {
+  display: block;
+}
+
+/* 24/600, line 32.7, black, 20px under the title */
 .heroSubtitle {
-  max-width: 760px;
-  margin: 1.25rem auto 0;
+  max-width: 925px;
+  margin: 20px auto 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: #000;
 }
 
-.heroStrip {
-  margin-top: 2.5rem;
-  padding-inline: var(--gutter);
+/* Navy band 1440x670 (582:3214) with a 50% black overlay on its top 356px
+   (944:3942) and #FAFAFA wave edges top and bottom (582:3212 / 582:3221). */
+.band {
+  --strip-scale: 1;
+  position: relative;
+  height: calc(670px * var(--band-scale, 1));
+  margin-top: 43px;
+  background: var(--color-secondary);
 }
 
-.heroImage {
+.bandOverlay {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 53.1%; /* 356 / 670 */
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.waveTop,
+.waveBottom {
+  position: absolute;
+  left: 0;
   width: 100%;
-  height: 280px;
+  height: 63px;
+  fill: var(--color-bg-page);
+  pointer-events: none;
+}
+
+.waveTop {
+  top: -8px;
+}
+
+.waveBottom {
+  bottom: -7px;
+}
+
+/* Photo strip (Component 10, 911:5972): 550px row, photos vertically
+   centred, radius 18, 48px apart. At the start of the loop the first photo
+   sits 176px left of the viewport edge, as in Figma. */
+.band .strip {
+  position: absolute;
+  top: calc(62px * var(--strip-scale));
+  left: calc(-176px * var(--strip-scale));
+  width: calc(100% + 176px * var(--strip-scale));
+  height: calc(550px * var(--strip-scale));
+}
+
+.band .strip > div {
+  height: 100%;
+}
+
+.stripPhoto {
+  display: block;
+  flex-shrink: 0;
+  width: calc(var(--w) * var(--strip-scale) * 1px);
+  height: calc(var(--h) * var(--strip-scale) * 1px);
   object-fit: cover;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-tile);
 }
 
-.section {
-  margin-top: var(--space-section);
+/* ---- Section titles ---- */
+.valuesTitle {
+  margin-bottom: 24px;
 }
 
-.valueGrid,
-.benefitGrid {
+.openingsTitle {
+  margin-bottom: 24px;
+}
+
+.benefitsTitle {
+  margin-bottom: 45px;
+}
+
+.processTitle {
+  margin-bottom: 73px;
+}
+
+/* ---- Nilai-Nilai Kami: 2x2 centred text, no cards ---- */
+.values {
+  margin-top: 78px;
+}
+
+.valueGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: 617fr 597fr;
+  column-gap: 86px;
+  row-gap: 106px;
 }
 
-.value,
-.benefit {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2rem;
-  transition: transform var(--transition), box-shadow var(--transition);
+.value {
+  text-align: center;
 }
 
-.value:hover,
-.benefit:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.benefit {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
+.valueTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
 }
 
 .valueSubtitle {
-  margin: 0.5rem 0;
-  color: var(--color-primary);
-  font-weight: var(--fw-bold);
-  font-size: var(--fs-small);
+  margin: 16px 0 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: #000;
 }
 
-.value p:last-child {
+.valueBody {
+  margin: 2px auto 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: #000;
+}
+
+/* ---- Lowongan Pekerjaan ---- */
+.openings {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 827px;
+  gap: 40px;
+  margin-top: 85px;
+}
+
+.openingsSide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 349px, 16/400 line 21.8, black; first sentence 800, e-mail underlined */
+.cvNote {
+  max-width: 349px;
   margin: 0;
-  font-size: var(--fs-small);
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: #000;
+}
+
+.cvNote strong {
+  font-weight: var(--fw-extrabold);
+}
+
+.cvNote a {
+  color: inherit;
+  text-decoration: underline;
 }
 
 .jobs {
   display: grid;
-  gap: 1rem;
-}
-
-.cvNote {
-  margin-top: 2rem;
-  padding: 1.5rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-md);
-  text-align: center;
-}
-
-.cvNote a {
-  color: var(--color-primary);
-  font-weight: var(--fw-bold);
+  grid-template-columns: repeat(2, minmax(0, 393px));
+  column-gap: 41px;
+  row-gap: 44px;
+  align-content: start;
+  margin-top: 11px; /* first cards line up with the title text, not the bar */
 }
 
 .empty {
+  align-self: start;
+  margin: 0;
   padding: 3rem;
   text-align: center;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-lg);
-  color: var(--color-text-muted);
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---- Benefits: four 317x201 cards ---- */
+.benefits {
+  margin-top: 82px;
+}
+
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 317px);
+  justify-content: center;
+  gap: 16px;
+  margin-inline: -8px;
+}
+
+.benefit {
+  position: relative;
+  min-height: 201px;
+  padding: 121px 12px 24px;
+  background: #fff;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.benefitIcon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* 24/600, line 32.7, black, top at y+121 */
+.benefitTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: #000;
+}
+
+/* ---- Proses Rekrutmen: 3 + 2 ---- */
+.process {
+  margin-top: 82px;
+  margin-bottom: -4px; /* Figma: 76px to the footer, which adds 80 */
 }
 
 .steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1.25rem;
+  gap: 74px;
+}
+
+.stepRowFirst,
+.stepRowSecond {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0 -16px;
+  padding: 0;
+}
+
+/* Figma draws row 1 at x=61..1393, 7px right of centre */
+.stepRowFirst {
+  gap: 83px;
+  position: relative;
+  left: 7px;
+}
+
+.stepRowSecond {
+  gap: 110px;
 }
 
 .step {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1.75rem 1.25rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-lg);
+  align-items: center;
+  max-width: 100%;
+  text-align: center;
 }
 
-.step p {
-  margin: 0.5rem 0 0;
-  font-size: var(--fs-small);
+.stepImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .stepNumber {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 44px;
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--color-primary);
   color: #fff;
-  font-size: var(--fs-h4);
-  font-weight: var(--fw-black);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 1;
 }
 
-/* ---- Job detail ---- */
+.stepTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
+  color: #000;
+  text-align: left;
+}
+
+.stepBody {
+  margin: 12px 0 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: #000;
+}
+
+/* ---- Job detail (Figma 571:3858) ---- */
+.detailHeader {
+  padding-bottom: 51px;
+}
+
 .detail {
-  max-width: 900px;
-  padding-bottom: var(--space-section);
+  /* Figma: 69px from the e-mail note to the footer; the footer adds 80 */
+  margin-bottom: -11px;
 }
 
+/* Stacked, indented 50px: title 24/800 navy, briefcase + category,
+   then "Lamar" (162x28) and the share link. */
 .detailHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--color-border);
+  padding-left: 50px;
+}
+
+.detailTitle {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-extrabold);
+  line-height: 30px;
+  color: var(--color-secondary);
 }
 
 .detailCategory {
-  margin: 0.5rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 21px 0 0;
   font-size: var(--fs-caption);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: var(--fw-bold);
-  color: var(--color-text-muted);
+  line-height: 16.368px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.detailBriefcase {
+  flex-shrink: 0;
+  width: 17px;
+  height: 14px;
+}
+
+.detailActions {
+  display: flex;
+  align-items: center;
+  gap: 44px;
+  margin-top: 20px;
+}
+
+.detailApply {
+  width: 162px;
 }
 
 .detailSection {
-  margin-top: 2.5rem;
+  margin-top: 43px;
 }
 
-.detailSection h3 {
-  margin-bottom: 1rem;
+/* Figma gaps between the blocks: 48, 63, 43 */
+.detailSection:first-of-type {
+  margin-top: 48px;
 }
 
+.detailSection:nth-of-type(2) {
+  margin-top: 63px;
+}
+
+/* 24/600 navy with a colon, 2-segment bar 6px above */
+.detailSectionTitle {
+  --rule-space: 6px;
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+/* Bulleted lines "• …", 16/400 line 21.8, black, no indent */
+.detailBody {
+  margin-top: 5px;
+  max-width: 890px;
+}
+
+.detailBody ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.detailBody ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.detailBody ul li::before {
+  content: '•\00a0';
+}
+
+/* Plain e-mail note, 16/400 line 21.8, black, no box */
 .detailFooter {
-  margin-top: 3rem;
-  padding: 1.5rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-small);
+  margin-top: 125px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: #000;
 }
 
 .detailFooter p {
-  margin: 0 0 0.5rem;
-}
-
-.detailFooter p:last-child {
   margin: 0;
 }
 
 .detailFooter a {
-  color: var(--color-primary);
-  font-weight: var(--fw-bold);
+  color: inherit;
 }
 
-@media (max-width: 1100px) {
-  .valueGrid,
+/* ---- Responsive ---- */
+@media (max-width: 1400px) {
   .benefitGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 317px));
+    margin-inline: 0;
   }
-  .steps {
-    grid-template-columns: repeat(3, 1fr);
+
+  .stepRowFirst,
+  .stepRowSecond {
+    margin-inline: 0;
+    gap: 48px;
+    left: 0;
+  }
+
+  .step {
+    flex: 0 1 auto;
   }
 }
 
-@media (max-width: 680px) {
-  .valueGrid,
-  .benefitGrid,
-  .steps {
+@media (max-width: 1200px) {
+  .openings {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .openingsSide {
+    gap: 24px;
+  }
+
+  .jobs {
+    margin-top: 0;
+  }
+
+  .jobs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .band {
+    --strip-scale: 0.7;
+    --band-scale: 0.72;
+  }
+
+  .valueGrid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 40px;
+    row-gap: 64px;
+  }
+
+  .benefitGrid {
+    grid-template-columns: repeat(2, minmax(0, 317px));
+  }
+
+  .stepRowFirst,
+  .stepRowSecond {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    row-gap: 56px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 48px;
+  }
+
+  .heroTitle {
+    font-size: 1.75rem;
+    line-height: 1.3;
+  }
+
+  .heroSubtitle {
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+
+  .band {
+    --strip-scale: 0.5;
+    --band-scale: 0.54;
+    margin-top: 32px;
+  }
+
+  .waveTop,
+  .waveBottom {
+    height: 32px;
+  }
+
+  .waveTop {
+    top: -4px;
+  }
+
+  .waveBottom {
+    bottom: -4px;
+  }
+
+  .values,
+  .openings,
+  .benefits,
+  .process {
+    margin-top: 64px;
+  }
+
+  .valueGrid {
+    grid-template-columns: 1fr;
+    row-gap: 48px;
+  }
+
+  .valueTitle,
+  .valueSubtitle,
+  .stepTitle,
+  .benefitTitle {
+    font-size: 1.25rem;
+  }
+
+  .jobs {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+
+  .benefitGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .benefit {
+    min-height: 160px;
+    padding-top: 100px;
+  }
+
+  .benefitIcon {
+    scale: 0.8;
+    transform-origin: top center;
+  }
+
+  .step {
+    width: 100% !important;
+  }
+
+  .detailHead {
+    padding-left: 0;
+  }
+
+  .detailFooter {
+    margin-top: 64px;
+  }
+}
+
+@media (max-width: 480px) {
+  .benefitGrid {
     grid-template-columns: 1fr;
   }
 }

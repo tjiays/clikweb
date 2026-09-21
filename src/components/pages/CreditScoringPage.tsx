@@ -1,21 +1,27 @@
 import Image from 'next/image'
 import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { SectionTitle } from '@/components/sections/SectionTitle'
-import { RichText } from '@/components/ui/RichText'
 import { Button } from '@/components/ui/Button'
 import { ProductAccordion } from '@/components/sections/ProductAccordion'
+import { accordionLabels, toAccordionRows } from '@/components/sections/productAccordionRows'
 import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { productCategories, creditScoringPage } from '@/content/products'
+import { productCategories, creditScoringPage, productUi } from '@/content/products'
 import { ctaBlocks } from '@/content/cta'
 import { getProductItems, t } from '@/lib/content'
-import { Prose } from '@/components/ui/Prose'
+import { FeatureIcon } from './CreditScoringIcons'
 import styles from './CreditScoringPage.module.css'
 
-/** Credit Scoring — Figma 859:4489, per intent/02 §2.9. */
+/**
+ * Credit Scoring — Figma 859:4489 (expanded product card 1391:5420).
+ *
+ * Hero, "Apa Itu" card on a white band, the seven-card Fitur Utama &
+ * Keunggulan grid, Cara Kerja steps, Manfaat cards on a #E0F1FC band, and the
+ * What We Offer product accordion. The cross-link and banner come from
+ * CTASection.
+ */
 export async function CreditScoringPage({ locale }: { locale: Locale }) {
   const [dict, products] = await Promise.all([
     getDictionary(locale),
@@ -24,147 +30,196 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
 
   const cta = ctaBlocks.find((b) => b.page === 'credit-scoring')
   const category = productCategories.find((c) => c.slug === 'credit-scoring')
-  const find = (key: string) => creditScoringPage.sections.find((s) => s.key === key)
-  const what = find('apa-itu')
-  const howItWorks = find('cara-kerja')
-  const features = category?.advantages ?? []
+  const page = creditScoringPage
+  const { ojk, model, small, side } = page.features
 
-  const steps = [
-    { id: 'Integrasi API', en: 'API Integration' },
-    { id: 'Pengiriman Data Permohonan', en: 'Application Data Submission' },
-    { id: 'Pemrosesan & Analisis', en: 'Processing & Analysis' },
-    { id: 'Penerimaan Skor Kredit', en: 'Receiving the Credit Score' },
-  ]
-
-  const benefits = [
-    { id: 'Menurunkan Rasio NPL/NPF', en: 'Lower NPL/NPF Ratios' },
-    { id: 'Mempercepat Proses Underwriting', en: 'Faster Underwriting' },
-    { id: 'Memperluas Jangkauan Segmen', en: 'Reach More Segments' },
-    { id: 'Efisiensi Operasional', en: 'Operational Efficiency' },
-  ]
+  // Figma: the report rows expand in 0.15s, the score rows in 0.3s.
+  const duration = (product: any) =>
+    /report|variable/i.test(String(product.name ?? '')) ? 0.15 : 0.3
 
   return (
     <>
       <PageHeader
-        title={t(creditScoringPage.title, locale)}
+        title={t(page.title, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.dropdown.products, href: href('products', locale) },
           { label: dict.dropdown.creditScoring },
         ]}
         breadcrumbLabel={dict.common.breadcrumb}
+        className={styles.header}
       />
 
       <Container>
-        {/* Hero: heading, button, image */}
+        {/* Hero: rule, navy heading, Hubungi Kami; 594x397 photo right */}
         <section className={styles.hero}>
-          <div>
-            <h2 className="t-h1">
-              {t(creditScoringPage.lead, locale)}
-            </h2>
-            <div className={styles.heroAction}>
-              <Button href={href('contact', locale)} size="lg">
-                {dict.common.contactUs}
-              </Button>
-            </div>
+          <div className={styles.heroText}>
+            <h2 className={`section-rule ${styles.heroHeading}`}>{t(page.lead, locale)}</h2>
+            <Button href={href('contact', locale)} width={135} className={styles.heroButton}>
+              {dict.common.contactUs}
+            </Button>
           </div>
-          {creditScoringPage.heroImage && (
-            <Image
-              src={creditScoringPage.heroImage}
-              alt=""
-              width={620}
-              height={420}
-              className={styles.heroImage}
-              priority
-            />
-          )}
+          <Image
+            src={page.heroImage}
+            alt=""
+            width={594}
+            height={397}
+            sizes="(max-width: 1100px) 100vw, 594px"
+            className={styles.heroImage}
+            priority
+          />
         </section>
+      </Container>
 
-        {/* Apa Itu CLIK Credit Scoring? */}
-        {what && (
-          <section className={styles.section}>
-            <SectionTitle as="h2">{t(what.title, locale)}</SectionTitle>
-            <Prose body={what.body} locale={locale} />
-          </section>
-        )}
+      {/* Apa Itu CLIK Credit Scoring? — tinted card on a white band */}
+      <section className={styles.whatBand}>
+        <Container>
+          <div className={styles.what}>
+            <div className={styles.whatCard}>
+              <h2 className={styles.whatTitle}>{t(page.what.title, locale)}</h2>
+              {page.what.body.map((paragraph, i) => (
+                <p key={i} className={styles.whatText}>
+                  {t(paragraph, locale)}
+                </p>
+              ))}
+            </div>
+            <Image
+              src={page.what.illustration}
+              alt=""
+              width={580}
+              height={327}
+              sizes="(max-width: 1100px) 100vw, 580px"
+              className={styles.whatArt}
+            />
+          </div>
+        </Container>
+      </section>
 
-        {/* Fitur Utama & Keunggulan */}
-        {features.length > 0 && (
-          <section className={styles.section}>
-            <SectionTitle as="h2">
-              {locale === 'id' ? 'Fitur Utama & Keunggulan' : 'Key Features & Advantages'}
-            </SectionTitle>
-            <div className={styles.featureGrid}>
-              {features.map((feature, index) => (
-                <article key={index} className={styles.feature}>
-                  <h3 className="t-h3-soft">{t(feature.title, locale)}</h3>
-                  <p>{t(feature.description, locale)}</p>
+      <Container>
+        {/* Fitur Utama & Keunggulan — seven-card grid */}
+        <section className={styles.features}>
+          <h2 className={styles.centerTitle}>{t(page.featuresTitle, locale)}</h2>
+          <div className={styles.bento}>
+            <article className={`${styles.fCard} ${styles.ojk}`}>
+              <Image src={ojk.logo} alt="OJK" width={192} height={79} className={styles.ojkLogo} />
+              <h3 className={styles.ojkTitle}>{t(ojk.title, locale)}</h3>
+              <p className={styles.ojkText}>{t(ojk.text, locale)}</p>
+            </article>
+
+            <article className={`${styles.fCard} ${styles.model}`}>
+              <h3 className={styles.modelTitle}>{t(model.title, locale)}</h3>
+              <p className={styles.modelText}>{t(model.text, locale)}</p>
+              <div className={styles.gauge}>
+                <div className={styles.gaugeNumbers}>
+                  <span>
+                    <span className={styles.gaugeLabel}>{t(model.scoreLabel, locale)}</span>
+                    <span className={styles.gaugeValue}>525</span>
+                  </span>
+                  <span>
+                    <span className={styles.gaugeLabel}>{t(model.gradeLabel, locale)}</span>
+                    <span className={styles.gaugeValue}>E</span>
+                  </span>
+                </div>
+                <Image
+                  src={model.scale}
+                  alt={t(model.scaleAlt, locale)}
+                  width={275}
+                  height={110}
+                  className={styles.gaugeScale}
+                />
+              </div>
+              <div className={styles.legend}>
+                <span className={styles.legendItem}>
+                  <span className={styles.dotHigh} aria-hidden="true" />
+                  {t(model.high, locale)}
+                </span>
+                <span className={styles.legendItem}>
+                  <span className={styles.dotLow} aria-hidden="true" />
+                  {t(model.low, locale)}
+                </span>
+              </div>
+            </article>
+
+            {small.map((card) => (
+              <article key={card.key} className={`${styles.fCard} ${styles.small} ${styles[card.key]}`}>
+                <span className={styles.tile} style={{ background: card.tile }}>
+                  <FeatureIcon name={card.icon} />
+                </span>
+                <div>
+                  <h3 className={styles.smallTitle}>{t(card.title, locale)}</h3>
+                  <p className={styles.smallText}>{t(card.text, locale)}</p>
+                </div>
+              </article>
+            ))}
+
+            <div className={styles.sideStack}>
+              {side.map((card) => (
+                <article key={card.key} className={`${styles.fCard} ${styles.side}`}>
+                  <span className={styles.tile} style={{ background: card.tile }}>
+                    <FeatureIcon name={card.icon} />
+                  </span>
+                  <div>
+                    <h3 className={styles.sideTitle}>{t(card.title, locale)}</h3>
+                    <p className={styles.sideText}>{t(card.text, locale)}</p>
+                  </div>
                 </article>
               ))}
             </div>
-          </section>
-        )}
+          </div>
+        </section>
 
-        {/* Cara Kerja — four numbered steps */}
-        <section className={styles.section}>
-          <SectionTitle as="h2">
-            {howItWorks ? t(howItWorks.title, locale) : locale === 'id' ? 'Cara Kerja' : 'How It Works'}
-          </SectionTitle>
-          <ol className={styles.steps}>
-            {steps.map((step, index) => (
-              <li key={step.id} className={styles.step}>
-                <span className={styles.stepNumber}>{index + 1}</span>
-                <span className="t-h5">{step[locale]}</span>
+        {/* Cara Kerja — four illustrated steps */}
+        <section className={styles.steps}>
+          <h2 className={styles.stepsTitle}>{t(page.stepsTitle, locale)}</h2>
+          <ol className={styles.stepList}>
+            {page.steps.map((step, index) => (
+              <li key={index} className={styles.step}>
+                <span className={styles.stepArt}>
+                  <Image src={step.image} alt="" width={step.width} height={step.height} />
+                </span>
+                <span className={styles.stepHead}>
+                  <span className={styles.stepNumber}>{index + 1}</span>
+                  <span className={styles.stepTitle}>{t(step.title, locale)}</span>
+                </span>
+                <span className={styles.stepText}>{t(step.text, locale)}</span>
               </li>
             ))}
           </ol>
         </section>
+      </Container>
 
-        {/* Manfaat untuk Lembaga Keuangan */}
-        <section className={styles.section}>
-          <SectionTitle as="h2">
-            {locale === 'id'
-              ? 'Manfaat untuk Lembaga Keuangan'
-              : 'Benefits for Financial Institutions'}
-          </SectionTitle>
+      {/* Manfaat untuk Lembaga Keuangan — #E0F1FC band */}
+      <section className={styles.benefitsBand}>
+        <Container>
+          <h2 className={styles.centerTitle}>{t(page.benefitsTitle, locale)}</h2>
           <div className={styles.benefitGrid}>
-            {benefits.map((benefit) => (
-              <article key={benefit.id} className={styles.benefit}>
-                <h3 className="t-h3-soft">{benefit[locale]}</h3>
+            {page.benefits.map((benefit, index) => (
+              <article key={index} className={styles.benefit}>
+                <Image src={benefit.image} alt="" width={169} height={162} className={styles.benefitArt} />
+                <h3 className={styles.benefitTitle}>{t(benefit.title, locale)}</h3>
+                <p className={styles.benefitText}>{t(benefit.text, locale)}</p>
               </article>
             ))}
           </div>
-        </section>
+        </Container>
+      </section>
 
-        {/* What We Offer — the expanding product list */}
-        {products.length > 0 && (
-          <section className={styles.section}>
-            <SectionTitle
-              as="h2"
-              subtitle={
-                locale === 'id'
-                  ? 'Satu skor, satu laporan, satu keputusan.'
-                  : 'One score, one report, one decision.'
-              }
-            >
-              What We Offer
-            </SectionTitle>
+      {/* What We Offer — the expanding product list */}
+      {products.length > 0 && (
+        <Container>
+          <section className={styles.offer}>
+            <h2 className={styles.centerTitle}>{t(productUi.whatWeOffer, locale)}</h2>
+            {category?.offerSubtitle && (
+              <p className={styles.offerSubtitle}>{t(category.offerSubtitle, locale)}</p>
+            )}
             <ProductAccordion
-              rows={products.map((product: any) => ({
-                id: product.id,
-                name: product.name,
-                shortDescription: product.shortDescription,
-                description: product.description ? (
-                  <RichText data={product.description} />
-                ) : null,
-                status: product.productStatus,
-                isNew: product.isNew,
-                useCases: product.useCases,
-              }))}
+              rows={toAccordionRows(products, duration)}
+              labels={accordionLabels(locale)}
+              gap={15}
             />
           </section>
-        )}
-      </Container>
+        </Container>
+      )}
 
       <CTASection block={cta} locale={locale} />
     </>

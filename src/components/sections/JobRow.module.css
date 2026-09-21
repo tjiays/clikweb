@@ -1,36 +1,69 @@
-.row {
+/*
+ * Job card, Figma 582:3247: 393x162, white, 1px #D9D9D9 @ 50%, radius 10,
+ * shadow 0 4 4 #000 @ 25%. Content inset 27px left/right, 24px top.
+ * No card hover in Figma.
+ */
+.card {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-  padding: 1.75rem;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  flex-direction: column;
+  min-height: 162px;
+  padding: 23px 26px 16px; /* + 1px border = Figma 24 / 27 */
+  background: #fff;
+  border: 1px solid rgba(217, 217, 217, 0.5);
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: box-shadow var(--transition);
-}
-
-.row:hover {
-  box-shadow: var(--shadow-card-hover);
-}
-
-.text {
   min-width: 0;
 }
 
-.category {
-  margin: 0.4rem 0 0;
-  font-size: var(--fs-caption);
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: var(--fw-bold);
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-.actions {
+/* 16/700, line 21.8, black */
+.title {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-dense);
+  color: #000;
+}
+
+/* Briefcase 17x14 at y=68, category 12/400 line 16.4 at x+21, y=67 */
+.category {
   display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 21px 0 0;
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-regular);
+  line-height: 16.368px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.briefcase {
+  flex-shrink: 0;
+  width: 17px;
+  height: 14px;
+}
+
+/* 1px rule #000 @ 20% at y=104, then the buttons 12px below */
+.actions {
+  display: grid;
+  grid-template-columns: 163fr 162fr;
+  gap: 15px;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.category + .actions {
+  margin-top: 20px;
+}
+
+.button {
+  width: 100%;
+  padding-inline: 8px;
 }

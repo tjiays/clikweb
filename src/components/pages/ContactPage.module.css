@@ -1,47 +1,111 @@
-.layout {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 4rem;
-  padding-bottom: var(--space-section);
+/* Hubungi Kami — Figma 284:1397. Offsets are Figma px at 1440. */
+.page {
+  padding-bottom: 74px; /* Submit ends y=1796, footer at y=1950 (incl. the layout's 80px) */
 }
 
+/* Centred 10|40|10 divider at y=332, 15px under the page header */
+.divider {
+  margin-top: 15px;
+  margin-bottom: 27px;
+}
+
+/* Intro: 571px, 16/400 line 25, black, Title Case (textCase TITLE) */
+.intro {
+  max-width: 571px;
+  font-size: var(--fs-body);
+  line-height: 25px;
+  color: #000;
+  text-transform: capitalize;
+}
+
+.intro p {
+  margin: 0;
+}
+
+/* ---- Details column (x=894): icon 35px + 24px, text at x=953 ---- */
 .details {
   display: grid;
-  gap: 2rem;
   align-content: start;
+  min-width: 0;
 }
 
-.block {
+.item {
   display: grid;
-  gap: 0.5rem;
+  grid-template-columns: 35px minmax(0, 1fr);
+  column-gap: 24px;
+  align-items: start;
 }
 
-.block h2 {
+.item + .item {
+  margin-top: 8px;
+}
+
+.item + .item + .item {
+  margin-top: 10px;
+}
+
+.icon {
+  justify-self: center;
+  margin-top: 15px;
+  color: var(--color-primary);
+}
+
+.iconBuilding {
+  margin-top: 12px;
+}
+
+/* "Visit Us:" / "E-mail Us" / "Call Us": 18/700 line 30 navy */
+.heading {
+  margin: 0;
+  font-size: var(--fs-h5);
+  font-weight: var(--fw-bold);
+  line-height: 30px;
   color: var(--color-secondary);
 }
 
-.block address {
+/* Address / e-mail / phone: 16/400 line 30 black; address box 417px */
+.value {
+  display: block;
+  max-width: 417px;
+  font-size: var(--fs-body);
   font-style: normal;
-  line-height: 1.7;
+  font-weight: var(--fw-regular);
+  line-height: 30px;
+  color: #000;
+  text-decoration: none;
 }
 
-.block a {
-  color: var(--color-primary);
-  font-weight: var(--fw-semibold);
+a.value:hover {
+  text-decoration: underline;
+}
+
+/* Company bar 433x32 (#EFEFEF, 1px #CCCCCC; 16/700 #373737 at 6,6) over a
+   433x433 map, centred in the column, 21px under the phone number. */
+.mapBlock {
+  width: 100%;
+  max-width: 433px;
+  margin: 21px auto 0;
 }
 
 .company {
-  margin: 0.5rem 0 0;
+  margin: 0;
+  height: 32px;
+  padding: 4px 5px;
+  overflow: hidden;
+  background: #efefef;
+  border: 1px solid #ccc;
+  font-size: var(--fs-body);
   font-weight: var(--fw-bold);
-  color: var(--color-secondary);
+  line-height: 21.824px;
+  color: #373737;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .map {
   position: relative;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  border: 1px solid var(--color-border);
+  aspect-ratio: 1;
+  background: #e5e3df;
 }
 
 .map iframe {
@@ -52,18 +116,18 @@
   border: 0;
 }
 
-.mapMissing {
-  padding: 2rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  text-align: center;
+@media (max-width: 1000px) {
+  .mapBlock {
+    margin-inline: 0;
+  }
 }
 
-@media (max-width: 1000px) {
-  .layout {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+@media (max-width: 768px) {
+  .page {
+    padding-bottom: 24px;
+  }
+
+  .divider {
+    margin-top: -24px;
   }
 }

@@ -24,7 +24,8 @@ export const HEARD_FROM = [
   'Other',
 ] as const
 
-export const MARKETING_CHANNELS = ['SMS/WhatsApp', 'Telephone', 'Email', 'Newsletter'] as const
+/** Figma order (Hubungi Kami 300:1751 … 300:1749). */
+export const MARKETING_CHANNELS = ['Newsletter', 'Email', 'SMS/WhatsApp', 'Telephone'] as const
 
 export type ContactFormValues = {
   firstName: string
@@ -78,6 +79,7 @@ export function validateContactForm(
     'phone',
     'companyName',
     'interestedIn',
+    'hearAboutUs',
     'message',
   ]
 

@@ -1,95 +1,606 @@
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
+/* Credit Scoring — Figma 859:4489 (positions are at 1440). */
+
+.header {
+  padding-bottom: 0;
 }
 
-.heroAction {
-  margin-top: 2rem;
+/* ---- Hero: rule x70 y350, heading y363 (w654), button y567; photo 594x397 at x776 y287 ---- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 594px;
+  column-gap: 52px;
+  align-items: start;
+  margin-top: 24px;
+}
+
+.heroText {
+  padding-top: 63px;
+}
+
+.heroHeading {
+  margin: 0;
+  max-width: 654px;
+  font-size: 38px;
+  font-weight: var(--fw-bold);
+  line-height: 51.832px;
+  color: var(--color-secondary);
+}
+
+.heroButton {
+  margin-top: 100px;
 }
 
 .heroImage {
-  width: 100%;
-  height: auto;
+  width: 594px;
+  height: 397px;
+  object-fit: cover;
+  border-radius: var(--radius-tile);
+}
+
+/* ---- Apa Itu: white band 527 tall; #F1FAFF card 699x409; art 580x327 ---- */
+.whatBand {
+  margin-top: 67px;
+  background: var(--color-bg-surface);
+}
+
+.what {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 59px 0 59px;
+}
+
+.whatCard {
+  flex: 0 0 699px;
+  min-height: 409px;
+  padding: 44px 44px 40px;
+  background: var(--color-bg-tint);
   border-radius: var(--radius-lg);
+}
+
+.whatTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+.whatText {
+  margin: 21.824px 0 0;
+  max-width: 611px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+.whatText:first-of-type {
+  margin-top: 24px;
+}
+
+.whatArt {
+  margin-top: 41px;
+  width: 580px;
+  height: 327px;
   object-fit: cover;
 }
 
-.section {
-  margin-top: var(--space-section);
-}
-
-.featureGrid,
-.benefitGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.feature,
-.benefit {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2rem;
-  transition: transform var(--transition), box-shadow var(--transition);
-}
-
-.feature:hover,
-.benefit:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
-}
-
-.feature p {
-  margin: 0.75rem 0 0;
-  font-size: var(--fs-small);
-}
-
-.steps {
-  list-style: none;
+/* Shared centred 24/700 navy section title. */
+.centerTitle {
   margin: 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+/* ---- Fitur Utama & Keunggulan: grid x121–1318 ---- */
+.features {
+  margin-top: 50px;
+}
+
+.features .centerTitle {
+  line-height: 30px;
+}
+
+.bento {
+  display: grid;
+  grid-template-columns: 414px 407px 336px;
+  grid-template-rows: 328px 157px;
+  grid-template-areas:
+    'ojk model side'
+    'realtime coverage side';
+  gap: 20px;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.fCard {
+  background: var(--color-bg-tint);
+  border: 1px solid #eaf0f8;
+  border-radius: var(--radius-tile);
+  box-shadow: var(--shadow-card);
+}
+
+/* OJK: logo 192x79, centred 22/600 title, 14px grey text. */
+.ojk {
+  grid-area: ojk;
+  padding: 28px 28px 0 36px;
+  border: none;
+  border-radius: var(--radius-lg);
+}
+
+.ojkLogo {
+  display: block;
+  width: 192px;
+  height: 79px;
+  margin-left: -4px;
+}
+
+.ojkTitle {
+  margin: 31px 0 0;
+  text-align: center;
+  font-size: 22px;
+  font-weight: var(--fw-semibold);
+  line-height: 35.1px;
+  color: var(--color-secondary);
+}
+
+.ojkText,
+.modelText,
+.smallText,
+.sideText {
+  font-size: 14px;
+  line-height: 19.1px;
+  color: #64748b;
+}
+
+.ojkText {
+  margin: 31px 0 0;
+  max-width: 348px;
+}
+
+/* Model Skor Kredit: title, text, Score/Risk Grade, A–J scale, legend. */
+.model {
+  grid-area: model;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 25px 0;
+  text-align: center;
+}
+
+.modelTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: var(--fw-semibold);
+  line-height: 31.2px;
+  color: var(--color-secondary);
+}
+
+.modelText {
+  margin: 22px 0 0;
+  max-width: 290px;
+}
+
+.gauge {
+  margin-top: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gaugeNumbers {
+  display: flex;
+  gap: 20px;
+  margin-left: 8px;
+}
+
+.gaugeNumbers > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gaugeLabel {
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  line-height: 30px;
+  color: #000;
+}
+
+.gaugeValue {
+  margin-top: -6px;
+  font-size: 24px;
+  font-weight: var(--fw-extrabold);
+  line-height: 30px;
+  color: var(--color-secondary);
+}
+
+.gaugeScale {
+  display: block;
+  margin-top: -3px;
+  width: 275px;
+  height: 110px;
+  border-radius: var(--radius-button);
+}
+
+.legend {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0;
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  line-height: 15.8px;
+  color: #475569;
+}
+
+.dotHigh,
+.dotLow {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.dotLow {
+  background: #16a34a;
+}
+
+/* Real-Time / Cakupan: 66px icon tile, title 22/400, text beside it. */
+.small {
+  display: flex;
+  align-items: flex-start;
+  gap: 21px;
+  padding: 20px 20px 0 26px;
+}
+
+.realtime {
+  grid-area: realtime;
+}
+
+.coverage {
+  grid-area: coverage;
+  gap: 17px;
+}
+
+.tile {
+  flex: 0 0 66px;
+  width: 66px;
+  height: 66px;
+  margin-top: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-tile);
+}
+
+.smallTitle,
+.sideTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: var(--fw-regular);
+  line-height: 26.2px;
+  color: var(--color-secondary);
+}
+
+.smallText {
+  margin: 15px 0 0;
+  max-width: 280px;
+}
+
+/* Right column: three 336x154 cards. */
+.sideStack {
+  grid-area: side;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.side {
+  height: 154px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 19px 14px 0 20px;
+}
+
+.side .tile {
+  margin-top: 1px;
+}
+
+/* Figma breaks "Keamanan Data / Terjamin" and keeps the others on one line. */
+.sideTitle {
+  min-height: 44px;
+  line-height: 21.9px;
+  white-space: pre;
+}
+
+.sideText {
+  margin: 7px 0 0;
+  max-width: 200px;
+}
+
+/* ---- Cara Kerja: title y1958, steps y2013 ---- */
+.steps {
+  margin-top: 70px;
+}
+
+.stepsTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-secondary);
+}
+
+.stepList {
+  list-style: none;
+  margin: 25px 0 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  counter-reset: step;
+  grid-template-columns: 292px 348px 310px 284px;
+  gap: 25px;
 }
 
 .step {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 2rem 1.5rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-lg);
+  align-items: center;
+  text-align: center;
+}
+
+.stepArt {
+  height: 201px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.stepArt img {
+  display: block;
+}
+
+.stepHead {
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .stepNumber {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
   border-radius: 50%;
   background: var(--color-primary);
   color: #fff;
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-black);
+  font-size: 18px;
+  font-weight: var(--fw-bold);
+  line-height: 24.552px;
 }
 
-@media (max-width: 1000px) {
+.stepTitle {
+  font-size: 22px;
+  font-weight: var(--fw-semibold);
+  line-height: 30px;
+  color: var(--color-secondary);
+  white-space: nowrap;
+}
+
+.stepText {
+  margin-top: 24px;
+  max-width: 305px;
+  font-size: 14px;
+  line-height: 19.1px;
+  color: var(--color-text-body);
+}
+
+.step:nth-child(2) .stepText {
+  max-width: 281px;
+}
+
+.step:nth-child(4) .stepText {
+  max-width: 254px;
+}
+
+/* ---- Manfaat: #E0F1FC band 660 tall, cards 313x495 ---- */
+.benefitsBand {
+  margin-top: 60px;
+  padding: 37px 0 70px;
+  background: #e0f1fc;
+}
+
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 313px);
+  gap: 16px;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.benefit {
+  height: 495px;
+  padding: 56px 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.benefitArt {
+  display: block;
+  width: 169px;
+  height: 162px;
+  border-radius: 37px;
+}
+
+.benefitTitle {
+  margin: 24px 0 0;
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 267px;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+.benefitText {
+  margin: 10px 0 0;
+  max-width: 278px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+/* ---- What We Offer: title y3159, subtitle y3200, list y3238 ---- */
+.offer {
+  margin-top: 82px;
+  margin-bottom: 50px;
+}
+
+.offerSubtitle {
+  margin: 8px 0 16px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+/* ---------------- responsive ---------------- */
+@media (max-width: 1340px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
+    grid-template-areas:
+      'ojk model'
+      'realtime coverage'
+      'side side';
+  }
+  .sideStack {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .side {
+    height: auto;
+    min-height: 154px;
+    padding-bottom: 16px;
+  }
+  .sideTitle {
+    white-space: pre-line;
+  }
+  .small {
+    padding-bottom: 20px;
+  }
+  .stepList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 48px;
+  }
+  .benefitGrid {
+    grid-template-columns: repeat(2, minmax(0, 313px));
+  }
+  .what {
+    gap: 32px;
+  }
+  .whatCard {
+    flex: 1 1 55%;
+  }
+  .whatArt {
+    flex: 1 1 45%;
+    width: 45%;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 1100px) {
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
   }
-  .steps {
-    grid-template-columns: repeat(2, 1fr);
+  .heroText {
+    padding-top: 0;
+  }
+  .heroButton {
+    margin-top: 32px;
+  }
+  .heroImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 594 / 397;
+  }
+  .what {
+    flex-direction: column;
+  }
+  .whatCard {
+    flex: none;
+    width: 100%;
+    min-height: 0;
+  }
+  .whatArt {
+    width: 100%;
+    margin-top: 0;
   }
 }
 
-@media (max-width: 600px) {
-  .steps {
-    grid-template-columns: 1fr;
+@media (max-width: 700px) {
+  .heroHeading {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  .whatCard {
+    padding: 28px 20px;
+  }
+  .bento,
+  .sideStack {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'ojk'
+      'model'
+      'realtime'
+      'coverage'
+      'side';
+  }
+  .ojk {
+    padding: 24px 20px;
+  }
+  .model {
+    padding-bottom: 20px;
+  }
+  .stepList,
+  .benefitGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stepTitle {
+    white-space: normal;
+    font-size: 20px;
+  }
+  .stepArt {
+    height: auto;
+  }
+  .stepArt img {
+    max-width: 100%;
+    height: auto;
+  }
+  .benefit {
+    height: auto;
+    padding-bottom: 32px;
+  }
+  .offer {
+    margin-top: 56px;
   }
 }

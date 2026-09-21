@@ -1,11 +1,15 @@
+/* Product status badges (Figma product row, CS-14): 23px tall, radius 15,
+   14/700, letter-spacing 0.3px. */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.7rem;
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-caption);
+  height: 23px;
+  padding: 0 10px;
+  border-radius: 15px;
+  font-size: var(--fs-small);
   font-weight: var(--fw-bold);
-  letter-spacing: 0.02em;
+  line-height: 1;
+  letter-spacing: 0.3px;
   white-space: nowrap;
   border: 1px solid transparent;
 }
@@ -23,5 +27,6 @@
 
 .new {
   background: var(--badge-new-bg);
+  border-color: var(--badge-new-border);
   color: var(--badge-new-text);
 }

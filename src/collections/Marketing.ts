@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Field } from 'payload'
 import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
 import {
@@ -13,6 +13,17 @@ import { lockedForApprover } from '@/fields/approval'
 
 const owners = MODULE_OWNERS.marketing
 const group = 'Konten Website'
+
+/** A short localised list of labels on a product item. */
+const productList = (name: string, label: string, itemLabel: string): Field => ({
+  name,
+  type: 'array',
+  label,
+  localized: true,
+  access: lockedForApprover,
+  labels: { singular: itemLabel, plural: label },
+  fields: [{ name: 'label', type: 'text', label: itemLabel, required: true }],
+})
 
 export const ProductItems: CollectionConfig = contentCollection({
   slug: 'product-items',
@@ -66,16 +77,12 @@ export const ProductItems: CollectionConfig = contentCollection({
       access: lockedForApprover,
       admin: { position: 'sidebar' },
     },
-    {
-      name: 'useCases',
-      type: 'array',
-      label: 'Use cases per segmen',
-      access: lockedForApprover,
-      fields: [
-        localisedText('segment', 'Segmen', true),
-        localisedTextarea('use', 'Penggunaan'),
-      ],
-    },
+    // The expanded card (Figma 1391:5420): feature chips under "Fitur Utama",
+    // then the "Cocok Untuk" and "Kasus Penggunaan" lists. Each language keeps
+    // its own list, so the whole array is localised.
+    productList('features', 'Fitur utama (chip)', 'Fitur'),
+    productList('suitableFor', 'Cocok untuk', 'Segmen'),
+    productList('useCases', 'Kasus penggunaan', 'Kasus'),
     sortOrderField,
   ],
 })

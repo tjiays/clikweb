@@ -1,144 +1,276 @@
+/* Figma "Product card" (collapsed 1432:6749, expanded 1391:5420). */
 .list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .row {
+  --accordion-duration: 0.3s;
   background: var(--color-bg-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow var(--transition), border-color var(--transition);
+  border-radius: 15px;
+  transition:
+    border-color var(--accordion-duration) linear,
+    box-shadow var(--accordion-duration) linear;
 }
 
+/* Expanded: 1px #000@30% frame (prototype variants 1647:12316, 1432:6790)
+   and the card shadow used on Business Solution. */
 .rowOpen {
-  border-color: var(--color-primary);
-  box-shadow: var(--shadow-card-hover);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-card);
 }
 
+/* Collapsed row: 75px — badges column (names start at x154), text, toggle. */
 .head {
   width: 100%;
+  min-height: 73px;
   display: grid;
-  /* badge | name and description | toggle */
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 133px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.5rem;
+  column-gap: 0;
+  padding: 9px 14px 9px 20px;
   background: none;
   border: none;
+  border-radius: 15px;
   cursor: pointer;
   text-align: left;
-  min-height: 75px;
+  font: inherit;
+  color: inherit;
 }
 
-/* Expanded, the toggle sits against the top edge rather than centred. */
-.rowOpen .head {
-  align-items: start;
-  padding-top: 1.25rem;
+.head:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
+/* Status badge, with NEW stacked 9px under it (Figma 21,10 / 21,42). */
 .badges {
   display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
   min-width: 0;
 }
 
 .name {
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-extrabold);
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
   color: var(--color-secondary);
 }
 
 .short {
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
+  font-size: 16px;
+  font-weight: var(--fw-regular);
+  line-height: 21.824px;
+  color: var(--color-text-secondary);
 }
 
-/* Collapsed: an outlined circle. Expanded: filled navy with a cross. */
+/* Collapsed 46x46 white circle, 1px #DDD, navy plus. Expanded 45x45 navy,
+   1px #DBE4F0, white cross. */
 .toggle {
-  width: 36px;
-  height: 36px;
+  width: 46px;
+  height: 46px;
   display: grid;
   place-items: center;
+  align-self: start;
+  margin-top: 5px;
   border-radius: 50%;
-  border: 1px solid var(--color-border);
+  border: 1px solid #dddddd;
   background: var(--color-bg-surface);
   color: var(--color-secondary);
   transition:
-    background-color var(--transition),
-    border-color var(--transition),
-    color var(--transition);
+    background-color var(--accordion-duration) linear,
+    border-color var(--accordion-duration) linear,
+    color var(--accordion-duration) linear;
 }
 
-.head:hover .toggle {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.toggle svg {
+  grid-area: 1 / 1;
 }
 
-.toggleOpen,
-.head:hover .toggleOpen {
+.cross {
+  opacity: 0;
+}
+
+.rowOpen .toggle {
+  width: 45px;
+  height: 45px;
   background: var(--color-secondary);
-  border-color: var(--color-secondary);
+  border-color: var(--color-border);
   color: #fff;
 }
 
+.rowOpen .plus {
+  opacity: 0;
+}
+
+.rowOpen .cross {
+  opacity: 1;
+}
+
+/* Height animates from 0 to auto with the grid-rows technique. */
+.bodyWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--accordion-duration) linear;
+}
+
+.rowOpen .bodyWrap {
+  grid-template-rows: 1fr;
+}
+
+.bodyInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Columns at x21 (603 wide), x664 and x926 of the 1300 card. */
 .body {
-  padding: 0 1.5rem 1.5rem;
-  border-top: 1px solid var(--color-border);
-  margin-top: -1px;
-  padding-top: 1.25rem;
-}
-
-.useCases {
   display: grid;
-  gap: 0.75rem;
-  margin: 1.25rem 0 0;
+  grid-template-columns: 603px 222px minmax(0, 1fr);
+  column-gap: 40px;
+  padding: 26px 20px 30px;
 }
 
-.useCase {
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.useCase dt {
-  font-weight: var(--fw-bold);
-  color: var(--color-secondary);
-  font-size: var(--fs-small);
-}
-
-.useCase dd {
+.heading {
   margin: 0;
-  font-size: var(--fs-small);
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
+  color: var(--color-primary);
+  text-transform: capitalize;
 }
 
-@media (max-width: 900px) {
+.description {
+  margin-top: 6px;
+  min-height: 66px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-secondary);
+}
+
+.description :global(*) {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+.featuresHeading {
+  margin-top: 45px;
+}
+
+/* Feature chips: #DBE4F0, radius 15, padding 3/12, 5px apart. */
+.chips {
+  list-style: none;
+  margin: 5px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.chip {
+  padding: 3px 12px;
+  border-radius: 15px;
+  background: var(--color-border);
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-secondary);
+}
+
+/* Lists with 10x2 orange dash bullets; items 27px apart. */
+.dashList {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.dashList li {
+  position: relative;
+  padding-left: 15px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-secondary);
+}
+
+.dashList li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 10px;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .toggle,
+  .bodyWrap {
+    transition: none;
+  }
+}
+
+@media (max-width: 1100px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 24px;
+  }
+  .colMain {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
   .head {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       'badges toggle'
       'text text';
-    align-items: start;
-    gap: 0.75rem;
+    row-gap: 8px;
+    padding: 14px 14px 14px 16px;
   }
-  .badges { grid-area: badges; }
-  .text { grid-area: text; }
-  .toggle { grid-area: toggle; }
-
-  .useCase {
-    grid-template-columns: 1fr;
-    gap: 0.25rem;
+  .badges {
+    grid-area: badges;
+    flex-direction: row;
+  }
+  .text {
+    grid-area: text;
+  }
+  .toggle {
+    grid-area: toggle;
+    margin-top: 0;
+  }
+  .name {
+    font-size: 20px;
+    line-height: 27px;
+  }
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px 16px 24px;
+  }
+  .description {
+    min-height: 0;
+  }
+  .featuresHeading {
+    margin-top: 24px;
+  }
+  .heading {
+    font-size: 20px;
+    line-height: 27px;
   }
 }

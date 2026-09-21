@@ -1,134 +1,245 @@
+/* Footer — Figma 113:551. Measurements are at the 1440 design width. */
 .footer {
   background: var(--color-bg-tint);
-  color: var(--color-text-muted);
-  padding-block: 3.5rem 1.5rem;
+  border-top: 2px solid var(--color-primary);
+  color: var(--color-secondary);
   margin-top: var(--space-section);
+}
+
+/* A page that ends in a full-bleed CTA banner sits directly on the footer
+   (Figma: the footer instance starts at the banner's bottom edge). */
+:global(#main:has([data-flush-footer])) + .footer {
+  margin-top: 0;
+}
+
+.inner {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 58px 84px 24px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 2.5rem;
+  grid-template-columns: minmax(0, 428px) minmax(0, 516px) minmax(0, 1fr);
+  min-height: 307px;
 }
 
-.column {
-  min-width: 0;
-}
-
+/* ---- Brand column ---- */
 .logo {
-  display: inline-block;
-  margin-bottom: 1.25rem;
+  display: block;
+  width: fit-content;
+  line-height: 0;
 }
 
 .logoImage {
-  height: 52px;
-  width: auto;
+  width: 328px;
+  height: 109px;
   object-fit: contain;
 }
 
 .address {
-  font-style: normal;
-  font-size: var(--fs-small);
-  line-height: 1.7;
+  margin: 37px 0 0 10px;
+  max-width: 306px;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 18.15px;
+  color: var(--color-secondary);
 }
 
 .address p {
-  margin: 0 0 0.5rem;
+  margin: 0;
+}
+
+.address p + p {
+  margin-top: 18.15px;
+}
+
+.line {
+  display: block;
 }
 
 .address a {
-  color: var(--color-secondary);
+  color: inherit;
 }
 
 .address a:hover {
   color: var(--color-primary);
 }
 
+.website {
+  text-decoration: underline;
+}
+
+/* ---- Column headings: 16/400, line 30 ---- */
 .heading {
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-extrabold);
-  letter-spacing: 0.08em;
+  margin: 17px 0 0;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: 30px;
+  letter-spacing: 0;
   color: var(--color-secondary);
-  margin-bottom: 1rem;
+}
+
+.headingMembers {
+  color: #000;
+}
+
+/* ---- Members: 2x2 logos, columns at x=512 and x=796 ---- */
+.memberGrid {
+  display: grid;
+  grid-template-columns: 284px auto;
+  grid-template-rows: 65px auto;
+  row-gap: 36px;
+  align-items: start;
+  list-style: none;
+  margin: 1px 0 0;
+  padding: 0;
+}
+
+.memberGrid li {
+  line-height: 0;
+}
+
+.memberLogo {
+  display: block;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* ---- Regulator: OJK 160x66 + licence caption, bottoms aligned ---- */
+.ojkRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 27px;
+  margin-top: 11px;
+}
+
+.ojkLogo {
+  width: 160px;
+  height: 66px;
+  object-fit: contain;
+}
+
+.licence {
+  margin: 0;
+  font-size: var(--fs-micro);
+  line-height: 20px;
+  margin-bottom: -3px;
+  color: var(--color-secondary);
+  white-space: nowrap;
+}
+
+/* ---- Bottom ---- */
+.rule {
+  width: 100%;
+  max-width: 1207px;
+  margin: 0;
+  border: 0;
+  border-top: 1px solid var(--color-secondary);
+}
+
+.bottom {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  margin-top: 18px;
+  min-height: 30px;
 }
 
 .socials {
   display: flex;
-  gap: 0.625rem;
+  align-items: flex-start;
+  gap: 16px;
   list-style: none;
-  margin: 1.25rem 0 0;
+  margin: 6px 0 0 15px;
   padding: 0;
 }
 
 .social {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  transition: opacity var(--transition), transform var(--transition);
-}
-
-.social:hover {
-  opacity: 0.75;
-  transform: translateY(-2px);
-}
-
-.social img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-}
-
-.partnerLogo {
-  height: 46px;
-  width: auto;
-  object-fit: contain;
-}
-
-.logoRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.25rem 1.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Placeholder chips stand in for the real logo images until Phase 2. */
-.logoChip {
-  display: inline-grid;
-  place-items: center;
-  min-width: 64px;
-  padding: 0.5rem 0.75rem;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-caption);
-  font-weight: var(--fw-bold);
+  display: block;
   color: var(--color-secondary);
+  line-height: 0;
 }
 
-.licence {
-  margin-top: 0.75rem;
-  font-size: var(--fs-micro);
-  line-height: 1.6;
+.social svg {
+  width: 24px;
+  height: 24px;
 }
 
-.bottom {
-  margin-top: 2.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--color-border);
+.social.whatsapp svg {
+  width: 19px;
+  height: 19px;
+  margin-top: 2px;
 }
 
 .copyright {
+  grid-column: 2;
   margin: 0;
   font-size: var(--fs-small);
+  line-height: 30px;
+  color: var(--color-secondary);
+  text-align: center;
+}
+
+@media (max-width: 1280px) {
+  .inner {
+    padding-inline: var(--gutter);
+  }
+  .grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    column-gap: 2rem;
+  }
+  .logoImage {
+    width: 260px;
+    height: auto;
+  }
+  .memberGrid {
+    grid-template-columns: repeat(2, minmax(0, auto));
+    grid-template-rows: auto;
+    gap: 1.5rem 2rem;
+  }
+  .memberLogo {
+    width: auto !important;
+    height: auto !important;
+    max-height: 60px;
+    max-width: 100%;
+  }
+  .ojkRow {
+    flex-wrap: wrap;
+    gap: 12px 20px;
+  }
 }
 
 @media (max-width: 900px) {
+  .inner {
+    padding-top: 2.5rem;
+  }
   .grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    row-gap: 2rem;
+    min-height: 0;
+    padding-bottom: 2rem;
+  }
+  .logoImage {
+    width: 200px;
+  }
+  .address {
+    margin: 1.25rem 0 0;
+  }
+  .heading {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+  .bottom {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 0.75rem;
+  }
+  .socials {
+    margin: 0;
+  }
+  .copyright {
+    grid-column: auto;
   }
 }

@@ -1,43 +1,185 @@
-.article {
-  max-width: 900px;
+/* Figma 556:2721 at 1440 (main starts at y=90). */
+
+/* ---- Hero: band 95-499, breadcrumb 142, cover 222-594, panel 523-665 ---- */
+.hero {
+  position: relative;
+}
+
+.band {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  height: 404px;
+  background: var(--color-bg-tint); /* #F1FAFF */
+}
+
+.hero > :not(.band) {
+  position: relative;
+}
+
+.crumbs {
+  padding-top: var(--space-header-to-breadcrumb); /* text box at y=142 */
+  margin-bottom: 46px; /* breadcrumb box bottom 176 → cover 222 */
 }
 
 .cover {
+  display: block;
   width: 100%;
   height: auto;
-  border-radius: var(--radius-lg);
+  aspect-ratio: 1300 / 372;
   object-fit: cover;
-  margin-bottom: 2rem;
+  border-radius: var(--radius-card); /* 10 */
+}
+
+.coverEmpty {
+  background: linear-gradient(135deg, var(--color-bg-tint), var(--color-border));
+}
+
+/* 1180x142, 60px in from the content edge, over the cover's last 71px */
+.panel {
+  position: relative; /* paints over the cover */
+  display: flex;
+  align-items: center;
+  max-width: 1180px;
+  min-height: 142px;
+  margin: -71px auto 0;
+  padding: 19px 66px;
+  background: var(--color-bg-tint);
+  border-radius: 20px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-h1); /* 38 */
+  font-weight: var(--fw-extrabold);
+  line-height: var(--lh-heading); /* 51.8 */
+  color: var(--color-secondary);
+}
+
+/* ---- Article column: 992px centred (x=224-1216) ---- */
+.article {
+  max-width: 992px;
+  margin: 41px auto 0; /* panel bottom 665 → date row 706 */
 }
 
 .meta {
   display: flex;
-  gap: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
+  min-height: 30px;
+}
+
+.date {
+  font-size: 16.25px;
+  font-weight: var(--fw-extrabold);
+  line-height: 30px;
+  color: #000;
 }
 
 .divider {
   border: none;
-  border-top: 1px solid var(--color-border);
-  margin: 2rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  margin: 20px 0 23px; /* row bottom 736 → line 756 → body 780 */
 }
 
+/* ---- Related: #E0F1FC band from y=3026 to the footer ---- */
 .related {
-  margin-top: var(--space-section);
-  padding-bottom: var(--space-section);
+  margin-top: 112px; /* body bottom 2914 → band 3026 */
+  padding: 46px 0 74px;
+  background: #e0f1fc;
 }
 
+/* Heading x=130 (60px in), line 18px after it, ending x=1310 */
+.relatedHead {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-inline: 60px;
+  margin-bottom: 34px; /* heading 3072-3102 → cards 3136 */
+}
+
+.relatedTitle {
+  margin: 0;
+  flex-shrink: 0;
+  max-width: 100%;
+  font-size: var(--fs-h3); /* 24 */
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  text-transform: uppercase;
+  color: var(--color-secondary);
+}
+
+.relatedLine {
+  flex: 1;
+  min-width: 40px;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+/* Cards at x=62, 517, 972: 406 wide, 49 apart — 8px wider than the container */
 .relatedGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 406px));
+  justify-content: center;
+  column-gap: 49px;
+  row-gap: 32px;
+  margin-inline: -8px;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1340px) {
   .relatedGrid {
-    grid-template-columns: 1fr;
+    margin-inline: 0;
+    column-gap: 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .panel {
+    margin-inline: 24px;
+    padding: 20px 32px;
+  }
+  .title {
+    font-size: 30px;
+  }
+  .relatedHead {
+    padding-inline: 0;
+  }
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 406px));
+  }
+  .related {
+    margin-top: 80px;
+    padding-bottom: 56px;
+  }
+}
+
+@media (max-width: 768px) {
+  .band {
+    height: 300px;
+  }
+  .cover {
+    aspect-ratio: 16 / 9;
+  }
+  .panel {
+    min-height: 0;
+    margin: -32px 12px 0;
+    padding: 16px 20px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .article {
+    margin-top: 28px;
+  }
+  .relatedTitle {
+    flex-shrink: 1;
+    font-size: 20px;
+    line-height: 26px;
+  }
+  .relatedGrid {
+    grid-template-columns: minmax(0, 406px);
   }
 }

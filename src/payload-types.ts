@@ -283,6 +283,10 @@ export interface Report {
    */
   slug: string;
   year: number;
+  /**
+   * Shown on the report card, left of the date.
+   */
+  author?: string | null;
   excerpt?: string | null;
   cover?: (number | null) | Media;
   body: {
@@ -300,6 +304,29 @@ export interface Report {
     };
     [k: string]: unknown;
   };
+  financialTables?:
+    | {
+        /**
+         * e.g. "Laporan Keuangan Posisi Keuangan 31 Desember 2025 (terlampir)".
+         */
+        intro?: string | null;
+        /**
+         * e.g. "LAPORAN LABA RUGI". Leave empty for none.
+         */
+        title?: string | null;
+        caption?: string | null;
+        rows?:
+          | {
+              label: string;
+              value?: string | null;
+              emphasis?: ('none' | 'label' | 'row') | null;
+              gapBefore?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   publishDate?: string | null;
   /**
    * Lower numbers appear first.
@@ -444,10 +471,21 @@ export interface ProductItem {
   } | null;
   productStatus: 'live' | 'ready_to_sell';
   isNew?: boolean | null;
+  features?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  suitableFor?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
   useCases?:
     | {
-        segment: string;
-        use?: string | null;
+        label: string;
         id?: string | null;
       }[]
     | null;
@@ -676,9 +714,27 @@ export interface ReportsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   year?: T;
+  author?: T;
   excerpt?: T;
   cover?: T;
   body?: T;
+  financialTables?:
+    | T
+    | {
+        intro?: T;
+        title?: T;
+        caption?: T;
+        rows?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              emphasis?: T;
+              gapBefore?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   publishDate?: T;
   sortOrder?: T;
   isSample?: T;
@@ -732,11 +788,22 @@ export interface ProductItemsSelect<T extends boolean = true> {
   description?: T;
   productStatus?: T;
   isNew?: T;
+  features?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  suitableFor?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   useCases?:
     | T
     | {
-        segment?: T;
-        use?: T;
+        label?: T;
         id?: T;
       };
   sortOrder?: T;

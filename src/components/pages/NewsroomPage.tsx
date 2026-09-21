@@ -6,19 +6,26 @@ import { Pagination } from '@/components/ui/Pagination'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { mediaOutlets } from '@/content/newsroom'
+import {
+  mediaLogoStrip,
+  mediaLogoStripGap,
+  mediaLogoStripSeconds,
+  mediaOutlets,
+} from '@/content/newsroom'
 import { getArticlesPage, getFeaturedArticles, imageUrl, imageAlt } from '@/lib/content'
 import { formatDate } from '@/lib/format'
 import styles from './NewsroomPage.module.css'
 
-/** Newsroom — Figma 305:1082. One paginated page (confirmed decision 5). */
+/** Featured News shows 8 titles in Figma (1783:10734). */
+const FEATURED_LIMIT = 8
+
+/** Newsroom — Figma 305:1082 (page 1) and 1661:8648 (page 2). */
 export async function NewsroomPage({ locale, page }: { locale: Locale; page: number }) {
   const [dict, articles, featured] = await Promise.all([
     getDictionary(locale),
     getArticlesPage(locale, page),
-    getFeaturedArticles(locale),
+    getFeaturedArticles(locale, FEATURED_LIMIT),
   ])
-  const outlets = mediaOutlets
 
   return (
     <>
@@ -29,26 +36,32 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
           { label: dict.nav.newsroom },
         ]}
         breadcrumbLabel={dict.common.breadcrumb}
+        className={styles.header}
+      />
+
+      <MediaLogoStrip
+        logos={mediaLogoStrip}
+        label={dict.newsroom.mediaList}
+        seconds={mediaLogoStripSeconds}
+        gap={mediaLogoStripGap}
       />
 
       <Container>
-        <MediaLogoStrip outlets={outlets} label={dict.newsroom.mediaList} />
-
-        <div className={styles.layout}>
+        <div className={styles.layout} data-flush-footer>
           <NewsroomSidebar
             locale={locale}
             featured={featured}
-            outlets={outlets}
+            outlets={mediaOutlets}
             featuredLabel={dict.newsroom.featured}
             outletsLabel={dict.newsroom.mediaList}
           />
 
-          <div>
+          <div className={styles.content}>
             {articles.docs.length === 0 ? (
               <p className={styles.empty}>{dict.newsroom.empty}</p>
             ) : (
               <div className={styles.grid}>
-                {articles.docs.map((article: any) => (
+                {articles.docs.map((article) => (
                   <ArticleCard
                     key={article.id}
                     title={article.title}
@@ -59,6 +72,7 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
                     imageUrl={imageUrl(article.cover)}
                     imageAlt={imageAlt(article.cover)}
                     readMoreLabel={dict.common.readMore}
+                    shareLabel={dict.newsroom.share.replace(/:$/, '')}
                   />
                 ))}
               </div>

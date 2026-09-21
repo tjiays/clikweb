@@ -1,116 +1,149 @@
 import Image from 'next/image'
 import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
-import { SectionTitle } from '@/components/sections/SectionTitle'
-import { Prose } from '@/components/ui/Prose'
 import { Button } from '@/components/ui/Button'
-import { StatusBadge } from '@/components/ui/StatusBadge'
+import { ProductAccordion } from '@/components/sections/ProductAccordion'
+import { ProductCarousel } from '@/components/sections/ProductCarousel'
+import { accordionLabels, toAccordionRows } from '@/components/sections/productAccordionRows'
 import { CTASection } from '@/components/sections/CTASection'
 import { getDictionary } from '@/i18n'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { productCategories, businessSolutionPage } from '@/content/products'
+import { productCategories, businessSolutionPage, productUi } from '@/content/products'
 import { ctaBlocks } from '@/content/cta'
 import { getProductItems, t } from '@/lib/content'
 import styles from './BusinessSolutionPage.module.css'
 
 /**
- * Business Solution — Figma 859:4457, per intent/02 §2.8.
+ * Business Solution — Figma 859:4457.
  *
- * One section per solution category. Credit Scoring links out to its own
- * page; the others list their advantages and products in place.
+ * Two-column intro, then Credit Scoring as a photo + navy card linking to its
+ * own page, then Analytics, Decisioning, Business Intelligence and Consulting
+ * with alternating photo sides, a Keunggulan Utama carousel (Components
+ * 12/13/14/18) and a What We Offer product accordion each.
  */
 export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
   const [dict, items] = await Promise.all([getDictionary(locale), getProductItems(locale)])
   const cta = ctaBlocks.find((b) => b.page === 'business-solution')
   const itemsFor = (slug: string) => items.filter((item: any) => item.category === slug)
+  const labels = accordionLabels(locale)
+  const [creditScoring, ...solutions] = productCategories
 
   return (
     <>
       <PageHeader
         title={t(businessSolutionPage.title, locale)}
-        lead={t(businessSolutionPage.lead, locale)}
         crumbs={[
           { label: dict.nav.home, href: href('home', locale) },
           { label: dict.dropdown.products, href: href('products', locale) },
           { label: dict.dropdown.businessSolution },
         ]}
         breadcrumbLabel={dict.common.breadcrumb}
+        className={styles.header}
       />
 
       <Container>
-        {businessSolutionPage.heroImage && (
+        {/* Intro: navy 38/700 heading and paragraph left, 555x370 photo right */}
+        <section className={styles.intro}>
+          <div>
+            <h2 className={styles.introHeading}>{t(businessSolutionPage.heading, locale)}</h2>
+            <p className={styles.introBody}>{t(businessSolutionPage.intro, locale)}</p>
+          </div>
           <Image
             src={businessSolutionPage.heroImage}
             alt=""
-            width={1300}
-            height={600}
-            className={styles.hero}
+            width={555}
+            height={370}
+            sizes="(max-width: 1100px) 100vw, 555px"
+            className={styles.introImage}
             priority
           />
+        </section>
+
+        {/* Credit Scoring: photo left, 660x370 navy card right */}
+        {creditScoring && (
+          <section id={creditScoring.slug} className={styles.creditScoring}>
+            <Image
+              src={creditScoring.image}
+              alt=""
+              width={555}
+              height={370}
+              sizes="(max-width: 1100px) 100vw, 555px"
+              className={styles.csImage}
+            />
+            <div className={styles.csCard}>
+              <h2 className={styles.csTitle}>{t(creditScoring.name, locale)}</h2>
+              <p className={styles.csText}>{t(creditScoring.description, locale)}</p>
+              <Button href={href('creditScoring', locale)} width={191} className={styles.csButton}>
+                {dict.common.learnMore}
+              </Button>
+            </div>
+          </section>
         )}
 
-        {productCategories.map((category) => {
+        {solutions.map((category) => {
           const products = itemsFor(category.slug)
-          const isCreditScoring = category.slug === 'credit-scoring'
+          const sideClass = category.imageSide === 'left' ? styles.imageLeft : styles.imageRight
 
           return (
-            <section key={category.slug} id={category.slug} className={styles.solution}>
-              <div className={styles.solutionHead}>
-                {category.image && (
-                  <Image
-                    src={category.image}
-                    alt=""
-                    width={560}
-                    height={380}
-                    className={styles.solutionImage}
-                  />
-                )}
-                <div>
-                  <SectionTitle as="h2" subtitle={t(category.lead, locale)}>
-                    {t(category.name, locale)}
-                  </SectionTitle>
-                  <Prose body={category.description} locale={locale} />
-                  {isCreditScoring && (
-                    <Button href={href('creditScoring', locale)}>
-                      {dict.common.learnMore}
-                    </Button>
-                  )}
+            <section key={category.slug} id={category.slug} className={`${styles.solution} ${sideClass}`}>
+              <div className={styles.split}>
+                <div className={styles.splitText}>
+                  <h2 className={styles.solutionTitle}>{t(category.name, locale)}</h2>
+                  {category.lead && <p className={styles.solutionLead}>{t(category.lead, locale)}</p>}
+                  <p className={styles.solutionBody}>{t(category.description, locale)}</p>
                 </div>
+                <Image
+                  src={category.image}
+                  alt=""
+                  width={532}
+                  height={371}
+                  sizes="(max-width: 1100px) 100vw, 532px"
+                  className={styles.solutionImage}
+                />
               </div>
 
-              {/* Keunggulan Utama */}
-              {!isCreditScoring && category.advantages.length > 0 && (
+              {/* Keunggulan Utama — 412x210 cards, three visible */}
+              {category.advantages.length > 0 && (
                 <div className={styles.advantages}>
-                  <h3 className="t-h3-soft">
-                    {locale === 'id' ? 'Keunggulan Utama:' : 'Key Advantages:'}
-                  </h3>
-                  <div className={styles.advantageGrid}>
+                  <h3 className={styles.advantagesTitle}>{t(productUi.keyAdvantages, locale)}</h3>
+                  <ProductCarousel
+                    variant="advantages"
+                    className={styles.advantagesCarousel}
+                    label={`${t(productUi.keyAdvantages, locale)} ${t(category.name, locale)}`}
+                    previousLabel={t(productUi.carousel.previous, locale)}
+                    nextLabel={t(productUi.carousel.next, locale)}
+                    goToLabel={t(productUi.carousel.goTo, locale)}
+                  >
                     {category.advantages.map((advantage, index) => (
                       <article key={index} className={styles.advantage}>
-                        <h4 className="t-h4">{t(advantage.title, locale)}</h4>
-                        <p>{t(advantage.description, locale)}</p>
+                        <div className={styles.advantageHead}>
+                          <span className={styles.advantageIcon}>
+                            <Image src="/images/products/crif-bird.png" alt="" width={36} height={21} />
+                          </span>
+                          <h4 className={styles.advantageTitle}>{t(advantage.title, locale)}</h4>
+                        </div>
+                        <p className={styles.advantageText}>{t(advantage.description, locale)}</p>
                       </article>
                     ))}
-                  </div>
+                  </ProductCarousel>
                 </div>
               )}
 
-              {/* Product cards with their status badges */}
-              {!isCreditScoring && products.length > 0 && (
-                <div className={styles.productGrid}>
-                  {products.map((product: any) => (
-                    <article key={product.id} className={styles.product}>
-                      <div className={styles.productBadges}>
-                        <StatusBadge status={product.productStatus} />
-                        {product.isNew && <StatusBadge status="new" />}
-                      </div>
-                      <h4 className="t-h5">{product.name}</h4>
-                      {product.shortDescription && (
-                        <p className={styles.productText}>{product.shortDescription}</p>
-                      )}
-                    </article>
-                  ))}
+              {/* What We Offer — the product accordion, first row open */}
+              {products.length > 0 && (
+                <div className={styles.offer}>
+                  <h3 className={styles.offerTitle}>{t(productUi.whatWeOffer, locale)}</h3>
+                  {category.offerSubtitle && (
+                    <p className={styles.offerSubtitle}>{t(category.offerSubtitle, locale)}</p>
+                  )}
+                  <ProductAccordion
+                    rows={toAccordionRows(products)}
+                    labels={labels}
+                    gap={10}
+                    openFirst
+                    single
+                  />
                 </div>
               )}
             </section>

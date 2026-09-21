@@ -1,0 +1,38 @@
+.marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration) linear infinite;
+}
+
+.track[data-direction='right'] {
+  animation-direction: reverse;
+}
+
+.set {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--marquee-gap);
+  padding-right: var(--marquee-gap);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Exactly one set: the track holds --marquee-copies identical sets */
+    transform: translateX(calc(-100% / var(--marquee-copies)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}

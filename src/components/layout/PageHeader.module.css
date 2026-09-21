@@ -3,11 +3,23 @@
   padding-bottom: var(--space-breadcrumb-to-content);
 }
 
+/* 38/800 black. Line height 51.8px (Figma "auto"); with the 35px margin the
+   glyph centre lands where Figma's 30px-line title box puts it. */
 .title {
   margin-top: var(--space-breadcrumb-to-title);
+  color: var(--color-text-heading);
+  line-height: var(--lh-heading);
 }
 
 .lead {
   margin: 1.25rem 0 0;
   max-width: 900px;
+}
+
+.leadBody {
+  margin: 1.25rem 0 0;
+  max-width: 707px;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text-body);
 }

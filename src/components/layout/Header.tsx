@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { Container } from './Container'
 import { LanguageSwitch } from './LanguageSwitch'
+import { Caret } from '@/components/ui/icons'
 import { href } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
 import type { Dictionary } from '@/i18n'
@@ -15,24 +16,23 @@ type Props = {
   locale: Locale
   dict: Dictionary
   /**
-   * "dark" overlays the homepage hero in white text; "light" is used on every
-   * inner page. Left unset, it is derived from the route.
+   * "dark" overlays the homepage hero (Figma 989:4062: 90px band of black at
+   * 25%, white text); "light" is used on every inner page (1002:4221: white,
+   * drop shadow 0 4 4 #000@25%). Left unset, it is derived from the route.
    */
   variant?: 'light' | 'dark'
 }
 
 export function Header({ locale, dict, variant }: Props) {
-  const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
+  // The mobile menu remembers which page it was opened on, so navigating to
+  // another page closes it without an effect.
+  const [menuOpenOn, setMenuOpenOn] = useState<string | null>(null)
+  const menuOpen = menuOpenOn !== null && menuOpenOn === pathname
 
-  // Only the homepage uses the transparent header that sits over the hero.
+  // Only the homepage uses the translucent header that sits over the hero.
   const isHome = pathname === '/' || pathname === '/en'
   const resolved = variant ?? (isHome ? 'dark' : 'light')
-
-  // Close the mobile menu when navigating to another page
-  useEffect(() => {
-    setMenuOpen(false)
-  }, [pathname])
 
   // Prevent the page behind the mobile menu from scrolling
   useEffect(() => {
@@ -61,7 +61,7 @@ export function Header({ locale, dict, variant }: Props) {
     <header className={`${styles.header} ${styles[resolved]} ${menuOpen ? styles.menuOpen : ''}`}>
       <Container className={styles.inner}>
         <Link href={href('home', locale)} className={styles.logo} aria-label="CLIK">
-          {/* White over the hero on the homepage, navy on inner pages. */}
+          {/* White over the hero on the homepage, full colour on inner pages. */}
           <Image
             src={resolved === 'dark' ? '/images/shared/logo-clik-white.png' : '/images/shared/logo-clik.png'}
             alt="CLIK — CRIF Lembaga Informasi Keuangan"
@@ -74,57 +74,63 @@ export function Header({ locale, dict, variant }: Props) {
 
         <nav className={styles.nav} aria-label={dict.nav.home}>
           <ul className={styles.navList}>
-            <li>
+            <li className={styles.itemHome}>
               <Link href={href('home', locale)} className={styles.navLink}>
-                {dict.nav.home}
+                <span className={styles.label}>{dict.nav.home}</span>
               </Link>
             </li>
 
-            <li className={styles.hasDropdown}>
+            <li className={`${styles.hasDropdown} ${styles.itemProducts}`}>
               {/* Top-level item links to the overview page */}
               <Link href={href('products', locale)} className={styles.navLink}>
-                {dict.nav.products}
-                <Chevron />
+                <span className={styles.label}>
+                  {dict.nav.products}
+                  <Caret className={styles.caret} />
+                </span>
               </Link>
-              <Dropdown items={productItems} />
+              <Dropdown items={productItems} className={styles.dropdownProducts} />
             </li>
 
-            <li className={styles.hasDropdown}>
+            <li className={`${styles.hasDropdown} ${styles.itemAbout}`}>
               {/*
                 "Tentang Kami" has no destination of its own in the design —
                 it only opens the dropdown, so it is a button, not a link.
               */}
               <button type="button" className={styles.navLink} aria-haspopup="true">
-                {dict.nav.about}
-                <Chevron />
+                <span className={styles.label}>
+                  {dict.nav.about}
+                  <Caret className={styles.caret} />
+                </span>
               </button>
-              <Dropdown items={aboutItems} />
+              <Dropdown items={aboutItems} className={styles.dropdownAbout} />
             </li>
 
-            <li>
+            <li className={styles.itemNewsroom}>
               <Link href={href('newsroom', locale)} className={styles.navLink}>
-                {dict.nav.newsroom}
+                <span className={styles.label}>{dict.nav.newsroom}</span>
               </Link>
             </li>
-            <li>
+            <li className={styles.itemContact}>
               <Link href={href('contact', locale)} className={styles.navLink}>
-                {dict.nav.contact}
+                <span className={styles.label}>{dict.nav.contact}</span>
               </Link>
             </li>
-            <li>
+            <li className={styles.itemCareers}>
               <Link href={href('careers', locale)} className={styles.navLink}>
-                {dict.nav.careers}
+                <span className={styles.label}>{dict.nav.careers}</span>
               </Link>
             </li>
           </ul>
 
-          <LanguageSwitch locale={locale} label={dict.common.languageSwitch} />
+          <div className={styles.lang}>
+            <LanguageSwitch locale={locale} label={dict.common.languageSwitch} />
+          </div>
         </nav>
 
         <button
           type="button"
           className={styles.hamburger}
-          onClick={() => setMenuOpen((open) => !open)}
+          onClick={() => setMenuOpenOn(menuOpen ? null : pathname)}
           aria-expanded={menuOpen}
           aria-label={menuOpen ? dict.nav.closeMenu : dict.nav.openMenu}
         >
@@ -137,37 +143,22 @@ export function Header({ locale, dict, variant }: Props) {
   )
 }
 
-function Dropdown({ items }: { items: { label: string; href: string }[] }) {
+function Dropdown({
+  items,
+  className,
+}: {
+  items: { label: string; href: string }[]
+  className?: string
+}) {
   return (
-    <ul className={styles.dropdown}>
+    <ul className={`${styles.dropdown} ${className ?? ''}`}>
       {items.map((item) => (
         <li key={item.href}>
           <Link href={item.href} className={styles.dropdownLink}>
-            {item.label}
+            <span className={styles.dropdownText}>{item.label}</span>
           </Link>
         </li>
       ))}
     </ul>
-  )
-}
-
-function Chevron() {
-  return (
-    <svg
-      className={styles.chevron}
-      width="12"
-      height="12"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M6 9l6 6 6-6"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   )
 }

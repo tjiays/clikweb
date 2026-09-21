@@ -1,29 +1,55 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { Button } from '@/components/ui/Button'
+import { SectionTitle } from '@/components/sections/SectionTitle'
 import {
   EMPTY_FORM,
   INTERESTS,
   HEARD_FROM,
-  MARKETING_CHANNELS,
   validateContactForm,
   type ContactFormValues,
   type FieldErrors,
 } from '@/lib/contactForm'
+import { contactPage } from '@/content/contact'
 import styles from './ContactForm.module.css'
 
 type Strings = Record<string, string>
+type Locale = 'id' | 'en'
+
+const INITIAL: ContactFormValues = {
+  ...EMPTY_FORM,
+  interestedIn: contactPage.defaults.interestedIn,
+  hearAboutUs: contactPage.defaults.hearAboutUs,
+}
 
 /**
  * Hubungi Kami form — Figma 284:1397.
+ *
+ * Top: `intro` and the pill fields in a 772px column, `aside` (address, map)
+ * to the right. Below, full width: DATA PRIVACY with the consent and
+ * marketing check boxes, then Submit.
  *
  * Errors are shown beside the field they belong to. The consent checkbox is
  * mandatory; the marketing preferences are not. There is no CAPTCHA — the
  * server enforces rate limits instead (confirmed decision 18).
  */
-export function ContactForm({ t, locale }: { t: Strings; locale: string }) {
-  const [values, setValues] = useState<ContactFormValues>(EMPTY_FORM)
+export function ContactForm({
+  t,
+  locale,
+  intro,
+  aside,
+}: {
+  /** Validation / status messages (dictionary `contact`). */
+  t: Strings
+  locale: Locale
+  intro?: ReactNode
+  aside?: ReactNode
+}) {
+  const copy = contactPage
+  const tx = (value: { id: string; en: string }) => value[locale]
+
+  const [values, setValues] = useState<ContactFormValues>(INITIAL)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
   const [formError, setFormError] = useState<string | null>(null)
@@ -33,13 +59,31 @@ export function ContactForm({ t, locale }: { t: Strings; locale: string }) {
     setErrors((current) => ({ ...current, [key]: undefined }))
   }
 
+  // Choosing a channel means opting in; opting out clears the channels.
   const toggleChannel = (channel: string) => {
-    setValues((current) => ({
-      ...current,
-      marketingChannels: current.marketingChannels.includes(channel)
+    setValues((current) => {
+      const has = current.marketingChannels.includes(channel)
+      const marketingChannels = has
         ? current.marketingChannels.filter((c) => c !== channel)
-        : [...current.marketingChannels, channel],
-    }))
+        : [...current.marketingChannels, channel]
+      return {
+        ...current,
+        marketingChannels,
+        marketingPreference: has ? current.marketingPreference : 'opt_in',
+      }
+    })
+  }
+
+  // The two preference boxes look like check boxes but exclude each other.
+  const togglePreference = (value: 'opt_in' | 'opt_out') => {
+    setValues((current) => {
+      const next = current.marketingPreference === value ? '' : value
+      return {
+        ...current,
+        marketingPreference: next,
+        marketingChannels: next === 'opt_out' ? [] : current.marketingChannels,
+      }
+    })
   }
 
   const onSubmit = async (event: FormEvent) => {
@@ -77,169 +121,198 @@ export function ContactForm({ t, locale }: { t: Strings; locale: string }) {
       }
 
       setStatus('sent')
-      setValues(EMPTY_FORM)
+      setValues(INITIAL)
     } catch {
       setStatus('idle')
       setFormError(t.serverError)
     }
   }
 
-  if (status === 'sent') {
+  const error = (key: keyof ContactFormValues) =>
+    errors[key] ? (
+      <p className={styles.error} id={`${key}-error`}>
+        {errors[key]}
+      </p>
+    ) : null
+
+  const input = (
+    key: 'firstName' | 'lastName' | 'email' | 'companyName' | 'phone',
+    type = 'text',
+    autoComplete?: string,
+  ) => {
+    const placeholder = tx(copy.fields[key])
     return (
-      <div className={styles.success} role="status">
-        <h2 className="t-h3">{t.successTitle}</h2>
-        <p>{t.successBody}</p>
-        <Button variant="outline" onClick={() => setStatus('idle')}>
-          {t.sendAnother}
-        </Button>
+      <div className={styles.field}>
+        <label htmlFor={key} className="sr-only">
+          {placeholder}
+        </label>
+        <input
+          id={key}
+          name={key}
+          type={type}
+          autoComplete={autoComplete}
+          placeholder={placeholder}
+          value={values[key]}
+          onChange={(event) => set(key, event.target.value)}
+          aria-required="true"
+          aria-invalid={Boolean(errors[key])}
+          aria-describedby={errors[key] ? `${key}-error` : undefined}
+          className={`${styles.pill} ${errors[key] ? styles.invalid : ''}`}
+        />
+        {error(key)}
       </div>
     )
   }
 
-  const field = (key: keyof ContactFormValues, label: string, type = 'text') => (
+  const select = (key: 'interestedIn' | 'hearAboutUs', options: readonly string[]) => (
     <div className={styles.field}>
-      <label htmlFor={key}>
-        {label} <span aria-hidden="true">*</span>
-      </label>
-      <input
-        id={key}
-        name={key}
-        type={type}
-        value={String(values[key] ?? '')}
-        onChange={(event) => set(key, event.target.value as never)}
-        aria-invalid={Boolean(errors[key])}
-        aria-describedby={errors[key] ? `${key}-error` : undefined}
-        className={errors[key] ? styles.invalid : undefined}
-      />
-      {errors[key] && (
-        <p className={styles.error} id={`${key}-error`}>
-          {errors[key]}
-        </p>
-      )}
-    </div>
-  )
-
-  const select = (
-    key: 'interestedIn' | 'hearAboutUs',
-    label: string,
-    options: readonly string[],
-    required: boolean,
-  ) => (
-    <div className={styles.field}>
-      <label htmlFor={key}>
-        {label} {required && <span aria-hidden="true">*</span>}
+      <label htmlFor={key} className={styles.label}>
+        {tx(copy.fields[key])}
       </label>
       <select
         id={key}
         name={key}
         value={values[key]}
         onChange={(event) => set(key, event.target.value)}
+        aria-required="true"
         aria-invalid={Boolean(errors[key])}
-        className={errors[key] ? styles.invalid : undefined}
+        aria-describedby={errors[key] ? `${key}-error` : undefined}
+        className={`${styles.pill} ${styles.select} ${errors[key] ? styles.invalid : ''}`}
       >
-        <option value="">{t.choose}</option>
         {options.map((option) => (
           <option key={option} value={option}>
             {option}
           </option>
         ))}
       </select>
-      {errors[key] && (
-        <p className={styles.error} id={`${key}-error`}>
-          {errors[key]}
-        </p>
-      )}
+      {error(key)}
     </div>
   )
 
+  const checkbox = (
+    checked: boolean,
+    onChange: () => void,
+    label: ReactNode,
+    extra?: { invalid?: boolean; describedBy?: string; className?: string },
+  ) => (
+    <label className={`${styles.check} ${extra?.className ?? ''}`}>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        aria-invalid={extra?.invalid || undefined}
+        aria-describedby={extra?.describedBy}
+        className={extra?.invalid ? styles.invalid : undefined}
+      />
+      <span>{label}</span>
+    </label>
+  )
+
+  const sent = status === 'sent'
+
   return (
     <form className={styles.form} onSubmit={onSubmit} noValidate>
-      <div className={styles.row}>
-        {field('firstName', t.firstName)}
-        {field('lastName', t.lastName)}
-      </div>
-      <div className={styles.row}>
-        {field('email', t.email, 'email')}
-        {field('phone', t.phone, 'tel')}
-      </div>
-      {field('companyName', t.company)}
-      {select('interestedIn', t.interestedIn, INTERESTS, true)}
-      {select('hearAboutUs', t.hearAboutUs, HEARD_FROM, false)}
-
-      <div className={styles.field}>
-        <label htmlFor="message">
-          {t.message} <span aria-hidden="true">*</span>
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          rows={5}
-          value={values.message}
-          onChange={(event) => set('message', event.target.value)}
-          aria-invalid={Boolean(errors.message)}
-          className={errors.message ? styles.invalid : undefined}
-        />
-        {errors.message && <p className={styles.error}>{errors.message}</p>}
-      </div>
-
-      <fieldset className={styles.privacy}>
-        <legend className={styles.privacyLegend}>{t.dataPrivacy}</legend>
-
-        <p className={styles.consentHeading}>{t.consentHeading}</p>
-        <label className={styles.checkbox}>
-          <input
-            type="checkbox"
-            checked={values.consent}
-            onChange={(event) => set('consent', event.target.checked)}
-            aria-invalid={Boolean(errors.consent)}
-          />
-          <span>{t.consentText}</span>
-        </label>
-        {errors.consent && <p className={styles.error}>{errors.consent}</p>}
-
-        <p className={styles.marketingHeading}>{t.marketingHeading}</p>
-        <div className={styles.checkboxGroup}>
-          {MARKETING_CHANNELS.map((channel) => (
-            <label key={channel} className={styles.checkbox}>
-              <input
-                type="checkbox"
-                checked={values.marketingChannels.includes(channel)}
-                onChange={() => toggleChannel(channel)}
-              />
-              <span>{channel}</span>
-            </label>
-          ))}
+      <div className={styles.top}>
+        <div className={styles.main}>
+          {intro}
+          {sent ? (
+            <div className={styles.success} role="status">
+              <h2 className={styles.successTitle}>{t.successTitle}</h2>
+              <p>{t.successBody}</p>
+              <Button variant="outline" onClick={() => setStatus('idle')}>
+                {t.sendAnother}
+              </Button>
+            </div>
+          ) : (
+            <div className={styles.fields}>
+              <div className={styles.grid}>
+                {input('firstName', 'text', 'given-name')}
+                {input('lastName', 'text', 'family-name')}
+                {input('email', 'email', 'email')}
+                {input('companyName', 'text', 'organization')}
+                {input('phone', 'tel', 'tel')}
+              </div>
+              <div className={`${styles.grid} ${styles.selects}`}>
+                {select('interestedIn', INTERESTS)}
+                {select('hearAboutUs', HEARD_FROM)}
+              </div>
+              <div className={`${styles.field} ${styles.messageField}`}>
+                <label htmlFor="message" className={styles.label}>
+                  {tx(copy.fields.messageLabel)}
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  placeholder={tx(copy.fields.message)}
+                  value={values.message}
+                  onChange={(event) => set('message', event.target.value)}
+                  aria-required="true"
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={errors.message ? 'message-error' : undefined}
+                  className={`${styles.pill} ${styles.textarea} ${errors.message ? styles.invalid : ''}`}
+                />
+                {error('message')}
+              </div>
+            </div>
+          )}
         </div>
+        {aside}
+      </div>
 
-        <p className={styles.marketingHeading}>{t.marketingPrefHeading}</p>
-        <div className={styles.checkboxGroup}>
-          {[
-            { value: 'opt_in', label: t.optIn },
-            { value: 'opt_out', label: t.optOut },
-          ].map((option) => (
-            <label key={option.value} className={styles.checkbox}>
-              <input
-                type="radio"
-                name="marketingPreference"
-                value={option.value}
-                checked={values.marketingPreference === option.value}
-                onChange={(event) => set('marketingPreference', event.target.value)}
-              />
-              <span>{option.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      {!sent && (
+        <section className={styles.privacy} aria-labelledby="data-privacy">
+          <SectionTitle as="h2" size="md" weight={700} className={styles.privacyTitle}>
+            <span id="data-privacy">{tx(copy.privacy.title)}</span>
+          </SectionTitle>
 
-      {formError && (
-        <p className={styles.formError} role="alert">
-          {formError}
-        </p>
+          <p className={styles.text}>{tx(copy.privacy.intro)}</p>
+
+          {checkbox(values.consent, () => set('consent', !values.consent), tx(copy.privacy.consent), {
+            invalid: Boolean(errors.consent),
+            describedBy: errors.consent ? 'consent-error' : undefined,
+            className: styles.consent,
+          })}
+          {error('consent')}
+
+          <p className={`${styles.text} ${styles.marketingIntro}`}>{tx(copy.privacy.marketingIntro)}</p>
+          <p className={`${styles.text} ${styles.prompt}`}>{tx(copy.privacy.marketingPrompt)}</p>
+
+          <div className={styles.preferences}>
+            {checkbox(
+              values.marketingPreference === 'opt_out',
+              () => togglePreference('opt_out'),
+              tx(copy.privacy.optOut),
+            )}
+            {checkbox(
+              values.marketingPreference === 'opt_in',
+              () => togglePreference('opt_in'),
+              tx(copy.privacy.optIn),
+            )}
+          </div>
+
+          <div className={styles.channels} role="group" aria-label={tx(copy.privacy.optIn)}>
+            {copy.privacy.channels.map((channel) =>
+              <span key={channel.value}>
+                {checkbox(
+                  values.marketingChannels.includes(channel.value),
+                  () => toggleChannel(channel.value),
+                  tx(channel.label),
+                )}
+              </span>,
+            )}
+          </div>
+
+          {formError && (
+            <p className={styles.formError} role="alert">
+              {formError}
+            </p>
+          )}
+
+          <Button type="submit" size="lg" disabled={status === 'sending'} className={styles.submit}>
+            {status === 'sending' ? t.sending : t.submit}
+          </Button>
+        </section>
       )}
-
-      <Button type="submit" size="lg" disabled={status === 'sending'}>
-        {status === 'sending' ? t.sending : t.submit}
-      </Button>
     </form>
   )
 }

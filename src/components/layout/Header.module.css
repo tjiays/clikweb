@@ -1,76 +1,80 @@
+/*
+ * Header — Figma 1002:4221 (light, inner pages) and 989:4062 (dark, Home).
+ * 90px band; logo 210x70 at x=70, y=6; nav text 16/700 (title case);
+ * hover = orange text + 3px orange bar at the bottom of the band
+ * (SMART_ANIMATE 0.3s ease-out). Dropdowns 951:5645 / 953:5694 (light) and
+ * 953:5802 (dark, translucent): open on hover in 0.15s ease-out.
+ */
 .header {
   width: 100%;
   z-index: 50;
-  transition: background-color var(--transition), box-shadow var(--transition);
 }
 
-/* Inner pages: solid white bar that stays put while scrolling (open item O5). */
+/* Inner pages: white bar with the Figma drop shadow, stays put while scrolling. */
 .light {
   position: sticky;
   top: 0;
   background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
   color: var(--color-secondary);
 }
 
-/* Home: transparent, overlaying the hero image in white text. */
+/* Home: 90px band of black at 25% over the hero, white text. */
 .dark {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  background: transparent;
+  background: rgba(0, 0, 0, 0.25);
   color: #fff;
 }
 
 .inner {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  min-height: var(--header-height);
+  align-items: stretch;
+  height: var(--header-height);
 }
 
 .logo {
   color: inherit;
   flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: 6px;
+  line-height: 0;
 }
 
 .logoImage {
-  height: 44px;
-  width: auto;
+  width: 210px;
+  height: 70px;
   object-fit: contain;
-}
-
-@media (max-width: 768px) {
-  .logoImage {
-    height: 36px;
-  }
 }
 
 .nav {
   display: flex;
-  align-items: center;
-  gap: 2rem;
+  align-items: stretch;
+  flex: 1;
 }
 
 .navList {
   display: flex;
-  align-items: center;
-  gap: 1.75rem;
+  align-items: stretch;
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 auto;
   padding: 0;
 }
 
 .navList > li {
   position: relative;
+  display: flex;
+  align-items: stretch;
+  padding-right: 28px;
 }
 
 .navLink {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  height: 100%;
   background: none;
   border: none;
   padding: 0;
@@ -78,94 +82,177 @@
   color: inherit;
   font-size: var(--fs-body);
   font-weight: var(--fw-bold);
+  line-height: 30px;
+  /* Figma textCase TITLE: "Layanan Dan Produk" */
+  text-transform: capitalize;
   white-space: nowrap;
-  transition: color var(--transition);
+  transition: color var(--transition-figma);
 }
 
-.navLink:hover {
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.caret {
+  width: 15px;
+  height: 10px;
+  flex-shrink: 0;
+}
+
+/* 3px orange bar under the label, at the bottom of the 90px band. */
+.navLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1px;
+  height: 3px;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity var(--transition-figma);
+}
+
+.navLink:hover,
+.navLink:focus-visible,
+.hasDropdown:hover > .navLink,
+.hasDropdown:focus-within > .navLink {
   color: var(--color-primary);
 }
 
-.chevron {
-  transition: transform var(--transition);
+.navLink:hover::after,
+.navLink:focus-visible::after,
+.hasDropdown:hover > .navLink::after,
+.hasDropdown:focus-within > .navLink::after {
+  opacity: 1;
+}
+
+/* At the 1440 design width every item starts where Figma puts it:
+   Home 417, Layanan 507, Tentang 725, Newsroom 897, Hubungi 1019, Karir 1166;
+   the language switch ends at 1370. */
+@media (min-width: 1440px) {
+  .navList {
+    margin-left: 137px;
+  }
+  .navList > li {
+    padding-right: 0;
+  }
+  .itemHome { min-width: 90px; }
+  .itemProducts { min-width: 218px; }
+  .itemAbout { min-width: 172px; }
+  .itemNewsroom { min-width: 122px; }
+  .itemContact { min-width: 147px; }
+  .navList > li.itemCareers { padding-right: 28px; }
+  .lang { margin-left: auto; }
+}
+
+.lang {
+  display: flex;
+  align-items: center;
 }
 
 /* ---- Dropdowns: open on mouse enter, and on keyboard focus ---- */
 .dropdown {
   position: absolute;
-  top: calc(100% + 10px);
+  /* panel top is 4px below the 90px band (Figma y=94) */
+  top: calc(100% + 4px);
   left: 0;
-  min-width: 260px;
   margin: 0;
-  padding: 0.75rem 0;
+  padding: 20px 0;
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card-hover);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(6px);
   transition:
-    opacity var(--transition),
-    transform var(--transition),
-    visibility var(--transition);
+    opacity var(--transition-fast),
+    visibility var(--transition-fast);
 }
+
+/* Keeps the hover alive across the 4px gap between band and panel. */
+.dropdown::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  height: 4px;
+}
+
+.dropdownProducts { min-width: 198px; }
+.dropdownAbout { min-width: 294px; }
 
 .hasDropdown:hover .dropdown,
 .hasDropdown:focus-within .dropdown {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
-}
-
-.hasDropdown:hover .chevron,
-.hasDropdown:focus-within .chevron {
-  transform: rotate(180deg);
 }
 
 .dropdownLink {
   display: block;
   position: relative;
-  padding: 0.6rem 1.25rem 0.6rem 1.75rem;
+  padding: 0 24px;
   color: var(--color-secondary);
-  font-size: var(--fs-small);
+  font-size: var(--fs-body);
   font-weight: var(--fw-bold);
+  line-height: 30px;
   white-space: nowrap;
+  /* 953:5802 / 953:5812 hover: SMART_ANIMATE 0.15s ease-out */
+  transition: color var(--transition-fast);
 }
 
-/* The design marks the hovered item with a short orange dash. */
+.dropdownText {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+/* Hover (953:5802): 12x3 orange dash at x=24, text shifts 17px right. */
 .dropdownLink::before {
   content: '';
   position: absolute;
-  left: 1.25rem;
+  left: 24px;
   top: 50%;
-  width: 10px;
-  height: 2px;
+  width: 12px;
+  height: 3px;
+  margin-top: -1.5px;
   background: var(--color-primary);
   opacity: 0;
-  transform: translateX(-4px);
-  transition: opacity var(--transition), transform var(--transition);
+  transition: opacity var(--transition-fast);
 }
 
-.dropdownLink:hover {
+.dropdownLink:hover,
+.dropdownLink:focus-visible {
   color: var(--color-primary);
 }
 
-.dropdownLink:hover::before {
-  opacity: 1;
-  transform: translateX(0);
+.dropdownLink:hover .dropdownText,
+.dropdownLink:focus-visible .dropdownText {
+  transform: translateX(17px);
 }
 
-/* The short orange rule the design draws above the panel. */
-.hasDropdown .dropdown::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 0;
-  width: 72px;
-  height: 3px;
-  background: var(--color-primary);
+.dropdownLink:hover::before,
+.dropdownLink:focus-visible::before {
+  opacity: 1;
+}
+
+/* Home: translucent black panel with white items (953:5802). */
+.dark .dropdown {
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.0625);
+}
+
+.dark .dropdownLink {
+  color: #fff;
+}
+
+.dark .dropdownLink:hover,
+.dark .dropdownLink:focus-visible {
+  color: var(--color-primary);
 }
 
 /* ---- Hamburger, shown once the full menu no longer fits ---- */
@@ -173,9 +260,11 @@
   display: none;
   flex-direction: column;
   justify-content: center;
+  align-self: center;
   gap: 5px;
   width: 44px;
   height: 44px;
+  margin-left: auto;
   padding: 0;
   background: none;
   border: none;
@@ -207,12 +296,22 @@
     display: flex;
   }
 
+  .logo {
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .logoImage {
+    width: auto;
+    height: 52px;
+  }
+
   .nav {
     position: fixed;
     inset: var(--header-height) 0 0 0;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0;
+    gap: 1.5rem;
     padding: 1.5rem var(--gutter) 3rem;
     background: var(--color-bg-surface);
     color: var(--color-secondary);
@@ -230,40 +329,62 @@
   .navList {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0;
+    margin: 0;
     width: 100%;
   }
 
   .navList > li {
     width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-right: 0;
     border-bottom: 1px solid var(--color-border);
   }
 
   .navLink {
     width: 100%;
-    justify-content: space-between;
-    padding: 1rem 0;
+    padding: 0.75rem 0;
     min-height: 44px;
   }
 
-  /* On a touch screen there is no hover, so sub-items are simply shown. */
-  .dropdown {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    border: none;
-    box-shadow: none;
-    background: transparent;
-    padding: 0 0 0.75rem 1rem;
-    min-width: 0;
-  }
-
-  .chevron {
+  .navLink::after {
     display: none;
   }
 
-  .dropdownLink {
-    padding: 0.5rem 0;
+  /* On a touch screen there is no hover, so sub-items are simply shown. */
+  .dropdown,
+  .dark .dropdown {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    box-shadow: none;
+    background: transparent;
+    padding: 0 0 0.75rem 0;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .dropdown::before {
+    display: none;
+  }
+
+  .caret {
+    display: none;
+  }
+
+  .dropdownLink,
+  .dark .dropdownLink {
+    padding: 0.5rem 0 0.5rem 1rem;
+    color: var(--color-secondary);
+  }
+
+  .dropdownLink::before {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .logoImage {
+    height: 44px;
   }
 }

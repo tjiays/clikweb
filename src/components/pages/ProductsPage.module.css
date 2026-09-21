@@ -1,80 +1,405 @@
-.hero {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
+/* Layanan dan Produk — Figma 427:2795 (positions are at 1440). */
+
+/* Title is textCase TITLE in Figma: "Layanan Dan Produk". */
+.header :global(h1) {
+  text-transform: capitalize;
+}
+
+.header {
+  padding-bottom: 0;
+}
+
+/* ---- Intro: text x70 (rule y342), photo 601x370 r18 at x755 y310 ---- */
+.intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 601px;
+  column-gap: 32px;
+  align-items: start;
+  margin-top: 47px;
+  padding-right: 14px;
+}
+
+.introText {
+  padding-top: 32px;
+}
+
+.lead {
+  margin: 0;
+  max-width: 594px;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+.introBody {
+  margin: 17px 0 0;
+  max-width: 653px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+.introImage {
+  width: 601px;
+  height: 370px;
   object-fit: cover;
+  border-radius: var(--radius-tile);
 }
 
-.section {
-  margin-top: var(--space-section);
+/* ---- Layanan Kami: rule y780, title y803, carousel x62 y878 ---- */
+.services {
+  margin-top: 100px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+.servicesTitle {
+  margin-bottom: 0;
 }
 
-.dataList :global(ul) {
-  columns: 2;
-  column-gap: 3rem;
+.servicesTitle :global(h2) {
+  font-weight: var(--fw-extrabold);
+  line-height: 25px;
 }
 
-.split {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+.servicesCarousel {
+  margin: 50px 8px 0 -8px;
+}
+
+/* Card: 360x500 #F1FAFF r20, shadow; centred art, title, text, button. */
+.serviceCard {
+  position: relative;
+  height: 500px;
+  padding: 54px 50px 0;
+  display: flex;
+  flex-direction: column;
   align-items: center;
+  text-align: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
 }
 
-.splitImage {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
-  object-fit: cover;
+.serviceArt {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.inlineLink {
-  color: var(--color-primary);
+.serviceArt img {
+  display: block;
+  height: 160px;
+  width: auto;
+}
+
+.serviceTitle {
+  margin: 16px -35px 0;
+  font-size: 28px;
+  font-weight: var(--fw-bold);
+  line-height: 38.192px;
+  color: var(--color-secondary);
+}
+
+.serviceText {
+  margin: 12px 0 0;
+  max-width: 260px;
+  font-size: 18px;
+  line-height: 30px;
+  color: var(--color-text-body);
+}
+
+.serviceButton {
+  position: absolute;
+  left: 50%;
+  top: 394px;
+  transform: translateX(-50%);
+}
+
+/* ---- Data list: white band 1440x658, 4x2 grid, centres x270/570/870/1170 ---- */
+.dataBand {
+  margin-top: 84px;
+  background: var(--color-bg-surface);
+}
+
+.dataGrid {
+  list-style: none;
+  margin: 0 auto;
+  padding: 48px 0 67px;
+  max-width: 1200px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 89px;
+}
+
+.dataItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.dataIcon {
+  height: 135px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.dataIcon img {
+  display: block;
+}
+
+.dataLabel {
+  margin-top: 27px;
+  max-width: 290px;
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+.dataLabelBreaks {
+  white-space: pre-line;
+}
+
+/* ---- Apa itu skor kredit?: text x63, navy card 583x411 at x796 ---- */
+.score {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 583px;
+  column-gap: 40px;
+  align-items: start;
+  margin-top: 105px;
+  margin-left: -7px;
+  margin-right: -9px;
+}
+
+.scoreText {
+  padding-top: 11px;
+  margin-top: 0;
+}
+
+.scoreTitle {
+  margin-bottom: 0;
+}
+
+.scoreTitle :global(h2) {
+  line-height: 32.736px;
+}
+
+.scoreBody {
+  margin: 33px 0 0;
+  max-width: 575px;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+.scoreButton {
+  margin-top: 33px;
+}
+
+.scoreCard {
+  width: 583px;
+  height: 411px;
+  padding: 14px 27px 13px 28px;
+  background: var(--color-secondary);
+  border-radius: var(--radius-lg);
+}
+
+.scoreGauge {
+  display: block;
+  width: 528px;
+  height: 384px;
+  object-fit: fill;
+}
+
+/* ---- Ingin Mengecek…: rule y2788, title y2810, cards 456x306 at y2921 ---- */
+.routes {
+  margin-top: 108px;
+  padding-bottom: 80px;
+}
+
+.routesTitle {
+  margin-bottom: 0;
+}
+
+.routesTitle :global(h2) {
+  line-height: 32.736px;
+}
+
+.routesTitle p {
+  margin-top: 16px;
 }
 
 .routeCards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 31px;
 }
 
+/* #F1FAFF r20 + shadow; hover (Variant2): white + 5px orange stroke, 0.3s. */
 .routeCard {
+  position: relative;
+  width: 456px;
+  height: 306px;
+  padding: 0 22px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: 2.5rem 2rem;
+  align-items: center;
+  text-align: center;
   background: var(--color-bg-tint);
-  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  color: var(--color-secondary);
-  transition: transform var(--transition), box-shadow var(--transition);
+  box-shadow: var(--shadow-card), inset 0 0 0 0 var(--color-primary);
+  color: var(--color-text-body);
+  transition:
+    background-color var(--transition-figma),
+    box-shadow var(--transition-figma);
 }
 
-.routeCard:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
-  color: var(--color-secondary);
+.routeCard + .routeCard {
+  width: 455px;
 }
 
-.routeCta {
+.routeCard:hover,
+.routeCard:focus-visible {
+  background: var(--color-bg-surface);
+  box-shadow: var(--shadow-card), inset 0 0 0 5px var(--color-primary);
+  color: var(--color-text-body);
+}
+
+.routeIcon {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.routeCard + .routeCard .routeIcon {
+  top: 24px;
+}
+
+.routeTitle {
+  margin-top: 126px;
+  font-size: 23.75px;
   font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-secondary);
+}
+
+.routeText {
+  margin-top: 17px;
+  max-width: 413px;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+.routeCard + .routeCard .routeText {
+  max-width: 344px;
+}
+
+.routeLink {
+  position: absolute;
+  top: 250px;
+  left: 0;
+  right: 0;
+  font-size: 16px;
+  font-weight: var(--fw-bold);
+  line-height: 30px;
   color: var(--color-primary);
 }
 
-@media (max-width: 1000px) {
-  .grid,
-  .routeCards,
-  .split {
-    grid-template-columns: 1fr;
+/* ---------------- responsive ---------------- */
+@media (max-width: 1340px) {
+  .servicesCarousel {
+    margin-inline: 0;
   }
-  .dataList :global(ul) {
-    columns: 1;
+  .score {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .intro,
+  .score {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+  .intro {
+    padding-right: 0;
+  }
+  .introText {
+    padding-top: 0;
+  }
+  .introImage,
+  .scoreCard {
+    width: 100%;
+    height: auto;
+    max-width: 601px;
+  }
+  .scoreCard {
+    max-width: 583px;
+    aspect-ratio: 583 / 411;
+  }
+  .scoreGauge {
+    width: 100%;
+    height: 100%;
+  }
+  .dataGrid {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 48px;
+    column-gap: 24px;
+  }
+  .dataLabelBreaks {
+    white-space: normal;
+  }
+  .routeCards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .services {
+    margin-top: 64px;
+  }
+  .servicesCarousel {
+    margin-top: 32px;
+  }
+  .dataGrid {
+    padding: 40px 0;
+  }
+  .dataLabel {
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .dataIcon {
+    height: 100px;
+  }
+  .dataIcon img {
+    width: 90px;
+    height: 90px;
+  }
+  .score,
+  .routes {
+    margin-top: 64px;
+  }
+  .routes {
+    padding-bottom: 80px;
+  }
+  .routeCard,
+  .routeCard + .routeCard {
+    width: 100%;
+    height: auto;
+    min-height: 306px;
+    padding-bottom: 72px;
+  }
+  .routeTitle {
+    margin-top: 110px;
+  }
+  .routeLink {
+    top: auto;
+    bottom: 26px;
   }
 }

@@ -19,10 +19,13 @@ and how abuse is kept out without a CAPTCHA.
 ## Fields
 
 Required: first name, last name, business email, telephone, company name,
-"Interested in", and the message.
+"Interested in", "How did you hear about us?" and the message. The design
+marks "How did you hear about us?" as required; the database column stays
+optional so older submissions remain valid.
 
-Optional: "How did you hear about us?", marketing channels, marketing
-preference.
+Optional: marketing preference (two checkboxes that exclude each other, stored
+as opt_in / opt_out) and marketing channels (four checkboxes in one row;
+ticking a channel also ticks opt-in).
 
 **The consent checkbox is mandatory.** The form will not submit without it, and
 the server refuses a submission that claims otherwise.

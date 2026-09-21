@@ -1,97 +1,71 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { Button } from '@/components/ui/Button'
-import { Container } from '@/components/layout/Container'
 import styles from './HeroSlider.module.css'
 
-export type Slide = {
-  id: string | number
+/** Figma 177:383-385: AFTER_TIMEOUT 8s, SMART_ANIMATE 0.5s ease-out. */
+const INTERVAL = 8000
+
+/**
+ * Home hero (Figma "Slider component" 177:390).
+ *
+ * Only the images move: they sit side by side and every 8s the row shifts one
+ * image width to the left (0.5s ease-out), looping 1 → 2 → 3 → 1 (the last
+ * step slides back across). The title and subtitle are one static layer
+ * above the images (911:5989 / 911:5990). No button, dots or dark overlay.
+ * The bottom edge is the Figma wave (vector 158:999). Auto-advance stops
+ * when the user prefers reduced motion.
+ */
+export function HeroSlider({
+  images,
+  title,
+  subtitle,
+}: {
+  images: string[]
   title?: string | null
   subtitle?: string | null
-  buttonLabel?: string | null
-  buttonLink?: string | null
-  imageUrl?: string | null
-  imageAlt?: string
-}
-
-const INTERVAL = 6000
-
-/** Full-width hero with auto-advancing slides, looping, as in the prototype. */
-export function HeroSlider({ slides }: { slides: Slide[] }) {
+}) {
   const [index, setIndex] = useState(0)
-  const [paused, setPaused] = useState(false)
-  const count = slides.length
-
-  const go = useCallback((next: number) => setIndex(((next % count) + count) % count), [count])
+  const count = images.length
 
   useEffect(() => {
-    if (count < 2 || paused) return
+    if (count < 2) return
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (reduce.matches) return
     const timer = setInterval(() => setIndex((i) => (i + 1) % count), INTERVAL)
     return () => clearInterval(timer)
-  }, [count, paused])
-
-  if (count === 0) return null
+  }, [count])
 
   return (
-    <section
-      className={styles.hero}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      aria-roledescription="carousel"
-    >
-      {slides.map((slide, i) => (
-        <div
-          key={slide.id}
-          className={`${styles.slide} ${i === index ? styles.active : ''}`}
-          aria-hidden={i !== index}
-        >
-          {slide.imageUrl && (
-            <Image
-              src={slide.imageUrl}
-              alt={slide.imageAlt ?? ''}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className={styles.image}
-            />
-          )}
-          <div className={styles.overlay} />
-          <Container className={styles.inner}>
-            <div className={styles.copy}>
-              {slide.title && <h1 className="t-display">{slide.title}</h1>}
-              {slide.subtitle && <p className="t-display-sub">{slide.subtitle}</p>}
-              {slide.buttonLabel && slide.buttonLink && (
-                <div className={styles.action}>
-                  <Button href={slide.buttonLink} size="lg">
-                    {slide.buttonLabel}
-                  </Button>
-                </div>
-              )}
-            </div>
-          </Container>
-        </div>
-      ))}
+    <section className={styles.hero}>
+      <div
+        className={styles.track}
+        style={{ transform: `translate3d(${-100 * index}%, 0, 0)` }}
+        aria-hidden="true"
+      >
+        {images.map((src, i) => (
+          <div key={src} className={styles.slide}>
+            <Image src={src} alt="" fill priority={i === 0} sizes="100vw" className={styles.image} />
+          </div>
+        ))}
+      </div>
 
-      {count > 1 && (
-        <div className={styles.dots} role="tablist" aria-label="Slides">
-          {slides.map((slide, i) => (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={`${i + 1}`}
-              className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
-              onClick={() => go(i)}
-            />
-          ))}
-        </div>
-      )}
+      <div className={styles.copy}>
+        {title && <h1 className={styles.title}>{title}</h1>}
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+      </div>
 
-      {/* The curved bottom edge from the design */}
-      <div className={styles.curve} aria-hidden="true" />
+      {/* Bottom wave, Figma vector 158:999 (1440x148, #FAFAFA) */}
+      <svg
+        className={styles.wave}
+        viewBox="0 0 1440 149"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M1351.73 71.1213C1328.55 81.9714 1302.98 88.455 1276.8 90.109L480.9 139.199C454.725 140.787 428.4 137.545 403.725 129.606L0 0V149H1440V29.7717L1351.73 71.1213Z" />
+      </svg>
     </section>
   )
 }

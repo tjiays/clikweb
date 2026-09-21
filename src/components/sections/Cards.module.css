@@ -1,136 +1,229 @@
-/* ---- Stat ---- */
+/* ---- Stat (Figma 266:465) ---- */
 .stat {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
+  position: relative;
+  min-height: 196px;
+  background: var(--color-bg-tint);
+  border: 1px solid transparent;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2.25rem 2rem;
   text-align: center;
-  transition: transform var(--transition), box-shadow var(--transition);
+  transition: border-color var(--transition-figma);
+  outline-offset: 4px;
 }
 
-.stat:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+.statFront {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 24px;
+  transition: opacity var(--transition-figma);
 }
 
 .statIcon {
-  margin: 0 auto 1rem;
   object-fit: contain;
+  margin-bottom: 25px;
 }
 
 .statValue {
-  font-size: var(--fs-display);
-  font-weight: var(--fw-black);
-  color: var(--color-primary);
-  line-height: 1.1;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-secondary);
 }
 
 .statLabel {
-  margin-top: 0.5rem;
-  font-size: var(--fs-h5);
-  font-weight: var(--fw-semibold);
+  font-size: 23.75px;
+  font-weight: var(--fw-regular);
+  line-height: 30px;
   color: var(--color-secondary);
 }
 
-/* ---- Solution ---- */
-.solution {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2rem;
-  transition: transform var(--transition), box-shadow var(--transition);
+.statBack {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 23px 17px;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-regular);
+  line-height: 25px;
+  color: #000;
+  text-align: left;
+  opacity: 0;
+  transition: opacity var(--transition-figma);
+  overflow: hidden;
 }
 
-.solution:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+.statFlip:hover,
+.statFlip:focus-visible {
+  border-color: var(--color-secondary);
+}
+
+.statFlip:hover .statFront,
+.statFlip:focus-visible .statFront {
+  opacity: 0;
+}
+
+.statFlip:hover .statBack,
+.statFlip:focus-visible .statBack {
+  opacity: 1;
+}
+
+/* ---- Solution (Figma 1780:10846 / 1343:5924) ---- */
+.solution {
+  height: 100%;
+  min-height: 341px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  padding: 32px 31px;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  text-align: center;
 }
 
 .solutionIcon {
-  object-fit: contain;
-  margin-bottom: 1.25rem;
-  border-radius: var(--radius-sm);
-}
-
-.solutionText {
-  margin: 0.75rem 0 0;
-  font-size: var(--fs-small);
-  flex: 1;
-}
-
-.solutionAction {
-  margin-top: 1.5rem;
-}
-
-/* ---- Testimonial ---- */
-.testimonial {
-  height: 100%;
-  margin: 0;
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-card);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.testimonialLogo {
-  object-fit: contain;
-  height: 44px;
   width: auto;
+  height: 110px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
-.testimonialName {
-  font-weight: var(--fw-extrabold);
+.solutionTitle {
+  margin: 0;
+  font-size: 28px;
+  font-weight: var(--fw-bold);
+  line-height: 38.2px;
   color: var(--color-secondary);
 }
 
-.quote {
+.solutionText {
   margin: 0;
-  flex: 1;
+  max-width: 283px;
   font-size: var(--fs-body);
+  line-height: var(--lh-dense);
   color: var(--color-text-body);
 }
 
-.testimonialCaption {
-  font-size: var(--fs-caption);
-  color: var(--color-text-muted);
-  font-weight: var(--fw-bold);
+.solutionAction {
+  margin-top: auto;
 }
 
-/* ---- Article ---- */
-.article {
+.solutionProducts {
+  min-height: 500px;
+  gap: 0;
+  padding: 54px 20px 60px;
+}
+
+.solutionProducts .solutionIcon {
+  height: 160px;
+}
+
+.solutionProducts .solutionTitle {
+  margin-top: 16px;
+}
+
+.solutionProducts .solutionText {
+  margin-top: 16px;
+  max-width: 260px;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+/* ---- Testimonial (Figma 627:5394) ---- */
+.testimonial {
   height: 100%;
+  min-height: 216px;
+  margin: 0;
+  padding: 21px 17px 20px;
+  background: var(--color-bg-tint);
+  border: 1px solid #000;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.testimonialLogo {
+  margin-left: 8px;
+  height: 31px;
+  width: auto;
+  max-width: 170px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.testimonialName {
+  margin-left: 8px;
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-bold);
+  line-height: 31px;
+  color: var(--color-text-muted);
+}
+
+.quote {
+  margin: 23px 0 0;
+  font-size: 15.625px;
+  font-weight: var(--fw-semibold);
+  line-height: 21.3px;
+  color: #000;
+  text-align: center;
+}
+
+/* ---- Article / report (Figma 1661:8960, 730:3688, 560:2970, 156:1076) ---- */
+.article {
+  /* per-variant metrics */
+  --card-min-h: 660px;
+  --title-size: 24px;
+  --title-lh: 32.736px;
+  --title-gap: 12px;
+  --excerpt-gap: 25px;
+  --excerpt-lines: 4;
+  --footer-pad: 14px;
+  /* Newsroom grid titles stay at Figma's 3 lines; see report/related/mobile */
+  --title-clamp: 3;
+
+  height: 100%;
+  min-height: var(--card-min-h);
   display: flex;
   flex-direction: column;
   background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: transform var(--transition), box-shadow var(--transition);
+  overflow: hidden;
 }
 
-.article:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-card-hover);
+.report {
+  --title-size: 26px;
+  --title-lh: 36px;
+  --title-gap: 8px;
+  /* Laporan (731:3862): the excerpt follows a two-line title directly */
+  --title-min-h: 0;
+  /* Figma shows the full report name, no clamp */
+  --title-clamp: none;
+}
+
+.related {
+  --card-min-h: 565px;
+  --title-size: 26px;
+  --title-lh: 35.464px;
+  --title-gap: 4px;
+  --excerpt-gap: 4px;
+  --footer-pad: 9px;
+  /* Liputan 827:5621 shows a 4-line title in full */
+  --title-clamp: none;
 }
 
 .articleMedia {
   display: block;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 406 / 232;
   background: var(--color-bg-tint);
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  overflow: hidden;
 }
 
 .articleImage,
 .articlePlaceholder {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -141,37 +234,142 @@
 }
 
 .articleBody {
-  padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
   flex: 1;
+  padding: 12px 20px var(--footer-pad);
 }
 
+/* author left, date right — 16/400 black @ 50%, line 30 */
 .articleMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
   margin: 0;
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
+  font-size: var(--fs-body);
+  line-height: 30px;
+  color: var(--color-text-meta);
 }
 
-.articleBody h3 a {
-  color: var(--color-text-heading);
+.author {
+  text-transform: capitalize;
 }
 
-.articleBody h3 a:hover {
-  color: var(--color-primary);
+.date {
+  margin-left: auto;
+  text-align: right;
+}
+
+.articleTitle {
+  margin: var(--title-gap) 0 0;
+  min-height: var(--title-min-h, calc(var(--title-lh) * 3));
+  font-size: var(--title-size);
+  font-weight: var(--fw-extrabold);
+  line-height: var(--title-lh);
+}
+
+/* The clamp sits on the link itself so its hit area matches the visible
+   text and never covers the excerpt below. */
+.articleTitle a {
+  display: -webkit-box;
+  -webkit-line-clamp: var(--title-clamp);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--color-secondary);
+}
+
+.articleTitle a:hover {
+  color: var(--color-secondary);
 }
 
 .articleExcerpt {
-  margin: 0;
-  font-size: var(--fs-small);
-  flex: 1;
+  margin: var(--excerpt-gap) 0 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: var(--color-text-body);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: var(--excerpt-lines);
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+.articleFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  /* Share circle 16px from the card's right edge (1661:8977, 730:3688) */
+  margin-right: -4px;
+  padding-top: 16px;
+}
+
+/* READ MORE hover (316:548 -> 316:550) is an instant swap */
 .readMore {
-  color: var(--color-primary);
+  margin-left: -1px;
+  transition: none;
+}
+
+/* Home "Berita Terbaru" card */
+.home {
+  --card-min-h: 819px;
+  --title-size: 30px;
+  --title-lh: 40.92px;
+  --title-gap: 0;
+  --excerpt-gap: 20px;
+  --excerpt-lines: 8;
+  --title-clamp: 5;
+  border-radius: 15px;
+  box-shadow: 0 2px 30px rgba(72, 73, 121, 0.21);
+}
+
+.home .articleMedia {
+  aspect-ratio: 416 / 260;
+  border-radius: 15px;
+}
+
+.home .articleBody {
+  padding: 5px 30px 12px;
+}
+
+.home .articleMeta {
+  justify-content: flex-end;
+  margin-right: -8px;
+  font-size: var(--fs-small);
+  color: #9a9a9a;
+  text-transform: capitalize;
+}
+
+.home .articleTitle {
+  min-height: 0;
+}
+
+
+.home .articleFooter {
+  height: 66px;
+  margin-right: 0;
+  padding-top: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: flex-end;
+  padding-bottom: 0;
+}
+
+.home .readMore {
+  margin-bottom: 9px;
+}
+
+@media (max-width: 768px) {
+  .article {
+    --card-min-h: 0px;
+  }
+  .articleTitle {
+    min-height: 0;
+  }
+  .article {
+    --title-clamp: none;
+  }
+  .home {
+    --title-size: 24px;
+    --title-lh: 32.736px;
+  }
 }

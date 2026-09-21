@@ -1,25 +1,191 @@
+/*
+ * Policy / how-to pages. Full container width (1300px at 1440, x=70),
+ * black 16px body. The first content line and the gap to the footer differ
+ * per Figma frame, so each layout sets its own top/bottom padding.
+ */
 .article {
-  max-width: 900px;
-  padding-bottom: var(--space-section);
+  --static-top: 0px;
+  padding-top: var(--static-top);
+  padding-bottom: 0; /* the footer brings its own 80px margin */
+  color: var(--color-text-body);
 }
 
-.updated {
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  margin-bottom: 2rem;
+/* No trailing space after the last block; the bottom gap is set per layout. */
+.article > div > :last-child {
+  margin-bottom: 0;
 }
 
-.attachments {
-  list-style: none;
-  margin: 2.5rem 0 0;
-  padding: 1.5rem;
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-md);
-  display: grid;
-  gap: 0.75rem;
+/* ---- Kebijakan Keamanan Informasi (743:3483) ----------------------------
+ * Headings 24/600 navy (32.736 line), 8px to the body, 32px after it.
+ * Body 16/21.824; the Komitmen intro keeps its empty line before the list.
+ * First heading y=349, last line ends 89px above the footer. */
+.article.sections {
+  --static-top: 32px;
+  padding-bottom: 12px; /* last line + footer margin 80 = 89 below the text (Figma box rounding) */
 }
 
-.attachments a {
+.article.sections h2 {
+  /* 32px in Figma; +1 absorbs Figma's rounded-up text boxes (88 for 87.3) */
+  margin: 33px 0 8px;
+  font-weight: 600;
+}
+
+.article.sections h2:first-child {
+  margin-top: 0;
+}
+
+.article.sections ul,
+.article.sections ol {
+  margin-bottom: 0;
+}
+
+.article.sections p:has(+ ul),
+.article.sections p:has(+ ol) {
+  margin-bottom: 21.824px;
+}
+
+/* ---- Kebijakan Privasi (955:5948) ---------------------------------------
+ * One text flow: 24/700 navy headings with one empty line (21.824) above
+ * and none below; paragraphs and lists line to line. Starts at y=334. */
+.article.notice {
+  --static-top: 17px;
+  padding-bottom: 28px; /* + footer margin 80 = 108 */
+}
+
+.article.notice p,
+.article.notice ul,
+.article.notice ol {
+  margin: 0;
+}
+
+.article.notice h2 {
+  margin: 21.824px 0 0;
+}
+
+.article.notice h2:first-child {
+  margin-top: 0;
+}
+
+/* ---- Penyelesaian Pengaduan (418:2844) ----------------------------------
+ * 16/30, one empty line (30px) between paragraphs; an intro line runs
+ * straight into its list or into the italic address. Starts at y=332,
+ * ends 154px above the footer. */
+.article.relaxed {
+  --static-top: 15px;
+  padding-bottom: 74px; /* + footer margin 80 = 154 */
+}
+
+/* "…kantor PT CRIF Lembaga Informasi Keuangan di:" + italic address line
+   (the only paragraph with a class is the italic one). */
+.article.relaxed p:has(+ p[class]) {
+  margin-bottom: 0;
+}
+
+/* ---- Cara mendapat laporan kredit (418:2433) ----------------------------
+ * Main frame 1152px: intro (y=337), two columns with a 606px pitch, each a
+ * 100x100 illustration centred over a 20/700 navy heading, then a numbered
+ * list 31px below; the note sits 60px under the longer list. */
+.howTo {
+  /* 418:2436 / 418:2437: 2 lines of 30 in a 52px centred box overflow 4px up */
+  --static-top: 16px;
+  padding-bottom: 38px; /* + footer margin 80 = 118 */
+  max-width: 1152px;
+  font-size: var(--fs-body);
+  line-height: 30px;
+}
+
+.howIntro {
+  margin: 0;
+  padding-left: 1px;
+}
+
+.howIntro strong {
   font-weight: var(--fw-bold);
+}
+
+.howIntro em {
+  font-style: italic;
+}
+
+.howColumns {
+  display: grid;
+  grid-template-columns: 606px 1fr;
+  margin-top: 53px;
+}
+
+.howColumn {
+  min-width: 0;
+  padding-left: 1px;
+}
+
+.howHead {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 26px;
+}
+
+.howColumn + .howColumn .howHead {
+  margin-left: 24px;
+}
+
+.howImage {
+  display: block;
+  width: 100px;
+  height: 100px;
+}
+
+.howHeading {
+  margin: 0;
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-secondary);
+}
+
+.howList {
+  margin: 31px 0 0;
+  padding-left: 24px;
+  list-style: decimal;
+}
+
+.howLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-figma);
+}
+
+.howLink:hover,
+.howLink:focus-visible {
   color: var(--color-primary);
+}
+
+.howNote {
+  margin: 56px 0 0;
+  padding-left: 1px;
+  max-width: 1137px;
+}
+
+@media (max-width: 1024px) {
+  .article.article {
+    --static-top: 0px;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .howColumns {
+    grid-template-columns: 1fr;
+    row-gap: 40px;
+    margin-top: 40px;
+  }
+
+  .howHead,
+  .howColumn + .howColumn .howHead {
+    margin-left: 0;
+  }
+
+  .howNote {
+    margin-top: 40px;
+  }
 }
