@@ -1,14 +1,14 @@
 /* Nunito Sans for the admin panel. Loaded from Google here rather than
    self-hosted: the admin is behind a login and internal-only, and the
    hashed next/font filenames cannot be referenced from plain CSS. */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap');
 
 /*
  * CLIK admin theming.
  *
- * Deliberately conservative: it sets the typeface and the brand accent, and
- * leaves Payload's own layout rules alone. Overriding more of the admin
- * internals tends to break on upgrade for little gain.
+ * Deliberately light. It sets the typeface, the brand accent and a little
+ * breathing room, and leaves Payload's own layout rules alone — overriding
+ * more of the internals tends to break on upgrade for little gain.
  *
  * Designer reference: Figma "Admin View" 704:3356.
  */
@@ -17,9 +17,7 @@
   --clik-orange: #ff7d00;
   --clik-orange-light: #ffbb7b;
   --clik-navy: #003a79;
-  --clik-tint: #f1faff;
 
-  /* Payload reads these for its own typography */
   --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: var(--font-body);
 }
@@ -28,7 +26,7 @@ body {
   font-family: var(--font-body);
 }
 
-/* Primary actions in brand orange */
+/* ---- Actions ---- */
 .btn--style-primary .btn__content,
 .btn--style-primary {
   background-color: var(--clik-orange);
@@ -43,34 +41,43 @@ body {
   color: var(--clik-navy);
 }
 
-/* Secondary actions in navy */
 .btn--style-secondary {
   border-color: var(--clik-navy);
   color: var(--clik-navy);
 }
 
-/* Navigation and headings pick up the brand navy */
-.nav .nav__link:hover,
+/* ---- Navigation ----
+   Quieter than Payload's default: group labels recede, the active item is
+   the only thing that carries colour. */
+.nav-group__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-400);
+}
+
+.nav .nav__link {
+  border-radius: 6px;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.nav .nav__link:hover {
+  color: var(--clik-navy);
+  background: var(--theme-elevation-50);
+}
+
 .nav .nav__link--active {
   color: var(--clik-orange);
+  font-weight: 700;
 }
 
-.nav-group__label {
-  color: var(--clik-navy);
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* The login screen carries the brand more strongly */
+/* ---- Login ---- */
 .login .form-header h1 {
   color: var(--clik-navy);
 }
 
-/*
- * Approval state, so an editor can see at a glance where an item stands.
- * Mirrors the badge colours on the public site.
- */
+/* ---- Approval state, so an editor can see where an item stands ---- */
 .pill--style-success {
   background-color: var(--clik-navy);
   color: #fff;
