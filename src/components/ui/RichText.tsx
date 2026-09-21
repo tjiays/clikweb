@@ -1,6 +1,7 @@
 import { RichText as LexicalRichText } from '@payloadcms/richtext-lexical/react'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import styles from './RichText.module.css'
+import { richTextConverters } from './richTextConverters'
 
 /**
  * Renders CMS rich text: headings, lists, links, images and tables, with the
@@ -22,7 +23,7 @@ export function RichText({
     .join(' ')
   return (
     <div className={classes}>
-      <LexicalRichText data={data as SerializedEditorState} />
+      <LexicalRichText data={data as SerializedEditorState} converters={richTextConverters} />
     </div>
   )
 }

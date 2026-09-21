@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, Field } from 'payload'
 import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
 import {
@@ -17,6 +17,12 @@ import { lockedForApprover } from '@/fields/approval'
  * Authors became a plain text byline, and the media outlets and their
  * coverage moved into src/content/newsroom.ts — they are a fixed list that
  * changes rarely, and each one was costing a menu item.
+ *
+ * The form is two tabs. "Tulisan" is only the title, the summary and the
+ * editor, so writing an article is one surface rather than a column of
+ * unrelated boxes; everything an article needs but nobody writes into —
+ * images, related links, SEO — sits in "Pengaturan", and the short
+ * publishing switches stay in the sidebar.
  */
 export const Articles: CollectionConfig = contentCollection({
   slug: 'articles',
@@ -26,21 +32,63 @@ export const Articles: CollectionConfig = contentCollection({
   preview: { id: '/newsroom', en: '/en/newsroom' },
   defaultColumns: ['title', 'author', 'publishDate', 'isFeatured', 'approvalStatus'],
   fields: [
-    localisedText('title', 'Judul', true),
-    slugField(),
-    localisedTextarea('excerpt', 'Ringkasan'),
-    richText('body', 'Isi artikel'),
-    imageField('cover', 'Gambar sampul'),
     {
-      name: 'banner',
-      type: 'upload',
-      relationTo: 'media',
-      label: 'Gambar banner (halaman detail)',
-      access: lockedForApprover,
-      admin: {
-        description:
-          'Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.',
-      },
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Tulisan',
+          description: 'Tulis artikel di sini. Gambar, tabel dan perataan ada di toolbar editor.',
+          fields: [
+            localisedText('title', 'Judul', true),
+            {
+              ...localisedTextarea('excerpt', 'Ringkasan'),
+              admin: {
+                description:
+                  'Satu atau dua kalimat. Muncul di kartu artikel, bukan di halaman artikel.',
+              },
+            } as Field,
+            {
+              ...richText('body', 'Isi artikel'),
+              admin: {
+                description:
+                  'Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.',
+              },
+            } as Field,
+          ],
+        },
+        {
+          label: 'Pengaturan',
+          description: 'Gambar, artikel terkait dan SEO.',
+          fields: [
+            imageField('cover', 'Gambar sampul'),
+            {
+              name: 'banner',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Gambar banner (halaman detail)',
+              access: lockedForApprover,
+              admin: {
+                description:
+                  'Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.',
+              },
+            },
+            {
+              name: 'relatedArticles',
+              type: 'relationship',
+              relationTo: 'articles',
+              hasMany: true,
+              maxRows: 3,
+              label: 'Anda mungkin juga tertarik dengan',
+              access: lockedForApprover,
+              filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
+              admin: {
+                description: 'Up to 3 articles, in order. Empty: the newest articles.',
+              },
+            },
+            seoFields,
+          ],
+        },
+      ],
     },
     {
       // A name rather than a relationship: one less collection for a byline.
@@ -48,7 +96,9 @@ export const Articles: CollectionConfig = contentCollection({
       type: 'text',
       label: 'Penulis',
       access: lockedForApprover,
+      admin: { position: 'sidebar' },
     },
+    slugField(),
     {
       name: 'publishDate',
       type: 'date',
@@ -96,19 +146,5 @@ export const Articles: CollectionConfig = contentCollection({
           'Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.',
       },
     },
-    {
-      name: 'relatedArticles',
-      type: 'relationship',
-      relationTo: 'articles',
-      hasMany: true,
-      maxRows: 3,
-      label: 'Anda mungkin juga tertarik dengan',
-      access: lockedForApprover,
-      filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
-      admin: {
-        description: 'Up to 3 articles, in order. Empty: the newest articles.',
-      },
-    },
-    seoFields,
   ],
 })

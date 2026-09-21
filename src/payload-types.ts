@@ -137,10 +137,12 @@ export interface Article {
   id: number;
   title: string;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Satu atau dua kalimat. Muncul di kartu artikel, bukan di halaman artikel.
    */
-  slug: string;
   excerpt?: string | null;
+  /**
+   * Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.
+   */
   body?: {
     root: {
       type: string;
@@ -161,7 +163,19 @@ export interface Article {
    * Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.
    */
   banner?: (number | null) | Media;
+  /**
+   * Up to 3 articles, in order. Empty: the newest articles.
+   */
+  relatedArticles?: (number | Article)[] | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+  };
   author?: string | null;
+  /**
+   * Used in the page address. Derived from title if left blank.
+   */
+  slug: string;
   /**
    * Newest first on the Newsroom and Home. Same day: the later time comes first.
    */
@@ -178,14 +192,6 @@ export interface Article {
    * Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.
    */
   hideFromList?: boolean | null;
-  /**
-   * Up to 3 articles, in order. Empty: the newest articles.
-   */
-  relatedArticles?: (number | Article)[] | null;
-  seo?: {
-    title?: string | null;
-    description?: string | null;
-  };
   /**
    * Seed content from the design. Replace before launch.
    */
@@ -295,19 +301,14 @@ export interface User {
  */
 export interface Report {
   id: number;
-  type: 'annual_report' | 'business_development';
   title: string;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Satu atau dua kalimat. Muncul di kartu laporan.
    */
-  slug: string;
-  year: number;
-  /**
-   * Shown on the report card, left of the date.
-   */
-  author?: string | null;
   excerpt?: string | null;
-  cover?: (number | null) | Media;
+  /**
+   * Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.
+   */
   body: {
     root: {
       type: string;
@@ -346,6 +347,17 @@ export interface Report {
         id?: string | null;
       }[]
     | null;
+  cover?: (number | null) | Media;
+  type: 'annual_report' | 'business_development';
+  /**
+   * Used in the page address. Derived from title if left blank.
+   */
+  slug: string;
+  year: number;
+  /**
+   * Shown on the report card, left of the date.
+   */
+  author?: string | null;
   publishDate?: string | null;
   /**
    * Lower numbers appear first.
@@ -699,16 +711,10 @@ export interface PayloadMigration {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   title?: T;
-  slug?: T;
   excerpt?: T;
   body?: T;
   cover?: T;
   banner?: T;
-  author?: T;
-  publishDate?: T;
-  isFeatured?: T;
-  featuredPositions?: T;
-  hideFromList?: T;
   relatedArticles?: T;
   seo?:
     | T
@@ -716,6 +722,12 @@ export interface ArticlesSelect<T extends boolean = true> {
         title?: T;
         description?: T;
       };
+  author?: T;
+  slug?: T;
+  publishDate?: T;
+  isFeatured?: T;
+  featuredPositions?: T;
+  hideFromList?: T;
   isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
@@ -733,13 +745,8 @@ export interface ArticlesSelect<T extends boolean = true> {
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
-  type?: T;
   title?: T;
-  slug?: T;
-  year?: T;
-  author?: T;
   excerpt?: T;
-  cover?: T;
   body?: T;
   financialTables?:
     | T
@@ -758,6 +765,11 @@ export interface ReportsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  cover?: T;
+  type?: T;
+  slug?: T;
+  year?: T;
+  author?: T;
   publishDate?: T;
   sortOrder?: T;
   isSample?: T;

@@ -1,6 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { contentEditor } from './fields/editor'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -77,7 +77,9 @@ export default buildConfig({
     // Shared — needed for article, report and product images
     Media,
   ],
-  editor: lexicalEditor(),
+  // One editor everywhere: fixed toolbar, headings, alignment, lists,
+  // links, inline images and tables. See src/fields/editor.ts.
+  editor: contentEditor,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),

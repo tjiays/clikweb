@@ -80,6 +80,41 @@ Every content collection carries:
 - **Revision history** — 25 versions, restorable
 - **Audit logging** — every submit, approve, reject and delete
 
+## The rich text editor
+
+One editor config serves every long-form field — articles, reports, product
+descriptions and job specs. It lives in `src/fields/editor.ts` and is set as
+the project-wide default in `src/payload.config.ts`, so a `richText` field
+picks it up without asking.
+
+Two choices are deliberate:
+
+- **The toolbar is fixed, not floating.** Payload's default only appears once
+  text is selected, which leaves an editor looking at an empty box with no
+  visible controls.
+- **Tables are switched on explicitly.** `EXPERIMENTAL_TableFeature` is not in
+  the default feature set. The annual reports need it for their financial
+  statements.
+
+Payload's stock JSX converters drop three things this toolbar can produce, so
+`src/components/ui/richTextConverters.tsx` replaces them:
+
+| Converter | Why it is overridden |
+| --- | --- |
+| `paragraph`, `heading` | The stock ones ignore `node.format`, so alignment and indent never reached the page. |
+| `table`, `tablecell`, `tablerow` | The stock cell hardcodes an inline `border: 1px solid #ccc`; an inline style beats the stylesheet, so CLIK tables rendered grey. These emit no inline borders and let `RichText.module.css` own the look. |
+| `upload` | Renders `<figure>` + `<figcaption>` so the **Keterangan gambar** field on an inserted image has somewhere to go, and turns a non-image upload into a download link. |
+
+Inserted images use a plain `<img>`, not `next/image`: they land at arbitrary
+points in the flow with no layout to size against, and the Payload media URL
+would otherwise need its own `localPatterns` entry in `next.config.ts` (see
+`docs/editing-content.md`).
+
+**Changing the feature list requires `npx payload generate:importmap`.** The
+admin loads each feature's client component through
+`src/app/(payload)/admin/importMap.js`; a feature missing from that map is
+silently absent from the toolbar at runtime, even though the build succeeds.
+
 ## Data Masuk and Audit Trail
 
 Both read-only. Contact submissions can never be edited or deleted by anyone;

@@ -112,3 +112,65 @@ body {
   background-color: var(--clik-orange-light);
   color: var(--clik-navy);
 }
+
+/* ---- The content editor ----
+   Articles and reports are written in one box, so it has to read as a page
+   rather than as a form field: a tall surface, a toolbar pinned above it,
+   and the same type as the website's prose. */
+.rich-text-lexical {
+  .editor-container {
+    min-height: 460px;
+  }
+
+  /* The fixed toolbar stays in reach while scrolling through a long article. */
+  .fixed-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-radius: 4px 4px 0 0;
+    background: var(--theme-elevation-50);
+  }
+
+  .ContentEditable__root {
+    padding: 20px 24px;
+    font-size: 15px;
+    line-height: 1.7;
+
+    h2 { font-size: 26px; }
+    h3 { font-size: 21px; }
+    h4 { font-size: 18px; }
+
+    h2, h3, h4 {
+      color: var(--clik-navy);
+      font-weight: 700;
+      margin: 1.2em 0 0.4em;
+    }
+
+    /* Tables built with the toolbar, shown the way the website renders them. */
+    table {
+      border-collapse: collapse;
+      margin: 1em 0;
+    }
+
+    th, td {
+      border: 1px solid var(--theme-elevation-150);
+      padding: 8px 12px;
+    }
+
+    th {
+      background: var(--theme-elevation-50);
+      font-weight: 700;
+    }
+  }
+}
+
+/* Tab bar above the editor: make the writing tab the obvious place to be. */
+.tabs-field__tabs {
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+.tabs-field__tab-button--active {
+  color: var(--clik-navy);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--clik-orange);
+}
