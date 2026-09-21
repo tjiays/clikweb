@@ -47,29 +47,110 @@ body {
 }
 
 /* ---- Navigation ----
-   Quieter than Payload's default: group labels recede, the active item is
-   the only thing that carries colour. */
+   Navy panel, white text, orange for hover and the current page. Payload
+   builds the sidebar from several nested elements, so the background is set
+   on the wrapper and each child is made transparent rather than trying to
+   colour one element and hoping it covers. */
+
+.nav,
+.nav__wrap,
+.template-default__nav,
+.nav-group__toggle {
+  background: var(--clik-navy) !important;
+}
+
+.nav {
+  --theme-elevation-0: var(--clik-navy);
+  --theme-elevation-50: #00305f;
+  --theme-elevation-100: #004a91;
+
+  border-right: none;
+}
+
+/* Every piece of text in the sidebar, unless overridden below. */
+.nav,
+.nav a,
+.nav button,
+.nav__link,
+.nav__label,
+.nav-group__label,
+.nav__controls a,
+.nav__controls button {
+  color: #ffffff;
+}
+
+/* Group headings sit back so the links lead. */
 .nav-group__label {
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--theme-elevation-400);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .nav .nav__link {
   border-radius: 6px;
+  padding-block: 0.45rem;
   transition: background-color 150ms ease, color 150ms ease;
 }
 
-.nav .nav__link:hover {
-  color: var(--clik-navy);
-  background: var(--theme-elevation-50);
+.nav .nav__link:hover,
+.nav .nav__link:focus-visible {
+  color: var(--clik-orange);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.nav .nav__link--active {
+.nav .nav__link--active,
+.nav .nav__link[aria-current='page'] {
   color: var(--clik-orange);
+  background: rgba(255, 255, 255, 0.10);
   font-weight: 700;
+}
+
+/* The chevron on a collapsible group, and any icon inside a link. */
+.nav .nav-group__indicator svg,
+.nav .nav__link svg {
+  color: currentColor;
+  fill: currentColor;
+}
+
+/* Account and log-out, pinned at the bottom. */
+.nav__controls a:hover,
+.nav__controls button:hover {
+  color: var(--clik-orange);
+}
+
+/* The logo block at the top of the sidebar. */
+.nav .graphic-icon,
+.nav__header {
+  background: transparent;
+}
+
+/* ---- The Dashboard link we add above the groups ---- */
+.clik-nav-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--clik-orange);
+    background: rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+  }
+
+  &--active {
+    color: var(--clik-orange);
+    background: rgba(255, 255, 255, 0.10);
+  }
 }
 
 /* ---- Login ---- */
