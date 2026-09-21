@@ -72,7 +72,6 @@ const GROUPS: { title: string; items: Item[] }[] = [
     title: 'Newsroom',
     items: [
       { slug: 'articles', label: 'Artikel', icon: I('M4 4h11a2 2 0 012 2v12a2 2 0 002 2H6a2 2 0 01-2-2V4zm3 4h7M7 11h7M7 14h4') },
-      { slug: 'media', label: 'Media Library', icon: I('M3 5h18v14H3V5zm0 11l5-5 4 4 3-3 6 6M9 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z') },
     ],
   },
   {
@@ -92,6 +91,12 @@ const GROUPS: { title: string; items: Item[] }[] = [
     items: [
       { slug: 'contact-submissions', label: 'Data Masuk', icon: I('M3 6h18v12H3V6zm0 0l9 7 9-7') },
       { slug: 'audit-log', label: 'Audit Trail', icon: I('M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z') },
+    ],
+  },
+  {
+    title: 'Media',
+    items: [
+      { slug: 'media', label: 'Media Library', icon: I('M3 5h18v14H3V5zm0 11l5-5 4 4 3-3 6 6M9 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z') },
     ],
   },
   {

@@ -10,7 +10,7 @@ import {
 import { approvalFields, publishedAtField } from '@/fields/approval'
 import { enforceApprovalRules, syncPublishState } from '@/hooks/approval'
 import { recordAudit, recordDeletion } from '@/hooks/audit'
-import { previewFor } from '@/lib/preview'
+import { previewFor, livePreviewFor } from '@/lib/preview'
 import { autoTranslateField } from '@/fields/autoTranslate'
 import { isSampleField } from '@/fields/common'
 
@@ -57,7 +57,9 @@ export const contentCollection = ({
     group,
     useAsTitle,
     defaultColumns: defaultColumns ?? [useAsTitle, 'approvalStatus', 'updatedAt'],
-    ...(preview ? { preview: previewFor(preview) } : {}),
+    ...(preview
+      ? { preview: previewFor(preview), livePreview: livePreviewFor(preview) }
+      : {}),
     ...(previewPath
       ? {
           preview: (_doc: unknown, { locale }: { locale?: string }) => {

@@ -115,6 +115,37 @@ admin loads each feature's client component through
 `src/app/(payload)/admin/importMap.js`; a feature missing from that map is
 silently absent from the toolbar at runtime, even though the build succeeds.
 
+## Live Preview
+
+Articles and reports show the real public page in a pane beside the editing
+form, at desktop, tablet and phone widths. It is wired in `contentCollection()`
+from the same `preview` option that drives the old open-in-a-tab button, so a
+collection gets both or neither (`src/lib/preview.ts`).
+
+Two details are deliberate:
+
+- **The URL is relative.** Staging answers on more than one address (LAN and
+  Tailscale). An absolute URL from an environment variable would point the
+  iframe at whichever host was configured rather than the one the editor is
+  on — a different origin, so the draft-mode cookie would not be sent and the
+  pane would show the published version instead of the draft.
+- **The pane refreshes on save, not on every keystroke.** The pages are
+  server-rendered from the database, so there is no client-side state to patch
+  field by field. `src/components/ui/RefreshOnSave.tsx` asks Next to refetch
+  the route, which shows exactly what a reader would get. It loads only when
+  draft mode is on, so the public site never downloads it.
+
+`url` returns `null` until the document has a slug, so a brand-new empty
+document does not try to preview a page that has no address yet.
+
+## Media Library
+
+Its own menu group, not filed under Newsroom. Articles, reports, products and
+job openings all draw from the same library, so filing it under one of them
+suggested it belonged to that one. Changing where it appears means changing
+both `admin.group` in `src/collections/Media.ts` and the group in
+`src/components/admin/Nav.tsx`, which owns the sidebar markup.
+
 ## Data Masuk and Audit Trail
 
 Both read-only. Contact submissions can never be edited or deleted by anyone;

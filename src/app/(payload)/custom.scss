@@ -115,8 +115,13 @@ body {
 
 /* ---- The content editor ----
    Articles and reports are written in one box, so it has to read as a page
-   rather than as a form field: a tall surface, a toolbar pinned above it,
-   and the same type as the website's prose. */
+   rather than as a form field. The type below mirrors the website's article
+   styles exactly (src/styles/tokens.css and RichText.module.css), so what an
+   editor types looks like what publishes: 16px black body on a 1.364 line,
+   24px navy section headings, orange underlined links.
+
+   The literal mirror is the Live Preview pane beside the form; this is so
+   the writing surface itself does not look like a different document. */
 .rich-text-lexical {
   .editor-container {
     min-height: 460px;
@@ -132,33 +137,78 @@ body {
   }
 
   .ContentEditable__root {
-    padding: 20px 24px;
-    font-size: 15px;
-    line-height: 1.7;
+    /* 992px is the article body column on the website; the same measure here
+       means line breaks fall in roughly the same places. */
+    max-width: 992px;
+    padding: 24px 28px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.364;
+    color: #000;
 
-    h2 { font-size: 26px; }
-    h3 { font-size: 21px; }
-    h4 { font-size: 18px; }
+    p {
+      margin: 0 0 21.824px;
+    }
+
+    h2, h3 {
+      font-size: 24px;
+      line-height: 32.736px;
+    }
+
+    h4 {
+      font-size: 20px;
+    }
 
     h2, h3, h4 {
       color: var(--clik-navy);
       font-weight: 700;
-      margin: 1.2em 0 0.4em;
+      margin: 21.824px 0 0;
     }
 
-    /* Tables built with the toolbar, shown the way the website renders them. */
+    ul, ol {
+      margin: 0 0 21.824px;
+      padding-left: 24px;
+    }
+
+    ul { list-style: disc; }
+    ol { list-style: decimal; }
+
+    a {
+      color: var(--clik-orange);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    blockquote {
+      margin: 1.5rem 0;
+      padding-left: 1.25rem;
+      border-left: 3px solid var(--clik-orange);
+      color: #697077;
+    }
+
+    img {
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Tables built with the toolbar, in the website's border colour. */
     table {
       border-collapse: collapse;
-      margin: 1em 0;
+      margin: 1.5rem 0;
+      font-size: 14px;
     }
 
     th, td {
-      border: 1px solid var(--theme-elevation-150);
-      padding: 8px 12px;
+      border: 1px solid #dbe4f0;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
     }
 
     th {
-      background: var(--theme-elevation-50);
+      background: #f1faff;
+      color: var(--clik-navy);
       font-weight: 700;
     }
   }
@@ -173,4 +223,16 @@ body {
   color: var(--clik-navy);
   font-weight: 700;
   box-shadow: inset 0 -2px 0 var(--clik-orange);
+}
+
+/* ---- Live Preview ----
+   The pane that shows the real page beside the form. Give the toggle the
+   brand accent so it reads as the main way to check work before submitting. */
+.live-preview-toggler {
+  color: var(--clik-navy);
+  font-weight: 700;
+}
+
+.live-preview-window__wrapper {
+  background: #fafafa;
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { Nunito_Sans } from 'next/font/google'
 import { notFound } from 'next/navigation'
+import { draftMode } from 'next/headers'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { BackToTop } from '@/components/ui/BackToTop'
+import { RefreshOnSave } from '@/components/ui/RefreshOnSave'
 import { getDictionary } from '@/i18n'
 import { isLocale, locales } from '@/i18n/config'
 import '@/styles/globals.css'
@@ -61,6 +63,9 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound()
 
   const dict = await getDictionary(locale)
+  // Only drafts are previewed, so the Live Preview bridge is loaded only then
+  // — a reader of the public site never downloads it.
+  const { isEnabled: isDraft } = await draftMode()
 
   return (
     <html lang={locale} className={nunitoSans.variable}>
@@ -72,6 +77,7 @@ export default async function LocaleLayout({
         <main id="main">{children}</main>
         <Footer locale={locale} dict={dict} />
         <BackToTop label={dict.common.backToTop} />
+        {isDraft ? <RefreshOnSave /> : null}
       </body>
     </html>
   )

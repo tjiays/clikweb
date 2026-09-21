@@ -9,12 +9,16 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
  * Shared media library. Editors upload and reuse; the Approver may look but
  * not change; Sales Admin has no reason to be here (intent/03-cms.md §2).
  *
+ * It sits in its own menu group rather than under Newsroom: articles,
+ * reports, products and job openings all draw from the same library, and
+ * filing it under one of them suggested it belonged to that one.
+ *
  * Files live on disk, not in the database, and are backed up separately.
  */
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Media', plural: 'Media Library' },
-  admin: { group: 'Newsroom', useAsTitle: 'filename' },
+  admin: { group: 'Media', useAsTitle: 'filename' },
   access: {
     read: () => true,
     create: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),

@@ -75,6 +75,27 @@ Beberapa catatan:
 - Gunakan **Preview** untuk melihat hasilnya di website sebelum mengirim untuk
   review.
 
+## Melihat hasilnya (Live Preview)
+
+Di layar artikel ada tombol **Live Preview**. Menekannya membelah layar: form
+di kiri, dan **halaman website yang sesungguhnya** di kanan — bukan tiruan,
+melainkan halaman yang sama persis dengan yang akan dilihat pembaca.
+
+- Setelah Anda **Save**, panel kanan ikut diperbarui.
+- Di atas panel ada pilihan ukuran layar: **Desktop**, **Tablet**, dan
+  **Ponsel**. Gunakan Ponsel untuk memastikan tabel dan gambar tetap rapi di
+  layar kecil.
+- Panel menampilkan versi **draft**, jadi Anda bisa memeriksa artikel yang
+  belum disetujui sekalipun.
+- Ganti bahasa lewat pemilih bahasa di atas; panel ikut berpindah ke halaman
+  Bahasa Inggris.
+
+Live Preview baru muncul setelah artikel punya **Slug** — jadi simpan sekali
+lebih dulu untuk artikel yang benar-benar baru.
+
+Tombol **Preview** yang lama tetap ada bila Anda ingin membuka halamannya di
+tab baru, lebar penuh.
+
 ## Dua bahasa
 
 Isi versi Bahasa Indonesia lebih dulu. Lalu tekan **Auto-translate to English**
