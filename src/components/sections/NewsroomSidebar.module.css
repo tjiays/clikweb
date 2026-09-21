@@ -1,122 +1,127 @@
+/* Figma 305:1082 / 827:5603 left column, 408px wide at x=71. */
 .sidebar {
-  display: grid;
-  gap: 2.5rem;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.block {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-}
-
+/* The rule/heading sit at x=71, the outlet buttons at x=70. */
 .heading {
-  margin-bottom: 1.25rem;
+  margin: 0 0 0 1px;
 }
 
+.featuredBlock .heading {
+  margin-bottom: 48px; /* heading box bottom 497.7 → first item 546 */
+}
+
+.outletsBlock {
+  margin-top: 74px; /* last Featured item → Daftar rule (1142 → 1216) */
+}
+
+.featuredBlock:only-child,
+.outletsBlock:first-child {
+  margin-top: 0;
+}
+
+.outletsBlock .heading {
+  margin-bottom: 16px; /* heading box bottom 1258.7 → buttons 1275 */
+}
+
+/* ---- Featured News: 16/700 black, orange 7px dots, 38px apart ---- */
 .featured {
   list-style: none;
-  margin: 0;
+  margin: 0 0 0 1px;
   padding: 0;
-  display: grid;
-  gap: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 38px;
 }
 
 .featured li {
   position: relative;
-  padding-left: 1.1rem;
-  font-size: var(--fs-small);
-  line-height: 1.6;
+  padding-left: 14px;
+  max-width: 408px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+  line-height: 21.8px;
 }
 
 .featured li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0.55em;
+  top: 9px;
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--color-primary);
 }
 
-.featured a {
-  color: var(--color-secondary);
-  font-weight: var(--fw-semibold);
-}
-
+.featured a,
 .featured a:hover {
-  color: var(--color-primary);
+  color: #000;
 }
 
+/* ---- Daftar Media: 192x56 white buttons, 1px orange, radius 15 ---- */
 .outlets {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, 192px);
+  column-gap: 16px;
+  row-gap: 14px;
 }
 
 .outlet {
-  display: grid;
-  place-items: center;
-  padding: 0.75rem;
-  min-height: 60px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  transition: border-color var(--transition), background-color var(--transition);
-}
-
-.outlet:hover {
-  border-color: var(--color-primary);
-  background: var(--color-bg-tint);
-}
-
-.outlet img {
-  object-fit: contain;
-  max-height: 40px;
-  width: auto;
-}
-
-/* ---- Logo strip ---- */
-.strip {
-  overflow-x: auto;
-  padding-block: 1.5rem;
-  border-block: 1px solid var(--color-border);
-  scrollbar-width: none;
-}
-
-.strip::-webkit-scrollbar {
-  display: none;
-}
-
-.stripList {
   display: flex;
   align-items: center;
-  gap: 3rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  justify-content: center;
+  height: 56px;
+  padding: 0 6px;
+  background: #fff;
+  border: 1px solid var(--color-primary);
+  border-radius: 15px;
 }
 
-.stripList img {
+/* Figma Variant2 (825:5358 etc.): rectangle #FF7D00 with a black stroke, at
+   25% opacity; the logo stays as it is. No transition in the prototype. */
+.outlet:hover {
+  background: rgba(255, 125, 0, 0.25);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.outletLogo {
+  display: block;
+  max-width: 100%;
   object-fit: contain;
-  max-height: 44px;
+}
+
+/* ---- Logo marquee: x=5, 1430 wide, 32px tall ---- */
+.strip {
   width: auto;
-  filter: grayscale(1);
-  opacity: 0.75;
-  transition: filter var(--transition), opacity var(--transition);
+  margin-inline: 5px;
 }
 
-.stripList img:hover {
-  filter: none;
-  opacity: 1;
+.stripLogo {
+  display: block;
+  flex-shrink: 0;
 }
 
-.stripName {
-  font-weight: var(--fw-bold);
-  color: var(--color-text-muted);
-  white-space: nowrap;
+@media (max-width: 1024px) {
+  .featured li {
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .outlets {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+  }
+  .outletLogo {
+    width: auto !important;
+    height: auto !important;
+    max-height: 28px;
+  }
 }
