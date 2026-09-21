@@ -1,11 +1,26 @@
+/* ---- Laporan list (724:3551): cards 406x660 at x70/517/964, grid top y392 ---- */
+/* The footer adds its own 80px top margin (Footer.module.css); Figma puts
+   it 49px under the pagination (1854 → 1903). */
 .wrap {
-  padding-bottom: var(--space-section);
+  margin-bottom: -31px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, minmax(0, 406px));
+  column-gap: 41px;
+  row-gap: 42px;
+  margin-top: 75px; /* header ends 317 → cards y392 */
+}
+
+/* Figma lets the excerpt follow a two-line title (731:3862) rather than
+   reserving three title lines as the shared card does. */
+.grid article h3 {
+  min-height: 0;
+}
+
+.grid + * {
+  margin-top: 50px; /* pagination y1804, 50 under the last card */
 }
 
 .empty {
@@ -16,27 +31,227 @@
   color: var(--color-text-muted);
 }
 
-.article {
-  max-width: 900px;
-  padding-bottom: var(--space-section);
+/* ---- Annual report detail (709:3673) ---- */
+
+/* #F1FAFF band y95–499: behind the breadcrumb and the top 277px of the cover. */
+.band {
+  background: var(--color-bg-tint);
+  padding-bottom: 277px;
+}
+
+.band .annualHeader {
+  padding-bottom: 46px; /* cover y222 */
+}
+
+.hero {
+  position: relative;
+  margin-top: -277px;
 }
 
 .cover {
+  display: block;
   width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
+  height: 372px;
   object-fit: cover;
-  margin-bottom: 2rem;
+  border-radius: 15px;
 }
 
-.meta {
-  font-size: var(--fs-small);
-  color: var(--color-text-muted);
-  margin-bottom: 1.5rem;
+.coverEmpty {
+  background: var(--color-border);
 }
 
-@media (max-width: 1000px) {
+/* 1180x141 tinted card at x130 y523, overlapping the cover by 71px. */
+.titleCard {
+  position: relative;
+  width: calc(100% - 120px);
+  max-width: 1180px;
+  min-height: 141px;
+  margin: -71px auto 0;
+  padding: 17px 64px 16px 65px;
+  border-radius: 20px;
+  background: var(--color-bg-tint);
+}
+
+.titleCardText {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-extrabold);
+  line-height: 54px;
+  color: var(--color-secondary);
+}
+
+/* Body column 1008px at x216, starting y688. */
+.annualBody {
+  max-width: 1008px;
+  margin: 24px 0 0 146px;
+  padding-bottom: 10px; /* + footer margin 80 = Figma 90 (2289 → 2379) */
+}
+
+.annualProse h2 {
+  margin-bottom: 21.824px; /* one empty line under each heading */
+}
+
+/* ---- Business development detail (716:3800) ---- */
+.plainBody {
+  margin-top: 70px; /* first ornament y387 */
+  padding-bottom: 2px; /* + footer margin 80 = Figma 82 (989 → 1071) */
+}
+
+.ruledProse h2 {
+  margin-top: 42px;
+  margin-bottom: 8px;
+}
+
+.ruledProse > h2:first-child {
+  margin-top: 0;
+}
+
+/* 40x3 bar + 10x3 dash above each heading, 5px gap (723:3393). */
+.ruledProse h2::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin-bottom: 5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='3'%3E%3Cg fill='%23FF7D00'%3E%3Crect width='40' height='3' rx='1.5'/%3E%3Crect x='50' width='10' height='3' rx='1.5'/%3E%3C/g%3E%3C/svg%3E")
+    no-repeat;
+}
+
+/* ---- Financial tables (images 91/92 in Figma, 996px wide) ---- */
+.tables {
+  margin-top: 21.824px;
+}
+
+.table + .table {
+  margin-top: 52px;
+}
+
+.tableIntro {
+  margin: 0;
+  white-space: pre-line;
+  font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+  color: var(--color-text-body);
+}
+
+.tableTitle,
+.tableCaption {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 30px;
+  color: var(--color-text-body);
+  text-align: center;
+}
+
+.tableTitle {
+  font-weight: var(--fw-bold);
+}
+
+.tableCaption {
+  font-weight: var(--fw-regular);
+}
+
+.figures {
+  width: 100%;
+  max-width: 996px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: var(--color-bg-surface);
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-text-body);
+}
+
+.figures + .figures {
+  margin-top: 51px;
+}
+
+.figures th,
+.figures td {
+  height: 35px;
+  padding: 8px 9px;
+  border: 1px solid #e3e3e3;
+  font-weight: var(--fw-regular);
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.figures th {
+  width: 60%;
+}
+
+.figuresWideLabel th {
+  width: 76%;
+}
+
+.figures .bold,
+.figures .bold th,
+.figures .bold td {
+  font-weight: var(--fw-bold);
+}
+
+/* ---- Below the 1440 design ---- */
+@media (max-width: 1024px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+
+  .annualBody {
+    margin-left: 0;
+  }
+
+  .titleCard {
+    width: calc(100% - 48px);
+    padding: 16px 32px;
+  }
+
+  .titleCardText {
+    font-size: 30px;
+    line-height: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 32px;
+  }
+
+  .band {
+    padding-bottom: 120px;
+  }
+
+  .band .annualHeader {
+    padding-bottom: 24px;
+  }
+
+  .hero {
+    margin-top: -120px;
+  }
+
+  .cover {
+    height: 200px;
+  }
+
+  .titleCard {
+    width: calc(100% - 24px);
+    min-height: 0;
+    margin-top: -40px;
+    padding: 14px 18px;
+  }
+
+  .titleCardText {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .plainBody {
+    margin-top: 24px;
+  }
+
+  .figures th {
+    width: 58%;
   }
 }

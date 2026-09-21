@@ -1,88 +1,393 @@
-.hero {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-lg);
-  object-fit: cover;
+/* Business Solution — Figma 859:4457 (positions are at 1440). */
+
+.header {
+  padding-bottom: 0;
 }
 
-.solution {
-  margin-top: var(--space-section);
-  padding-bottom: var(--space-section);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.solution:last-of-type {
-  border-bottom: none;
-}
-
-.solutionHead {
+/* ---- Intro: heading x70 y394 (w710), photo 555x370 r18 at x799 y365 ---- */
+.intro {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
+  grid-template-columns: 710px 555px;
+  column-gap: 19px;
+  align-items: start;
+  margin-top: 102px;
+}
+
+.intro > div {
+  padding-top: 29px;
+}
+
+.introHeading {
+  margin: 0;
+  font-size: 38px;
+  font-weight: var(--fw-bold);
+  line-height: 51.832px;
+  color: var(--color-secondary);
+}
+
+.introBody {
+  margin: 24px 0 0;
+  max-width: 707px;
+  font-size: 16px;
+  line-height: 30px;
+  color: var(--color-text-body);
+}
+
+.introImage {
+  width: 555px;
+  height: 370px;
+  object-fit: cover;
+  border-radius: var(--radius-tile);
+}
+
+/* ---- Credit Scoring: photo x86, navy card 660x370 at x694 ---- */
+.creditScoring {
+  display: flex;
+  gap: 53px;
+  margin-top: 82px;
+  padding-inline: 16px;
+  scroll-margin-top: 110px;
+}
+
+.csImage {
+  flex: 0 0 555px;
+  width: 555px;
+  height: 370px;
+  object-fit: cover;
+  border-radius: var(--radius-tile);
+}
+
+.csCard {
+  flex: 0 0 660px;
+  height: 370px;
+  padding: 55px 37px 0 22px;
+  background: var(--color-secondary);
+  border-radius: var(--radius-tile);
+  color: #fff;
+}
+
+.csTitle {
+  margin: 0;
+  font-size: 38px;
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: #fff;
+}
+
+.csText {
+  margin: 37px 0 0;
+  max-width: 601px;
+  font-size: 16px;
+  line-height: 30px;
+  color: #fff;
+}
+
+.csButton {
+  margin-top: 40px;
+}
+
+/* ---- Solution sections ---- */
+.solution {
+  margin-top: 82px;
+  scroll-margin-top: 110px;
+}
+
+/* 64px from the last accordion to the closing banner (Frame 2409). */
+.solution:last-child {
+  margin-bottom: 64px;
+}
+
+.split {
+  display: grid;
+  align-items: start;
+}
+
+/* Text left x87, photo 532x371 right at x822 (Analytics, BI). */
+.imageRight .split {
+  grid-template-columns: minmax(0, 1fr) 532px;
+  column-gap: 32px;
+  padding-inline: 17px 16px;
+}
+
+.imageRight .splitText {
+  padding-top: 45px;
+}
+
+/* Photo left at x88, text at x657 (Decisioning, Consulting). */
+.imageLeft .split {
+  grid-template-columns: 532px minmax(0, 1fr);
+  column-gap: 37px;
+  padding-left: 18px;
+}
+
+.imageLeft .solutionImage {
+  order: -1;
+  border-radius: var(--radius-lg);
+}
+
+.imageLeft .splitText {
+  margin-top: -2px;
 }
 
 .solutionImage {
-  width: 100%;
-  height: auto;
-  border-radius: var(--radius-md);
+  width: 532px;
+  height: 371px;
   object-fit: cover;
+  border-radius: var(--radius-tile);
 }
 
-.advantages {
-  margin-top: 2.5rem;
-}
-
-.advantageGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.25rem;
-}
-
-.advantage {
-  background: var(--color-bg-tint);
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
-}
-
-.advantage p {
-  margin: 0.5rem 0 0;
-  font-size: var(--fs-small);
-}
-
-.productGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.product {
-  background: var(--color-bg-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.productBadges {
-  display: flex;
-  gap: 0.4rem;
-  flex-wrap: wrap;
-}
-
-.productText {
+.solutionTitle {
   margin: 0;
-  font-size: var(--fs-small);
+  font-size: 38px;
+  font-weight: var(--fw-bold);
+  line-height: 25px;
+  color: var(--color-secondary);
 }
 
-@media (max-width: 900px) {
-  .solutionHead {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+.solutionLead {
+  margin: 34px 0 0;
+  max-width: 705px;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 25px;
+  color: var(--color-secondary);
+}
+
+.solutionBody {
+  margin: 12px 0 0;
+  max-width: 673px;
+  font-size: 16px;
+  line-height: 25px;
+  color: var(--color-text-body);
+}
+
+.imageLeft .solutionTitle {
+  line-height: 51.832px;
+}
+
+.imageLeft .solutionLead {
+  max-width: 599px;
+  line-height: 32.736px;
+}
+
+:global(#consulting) .solutionLead {
+  max-width: 684px;
+}
+
+/* Figma nudges: BI text sits 27px under the photo top; the Consulting photo
+   sits 14px below its title. */
+:global(#business-intelligence) .splitText {
+  padding-top: 27px;
+}
+
+:global(#consulting) .solutionImage {
+  margin-top: 16px;
+}
+
+.imageLeft .solutionBody {
+  max-width: 650px;
+  line-height: 21.824px;
+}
+
+/* ---- Keunggulan Utama ---- */
+.advantages {
+  margin-top: 84px;
+}
+
+.imageLeft .advantages {
+  margin-top: 95px;
+}
+
+.advantagesTitle {
+  margin: 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 25px;
+  color: var(--color-secondary);
+}
+
+.advantagesCarousel {
+  margin: 40px -20px 0;
+}
+
+/* 412x210 white r20 card, 54x52 #F1FAFF tile with the CRIF bird. */
+.advantage {
+  height: 210px;
+  padding: 20px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.advantageHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+}
+
+.advantageIcon {
+  flex: 0 0 54px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg-tint);
+  border-radius: var(--radius-button);
+}
+
+.advantageIcon img {
+  display: block;
+  width: 36px;
+  height: 21px;
+}
+
+.advantageTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 25px;
+  color: var(--color-text-body);
+}
+
+.advantageText {
+  margin: 24px 0 0;
+  font-size: 16px;
+  font-weight: var(--fw-semibold);
+  line-height: 25px;
+  color: var(--color-text-body);
+}
+
+/* ---- What We Offer ---- */
+.offer {
+  margin-top: 42px;
+}
+
+.offerTitle {
+  margin: 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
+  color: var(--color-secondary);
+}
+
+.offerSubtitle {
+  margin: 8px auto 17px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 21.824px;
+  color: var(--color-text-body);
+}
+
+/* ---------------- responsive ---------------- */
+@media (max-width: 1340px) {
+  .intro {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 555px);
+  }
+  .introImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 555 / 370;
+  }
+  .creditScoring {
+    padding-inline: 0;
+    gap: 32px;
+  }
+  .csImage {
+    flex: 1 1 45%;
+    width: 45%;
+    height: auto;
+    aspect-ratio: 555 / 370;
+  }
+  .csCard {
+    flex: 1 1 55%;
+    height: auto;
+    padding-bottom: 40px;
+  }
+  .imageRight .split,
+  .imageLeft .split {
+    padding-inline: 0;
+  }
+  .imageRight .split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 532px);
+  }
+  .imageLeft .split {
+    grid-template-columns: minmax(0, 532px) minmax(0, 1fr);
+  }
+  .solutionImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 532 / 371;
+  }
+  .advantagesCarousel {
+    margin-inline: 0;
+  }
+}
+
+@media (max-width: 1000px) {
+  .intro,
+  .imageRight .split,
+  .imageLeft .split {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 32px;
+  }
+  .intro > div,
+  .imageRight .splitText {
+    padding-top: 0;
+  }
+  .imageLeft .solutionImage {
+    order: 0;
+  }
+  .creditScoring {
+    flex-direction: column;
+  }
+  .csImage {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .intro {
+    margin-top: 24px;
+  }
+  .introHeading,
+  .csTitle,
+  .solutionTitle {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  .imageLeft .solutionTitle {
+    line-height: 36px;
+  }
+  .solutionLead,
+  .imageLeft .solutionLead {
+    font-size: 20px;
+    line-height: 28px;
+    margin-top: 16px;
+  }
+  .csCard {
+    padding: 32px 20px;
+  }
+  .csText {
+    margin-top: 20px;
+  }
+  .creditScoring,
+  .solution {
+    margin-top: 56px;
+  }
+  .advantages,
+  .imageLeft .advantages {
+    margin-top: 48px;
+  }
+  .advantagesCarousel {
+    margin-top: 24px;
+  }
+  .advantage {
+    height: auto;
+    min-height: 210px;
+  }
+  .advantageTitle {
+    font-size: 20px;
   }
 }

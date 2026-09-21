@@ -1,0 +1,159 @@
+.carousel {
+  --card-w: 360px;
+  --card-gap: 40px;
+  --pad: 0px;
+  --arrow: 70px;
+  --arrow-top: 215px;
+  --dots-gap: 19px;
+  position: relative;
+}
+
+/* Layanan Kami (Component 17): 1300 window, cards 360x500. */
+.services {
+  --card-w: 360px;
+  --card-gap: 40px;
+  --pad: 0px;
+  --arrow: 70px;
+  --arrow-top: 215px;
+  --dots-gap: 19px; /* dots 29px under the cards; 10px is shadow room */
+}
+
+/* Keunggulan Utama (Components 12/13/14/18): 1340 window, cards 412x210. */
+.advantages {
+  --card-w: 412px;
+  --card-gap: 32px;
+  --pad: 20px;
+  --arrow: 40px;
+  --arrow-top: 85px;
+  --dots-gap: 14px; /* dots 24px under the cards */
+}
+
+.frame {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+  /* Room for the 0 4px 4px card shadow inside the clip. */
+  padding-bottom: 10px;
+  touch-action: pan-y;
+}
+
+.track {
+  display: flex;
+  gap: var(--card-gap);
+  width: max-content;
+  padding-inline: var(--pad);
+  transition: transform 0.8s cubic-bezier(0, 0, 0.58, 1);
+  will-change: transform;
+}
+
+.slide {
+  flex: 0 0 var(--card-w);
+  width: var(--card-w);
+  display: flex;
+}
+
+.slide > * {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Orange circle with a white chevron (Ellipse 1 #FF7D00). */
+.arrow {
+  position: absolute;
+  top: var(--arrow-top);
+  width: var(--arrow);
+  height: var(--arrow);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.arrow:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 3px;
+}
+
+.arrowNext {
+  right: 0;
+}
+
+.arrowPrev {
+  left: 0;
+}
+
+.arrowPrev .chevron {
+  transform: scaleX(-1);
+}
+
+.chevron {
+  width: calc(var(--arrow) * 19 / 70);
+  height: calc(var(--arrow) * 33 / 70);
+  margin-left: calc(var(--arrow) * 3 / 70);
+}
+
+.arrowPrev .chevron {
+  margin-left: 0;
+  margin-right: calc(var(--arrow) * 3 / 70);
+}
+
+.advantages .chevron {
+  width: 9px;
+  height: 16px;
+  margin-left: 2px;
+}
+
+.advantages .arrowPrev .chevron {
+  margin-left: 0;
+  margin-right: 2px;
+}
+
+/* Two 15px dots, 16px apart: current #003A79, other #003A79 @ 30%. */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: var(--dots-gap);
+}
+
+.dot {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  opacity: 0.3;
+  cursor: pointer;
+  transition: opacity 0.8s cubic-bezier(0, 0, 0.58, 1);
+}
+
+.dotActive {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .dot {
+    transition: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .services {
+    --card-w: min(360px, calc(100vw - 32px));
+    --arrow: 48px;
+    --arrow-top: 226px;
+  }
+  .advantages {
+    --card-w: min(412px, calc(100vw - 72px));
+    --pad: 0px;
+  }
+}
