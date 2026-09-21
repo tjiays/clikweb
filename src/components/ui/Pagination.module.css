@@ -2,43 +2,54 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 3rem;
   flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 73px;
 }
 
-.page,
-.arrow {
-  min-width: 44px;
-  height: 44px;
+.tile {
+  box-sizing: border-box;
+  width: 50px;
+  height: 50px;
   display: inline-grid;
   place-items: center;
-  padding: 0 0.6rem;
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-body);
+  border-radius: var(--radius-tile);
+}
+
+.page {
+  background: #fff;
+  border: 1px solid #000;
+  font-size: 20px;
   font-weight: var(--fw-bold);
+  line-height: 30px;
   color: var(--color-secondary);
-  transition: background-color var(--transition), color var(--transition);
 }
 
-.page:hover,
-.arrow:hover {
-  background: var(--color-bg-tint);
-  color: var(--color-primary);
+.page:hover {
+  color: var(--color-secondary);
 }
 
-.active,
-.active:hover {
+.active {
+  border: 2px solid var(--color-primary);
+}
+
+.arrow {
   background: var(--color-secondary);
   color: #fff;
 }
 
-.disabled {
-  color: var(--color-disabled);
-  cursor: not-allowed;
+.arrow:hover {
+  color: #fff;
 }
 
+.disabled,
 .disabled:hover {
-  background: none;
-  color: var(--color-disabled);
+  background: var(--color-tile-disabled);
+  color: #000;
+  cursor: default;
+}
+
+.chevron {
+  width: 9.5px;
+  height: 18px;
 }

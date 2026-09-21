@@ -17,9 +17,13 @@
   --color-secondary: #003a79;
 
   /* ---- Text ---- */
-  --color-text-heading: #000000;
-  --color-text-body: #5b6b81;
+  --color-text-heading: #000000;   /* page titles (h1) */
+  --color-text-section: var(--color-secondary); /* section titles are navy in Figma */
+  --color-text-body: #000000;      /* Figma body copy is pure black */
+  --color-text-secondary: #5b6b81; /* the few grey descriptions (product rows) */
   --color-text-muted: #697077;
+  --color-text-meta: rgba(0, 0, 0, 0.5);      /* card author / date */
+  --color-text-crumb: rgba(37, 37, 37, 0.7);  /* breadcrumb, #252525 @ 70% */
 
   /* ---- Surfaces ---- */
   --color-bg-page: #fafafa;
@@ -27,6 +31,8 @@
   --color-bg-tint: #f1faff;
   --color-border: #dbe4f0;
   --color-disabled: #c1c7cd;
+  --color-tile-disabled: #d9d9d9;  /* disabled pagination arrow */
+  --color-share-tile: #eaeaea;     /* article share icon tiles */
   --color-overlay: rgba(0, 0, 0, 0.5);
 
   /* ---- Status badges (product cards) ---- */
@@ -36,7 +42,8 @@
   --badge-ready-border: var(--color-primary);
   --badge-ready-text: var(--color-primary);
   --badge-new-bg: var(--color-primary-light);
-  --badge-new-text: var(--color-primary);
+  --badge-new-border: var(--color-primary);
+  --badge-new-text: var(--color-secondary);
 
   /* ---- Typography ---- */
   --font-sans: var(--font-nunito-sans), system-ui, -apple-system, "Segoe UI",
@@ -64,34 +71,50 @@
   --fw-black: 900;
 
   --lh-tight: 1.2;
-  --lh-heading: 1.3;
-  --lh-body: 1.8;   /* Figma: 30px on 16px body */
+  --lh-heading: 1.364; /* Figma "auto" line height: 51.8px on 38px, 32.7px on 24px */
+  --lh-body: 1.875;    /* Figma: 30px on 16px body */
+  --lh-dense: 1.364;   /* Figma: 21.8px on 16px (cards, articles, policies) */
 
   /* ---- Layout ---- */
-  --container-max: 1300px;  /* ~70px gutters at the 1440px design width */
+  /* 1300px of content plus a 20px gutter each side, so at the 1440px design
+     width the content column runs x=70..1370 exactly as in Figma. */
+  --container-content: 1300px;
   --gutter: 1.25rem;
+  --container-max: calc(var(--container-content) + 2 * var(--gutter));
 
-  /* Inner page rhythm, from the designer's annotations */
-  --space-header-to-breadcrumb: 3.75rem; /* 60px */
-  --space-breadcrumb-to-title: 2.625rem; /* 42px */
+  /* Inner page rhythm, measured on the Figma frames (header 90, breadcrumb
+     text box at y=142 with a 34px line, title glyph centre at y=237). */
+  --space-header-to-breadcrumb: 3.25rem;   /* 52px */
+  --space-breadcrumb-to-title: 2.1875rem;  /* 35px */
   --space-breadcrumb-to-content: 3.375rem; /* 54px */
   --space-section: 5rem;
 
-  /* The short orange bar that sits above each section title */
+  /* The orange ornament above section titles: 40x3 bar + 10px gap + 10x3
+     dash (left), or dash-bar-dash (centred). Radius 2. */
   --rule-width: 40px;
+  --rule-dash: 10px;
+  --rule-gap: 10px;
   --rule-height: 3px;
 
   /* ---- Elevation and shape ---- */
-  --radius-sm: 6px;
+  --radius-sm: 6px;       /* dropdown panels */
   --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-lg: 20px;      /* tinted blocks, solution / stat cards */
   --radius-pill: 999px;
-  --shadow-card: 0 2px 12px rgba(0, 58, 121, 0.06);
-  --shadow-card-hover: 0 8px 24px rgba(0, 58, 121, 0.12);
+  --radius-button: 10px;  /* every Figma button */
+  --radius-card: 10px;    /* article / report cards, cover images */
+  --radius-tile: 18px;    /* pagination tiles, cross-link card, hero images */
+  --radius-rule: 2px;
+  /* Figma's one drop shadow: 0 4px 4px #000 @ 25% */
+  --shadow-card: 0 4px 4px rgba(0, 0, 0, 0.25);
+  --shadow-card-hover: 0 4px 4px rgba(0, 0, 0, 0.25);
 
   /* ---- Motion ---- */
   --transition: 180ms ease;
+  /* Figma prototype timings: SMART_ANIMATE 0.3s / 0.15s ease-out */
+  --transition-figma: 0.3s ease-out;
+  --transition-fast: 0.15s ease-out;
 
   /* ---- Header ---- */
-  --header-height: 88px;
+  --header-height: 90px;
 }

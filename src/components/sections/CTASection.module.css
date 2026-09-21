@@ -1,49 +1,108 @@
-.cross {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 2rem;
+/* ---- Cross-link (Credit Scoring, Figma Frame 2427 / Group 2412) ---- */
+.crossWrap {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  background: var(--color-bg-tint);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-block: var(--space-section) 2rem;
-  transition: box-shadow var(--transition);
+  gap: 50px;
+  margin-block: 50px;
 }
 
-.cross:hover {
-  box-shadow: var(--shadow-card-hover);
+.crossHeading {
+  margin: 0;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-heading);
+  color: var(--color-secondary);
+  text-align: center;
+}
+
+.cross {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: 703px;
+  min-height: 237px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #000;
+  border-radius: var(--radius-tile);
+  color: inherit;
+  transition: box-shadow var(--transition-fast);
 }
 
 .crossImage {
-  width: 100%;
-  height: 100%;
+  flex-shrink: 0;
+  width: 284px;
+  height: 189px;
   object-fit: cover;
+  border-radius: var(--radius-tile);
 }
 
 .crossBody {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 2rem 2rem 2rem 0;
+  padding-top: 2px;
 }
 
 .crossLabel {
-  font-size: var(--fs-small);
-  font-weight: var(--fw-bold);
-  color: var(--color-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: 34px;
+  color: var(--color-text-crumb);
 }
 
+.crossChevron {
+  width: 9px;
+  height: 17px;
+  color: #000;
+  opacity: 0.7;
+}
+
+.crossTitle {
+  margin-top: 13px;
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-bold);
+  line-height: 30px;
+  color: var(--color-secondary);
+  text-decoration: underline transparent;
+  text-underline-offset: 4px;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+
+/* Hover (1582:18844, 0.15s ease-out): shadow, title orange + underlined */
+.cross:hover {
+  box-shadow: var(--shadow-card);
+  color: inherit;
+}
+
+.cross:hover .crossTitle {
+  color: var(--color-primary);
+  text-decoration-color: currentColor;
+}
+
+/* ---- Closing banner ---- */
 .banner {
   position: relative;
   isolation: isolate;
-  margin-top: 2rem;
-  padding-block: 5rem;
-  background: var(--color-secondary);
-  text-align: center;
   overflow: hidden;
+}
+
+.image {
+  min-height: var(--cta-height, 429px);
+  padding-top: var(--cta-pad-top, 57px);
+  padding-bottom: 48px;
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+.plain {
+  padding-top: var(--cta-pad-top, 55px);
+  padding-bottom: 90px;
 }
 
 .bannerImage {
@@ -58,24 +117,79 @@
   z-index: -1;
 }
 
-.bannerInner :global(.t-cta-title) {
+.bannerInner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bannerInner > * {
+  margin-left: var(--cta-offset-x, 0);
+}
+
+.bannerTitle {
+  margin: 0;
+  max-width: var(--cta-title-max, 821px);
+  font-size: var(--fs-h1);
+  font-weight: var(--cta-title-weight, 700);
+  line-height: var(--cta-title-lh, 51.832px);
   color: #fff;
-  max-width: 900px;
-  margin-inline: auto;
 }
 
 .bannerText {
+  margin: var(--cta-gap-1, 31px) 0 0;
+  max-width: var(--cta-text-max, 821px);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: 32.736px;
   color: #fff;
-  max-width: 700px;
-  margin: 1rem auto 2rem;
-  opacity: 0.92;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 36px;
+  margin-top: var(--cta-gap-2, 31px);
+}
+
+/* Home has no text: its title → button gap is the first gap. */
+.bannerTitle + .buttons {
+  margin-top: var(--cta-gap-1, 31px);
+}
+
+.plain .bannerTitle {
+  color: var(--color-secondary);
+}
+
+.plain .bannerText {
+  font-size: 23.75px;
+  font-weight: var(--fw-extrabold);
+  line-height: 32.4px;
+  color: #000;
+}
+
+@media (max-width: 1100px) {
+  .bannerInner > * {
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 800px) {
   .cross {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    min-height: 0;
   }
-  .crossBody {
-    padding: 0 1.5rem 1.5rem;
+  .crossImage {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 284 / 189;
+  }
+  .image {
+    min-height: 0;
+    padding-block: 3.5rem;
+  }
+  .bannerText {
+    font-size: var(--fs-lead);
+    line-height: 1.4;
   }
 }

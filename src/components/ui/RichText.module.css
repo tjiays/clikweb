@@ -1,36 +1,81 @@
+/*
+ * Prose — CMS rich text (RichText) and src/content blocks (Prose).
+ * Figma body copy: 16/400 black; line 21.8 (articles, reports, jobs,
+ * policies) or 30 (.relaxed). One empty line between paragraphs; lists
+ * indented 24px with items line to line; section headings 24/700 navy.
+ */
 .prose {
+  --prose-heading-weight: var(--fw-bold);
+  --prose-gap: 21.824px; /* one empty line */
   color: var(--color-text-body);
   font-size: var(--fs-body);
+  line-height: var(--lh-dense);
+}
+
+.relaxed {
+  --prose-gap: 30px;
   line-height: var(--lh-body);
 }
 
-.prose h2 {
-  font-size: var(--fs-h2);
-  margin: 2.5rem 0 1rem;
-}
-
+.prose h2,
 .prose h3 {
+  margin: var(--prose-gap) 0 0;
   font-size: var(--fs-h3);
-  margin: 2rem 0 0.75rem;
+  font-weight: var(--prose-heading-weight);
+  line-height: 32.736px;
+  color: var(--color-secondary);
 }
 
 .prose h4 {
+  margin: var(--prose-gap) 0 0;
   font-size: var(--fs-h4);
-  margin: 1.5rem 0 0.5rem;
+  font-weight: var(--fw-bold);
+  color: var(--color-secondary);
+}
+
+.prose > :first-child {
+  margin-top: 0;
 }
 
 .prose p {
-  margin: 0 0 1.25rem;
+  margin: 0 0 var(--prose-gap);
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+/* A paragraph that introduces a list ("…sebagai berikut:") runs straight into it. */
+.prose p:has(+ ul),
+.prose p:has(+ ol) {
+  margin-bottom: 0;
 }
 
 .prose ul,
 .prose ol {
-  margin: 0 0 1.25rem;
-  padding-left: 1.5rem;
+  margin: 0 0 var(--prose-gap);
+  padding-left: 24px;
+}
+
+.prose ul {
+  list-style: disc;
+}
+
+.prose ol {
+  list-style: decimal;
 }
 
 .prose li {
-  margin-bottom: 0.5rem;
+  margin: 0;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-bottom: 0;
+}
+
+.prose .italic {
+  font-style: italic;
 }
 
 .prose a {
@@ -40,7 +85,7 @@
 }
 
 .prose img {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-card);
   margin-block: 1.5rem;
 }
 

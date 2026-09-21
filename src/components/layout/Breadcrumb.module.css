@@ -1,3 +1,4 @@
+/* Figma 759:3664: 16/400, line-height 34, #252525 @ 70%, chevron 9x17 #000 @ 70%, 6px gaps. */
 .breadcrumb {
   padding-block: 0;
 }
@@ -6,33 +7,36 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0 6px;
   list-style: none;
   margin: 0;
   padding: 0;
   font-size: var(--fs-body);
+  font-weight: var(--fw-regular);
+  line-height: 34px;
 }
 
 .item {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--color-text-muted);
+  gap: 6px;
+  color: var(--color-text-crumb);
 }
 
-.item a {
-  color: var(--color-text-muted);
+.item a,
+.item [aria-current='page'] {
+  color: var(--color-text-crumb);
+  font-weight: var(--fw-regular);
 }
 
 .item a:hover {
   color: var(--color-primary);
 }
 
-.item [aria-current='page'] {
-  color: var(--color-secondary);
-  font-weight: var(--fw-bold);
-}
-
 .separator {
-  color: var(--color-disabled);
+  flex-shrink: 0;
+  width: 9px;
+  height: 17px;
+  color: #000;
+  opacity: 0.7;
 }
