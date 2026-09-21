@@ -26,7 +26,8 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-50%);
+    /* Exactly one set: the track holds --marquee-copies identical sets */
+    transform: translateX(calc(-100% / var(--marquee-copies)));
   }
 }
 
