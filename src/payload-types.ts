@@ -141,7 +141,7 @@ export interface Article {
    */
   slug: string;
   excerpt?: string | null;
-  body: {
+  body?: {
     root: {
       type: string;
       children: {
@@ -155,14 +155,33 @@ export interface Article {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
   cover?: (number | null) | Media;
+  /**
+   * Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.
+   */
+  banner?: (number | null) | Media;
   author?: string | null;
+  /**
+   * Newest first on the Newsroom and Home. Same day: the later time comes first.
+   */
   publishDate: string;
   /**
    * Shows in the Featured News list on the Newsroom page.
    */
   isFeatured?: boolean | null;
+  /**
+   * Place in the Featured News list (1 = top). An article may take more than one place. Empty: after the numbered ones, newest first.
+   */
+  featuredPositions?: number[] | null;
+  /**
+   * Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.
+   */
+  hideFromList?: boolean | null;
+  /**
+   * Up to 3 articles, in order. Empty: the newest articles.
+   */
+  relatedArticles?: (number | Article)[] | null;
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -684,9 +703,13 @@ export interface ArticlesSelect<T extends boolean = true> {
   excerpt?: T;
   body?: T;
   cover?: T;
+  banner?: T;
   author?: T;
   publishDate?: T;
   isFeatured?: T;
+  featuredPositions?: T;
+  hideFromList?: T;
+  relatedArticles?: T;
   seo?:
     | T
     | {

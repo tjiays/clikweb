@@ -29,8 +29,19 @@ export const Articles: CollectionConfig = contentCollection({
     localisedText('title', 'Judul', true),
     slugField(),
     localisedTextarea('excerpt', 'Ringkasan'),
-    richText('body', 'Isi artikel', true),
+    richText('body', 'Isi artikel'),
     imageField('cover', 'Gambar sampul'),
+    {
+      name: 'banner',
+      type: 'upload',
+      relationTo: 'media',
+      label: 'Gambar banner (halaman detail)',
+      access: lockedForApprover,
+      admin: {
+        description:
+          'Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.',
+      },
+    },
     {
       // A name rather than a relationship: one less collection for a byline.
       name: 'author',
@@ -43,7 +54,11 @@ export const Articles: CollectionConfig = contentCollection({
       type: 'date',
       required: true,
       access: lockedForApprover,
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        description: 'Newest first on the Newsroom and Home. Same day: the later time comes first.',
+        date: { pickerAppearance: 'dayAndTime' },
+      },
     },
     {
       name: 'isFeatured',
@@ -53,6 +68,45 @@ export const Articles: CollectionConfig = contentCollection({
       admin: {
         position: 'sidebar',
         description: 'Shows in the Featured News list on the Newsroom page.',
+      },
+    },
+    {
+      name: 'featuredPositions',
+      type: 'number',
+      hasMany: true,
+      min: 1,
+      label: 'Posisi di Featured News',
+      access: lockedForApprover,
+      admin: {
+        position: 'sidebar',
+        condition: (data) => Boolean(data?.isFeatured),
+        description:
+          'Place in the Featured News list (1 = top). An article may take more than one place. Empty: after the numbered ones, newest first.',
+      },
+    },
+    {
+      name: 'hideFromList',
+      type: 'checkbox',
+      label: 'Sembunyikan dari daftar',
+      defaultValue: false,
+      access: lockedForApprover,
+      admin: {
+        position: 'sidebar',
+        description:
+          'Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.',
+      },
+    },
+    {
+      name: 'relatedArticles',
+      type: 'relationship',
+      relationTo: 'articles',
+      hasMany: true,
+      maxRows: 3,
+      label: 'Anda mungkin juga tertarik dengan',
+      access: lockedForApprover,
+      filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
+      admin: {
+        description: 'Up to 3 articles, in order. Empty: the newest articles.',
       },
     },
     seoFields,

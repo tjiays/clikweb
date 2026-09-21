@@ -41,7 +41,12 @@ export type Paged<T> = {
 
 async function listPublished<T>(
   collection: string,
-  options: { locale: Locale; limit?: number; sort?: string; where?: Record<string, unknown> },
+  options: {
+    locale: Locale
+    limit?: number
+    sort?: string | string[]
+    where?: Record<string, unknown>
+  },
 ): Promise<T[]> {
   const payload = await client()
   const { docs } = await payload.find({
@@ -63,7 +68,7 @@ async function listPaged<T>(
   locale: Locale,
   page: number,
   limit: number,
-  sort: string,
+  sort: string | string[],
   where: Record<string, unknown> = {},
 ): Promise<Paged<T>> {
   const payload = await client()
@@ -108,26 +113,79 @@ async function findOne<T>(
 }
 
 /* ---- Newsroom ---- */
+
+/** Articles marked "hide from list" keep their page but stay off the cards. */
+const listedArticles = {
+  or: [{ hideFromList: { equals: false } }, { hideFromList: { exists: false } }],
+}
+
+/** Same day: the later time comes first, so the order is always the same. */
+const NEWEST_FIRST = ['-publishDate', '-id']
+
 export const getLatestArticles = (locale: Locale, limit = 3) =>
-  listPublished<any>('articles', { locale, limit, sort: '-publishDate' })
+  listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST, where: listedArticles })
 
 export const getArticlesPage = (locale: Locale, page = 1) =>
-  listPaged<any>('articles', locale, page, 6, '-publishDate')
+  listPaged<any>('articles', locale, page, 6, NEWEST_FIRST, listedArticles)
 
-export const getFeaturedArticles = (locale: Locale, limit = 5) =>
-  listPublished<any>('articles', {
+/**
+ * Featured News, in the order the editors numbered them. An article may hold
+ * more than one place (Figma 1783:10696 lists one twice). Featured articles
+ * without a number follow, newest first.
+ */
+export const getFeaturedArticles = async (locale: Locale, limit = 8) => {
+  const articles = await listPublished<any>('articles', {
     locale,
-    limit,
-    sort: '-publishDate',
+    limit: 100,
+    sort: NEWEST_FIRST,
     where: { isFeatured: { equals: true } },
   })
+  const placed: { place: number; article: any }[] = []
+  const rest: any[] = []
+  for (const article of articles) {
+    const places = (article.featuredPositions ?? []).filter((n: unknown) => typeof n === 'number')
+    if (places.length === 0) rest.push(article)
+    for (const place of places) placed.push({ place, article })
+  }
+  placed.sort((a, b) => a.place - b.place)
+  return [...placed.map((p) => p.article), ...rest].slice(0, limit)
+}
 
 export const getArticleBySlug = (locale: Locale, slug: string) =>
   findOne<any>('articles', 'slug', slug, locale)
 
-export const getRelatedArticles = async (locale: Locale, excludeId: string | number, limit = 3) => {
-  const articles = await listPublished<any>('articles', { locale, limit: limit + 1, sort: '-publishDate' })
-  return articles.filter((a) => a.id !== excludeId).slice(0, limit)
+export const getArticlesBySlugs = async (locale: Locale, slugs: string[]) => {
+  if (slugs.length === 0) return []
+  const docs = await listPublished<any>('articles', {
+    locale,
+    limit: slugs.length,
+    where: { slug: { in: slugs } },
+    sort: NEWEST_FIRST,
+  })
+  return slugs.map((slug) => docs.find((d) => d.slug === slug)).filter(Boolean)
+}
+
+/**
+ * "Anda mungkin juga tertarik dengan": the articles the editor picked, in
+ * their order; otherwise the newest listed articles.
+ */
+export const getRelatedArticles = async (
+  locale: Locale,
+  article: { id: string | number; relatedArticles?: unknown },
+  limit = 3,
+) => {
+  const picked = (Array.isArray(article.relatedArticles) ? article.relatedArticles : []).filter(
+    (a): a is { id: number; _status?: string } =>
+      Boolean(a) && typeof a === 'object' && (a as { _status?: string })._status === 'published',
+  )
+  if (picked.length > 0) return picked.slice(0, limit)
+  const articles = await listPublished<any>('articles', {
+    locale,
+    limit: limit + 1,
+    sort: NEWEST_FIRST,
+    where: listedArticles,
+  })
+  return articles.filter((a) => a.id !== article.id).slice(0, limit)
 }
 
 /* ---- Report ---- */

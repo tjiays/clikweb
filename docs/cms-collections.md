@@ -21,11 +21,15 @@ Seven collections. Everything else moved into `src/content/` — see
 | Judul | Bilingual, required |
 | Slug | Bilingual; fills itself from the title |
 | Ringkasan | Bilingual. Shown on cards, not on the article itself. |
-| Isi artikel | Bilingual rich text — headings, lists, links, images, tables |
+| Isi artikel | Bilingual rich text — headings, lists, links, images, tables. Optional. |
 | Gambar sampul | From the media library |
+| Gambar banner | Optional 1300x372 image on the article page; falls back to the cover |
 | Penulis | Plain text byline |
-| Tanggal publikasi | Required. Sets the order; newest first. |
+| Tanggal publikasi | Required. Sets the order; newest first, then the later time. |
 | Featured News | Puts it in the Newsroom sidebar |
+| Posisi di Featured News | Numbers, one per place in the sidebar list; an article may hold several |
+| Sembunyikan dari daftar | Keeps it off the Newsroom cards, Home and the related list; the page stays |
+| Anda mungkin juga tertarik dengan | Up to 3 related articles, in order; empty = newest |
 | SEO | Bilingual title and description |
 
 ## Laporan

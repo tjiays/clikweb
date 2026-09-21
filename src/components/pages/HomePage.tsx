@@ -16,7 +16,7 @@ import { partnerLogos } from '@/content/partners'
 import { productCategories } from '@/content/products'
 import { ctaBlocks } from '@/content/cta'
 import { getLatestArticles, imageUrl, imageAlt, t } from '@/lib/content'
-import { formatDate } from '@/lib/format'
+import { formatNewsDate } from '@/lib/format'
 import styles from './HomePage.module.css'
 
 /** Home — Figma 156:1049 (1440 wide). Section order follows intent/02 §2.1. */
@@ -211,7 +211,7 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 title={article.title}
                 excerpt={article.excerpt}
                 href={`${href('newsroom', locale)}/${article.slug}`}
-                date={formatDate(article.publishDate, locale)}
+                date={formatNewsDate(article.publishDate)}
                 imageUrl={imageUrl(article.cover)}
                 imageAlt={imageAlt(article.cover)}
                 readMoreLabel={dict.common.readMore}
