@@ -1,152 +1,361 @@
 /*
  * CMS dashboard.
  *
- * One accent colour, not seven. Cards are white with a hairline border; the
- * orange is reserved for the one thing that wants attention — an item waiting
- * for review — so colour carries meaning instead of decorating.
+ * CLIK navy and orange on a light ground. Panels are white with a hairline
+ * border; orange is reserved for the thing that wants a decision, so colour
+ * carries meaning rather than decorating. Chart hues come from a palette that
+ * was run through the validator, not chosen by eye.
  */
 
-.clik-dashboard {
-  padding: 2.5rem 2.5rem 4rem;
-  max-width: 1100px;
+.clik-dash {
+  --dash-navy: #003a79;
+  --dash-orange: #ff7d00;
+  --dash-ink: #16233a;
+  --dash-muted: #6b7a90;
+  --dash-line: #e4eaf2;
+  --dash-surface: #ffffff;
+  --dash-ground: #f6f8fb;
+  --dash-radius: 14px;
+
+  padding: 2rem 2.25rem 4rem;
+  max-width: 1240px;
+  background: var(--dash-ground);
+  min-height: 100%;
+
+  h1, h2 { color: var(--dash-navy); }
 
   &__head {
-    margin-bottom: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
 
     h1 {
-      margin: 0 0 0.5rem;
+      margin: 0 0 0.3rem;
       font-size: 1.5rem;
       font-weight: 800;
-      letter-spacing: -0.01em;
-      color: var(--clik-navy, #003a79);
+      letter-spacing: -0.015em;
     }
 
     p {
       margin: 0;
-      max-width: 60ch;
       font-size: 0.875rem;
-      line-height: 1.6;
-      color: var(--theme-elevation-500);
+      color: var(--dash-muted);
     }
   }
 
-  &__group {
-    margin-bottom: 2.25rem;
+  /* The one coloured element: something is waiting for a decision. */
+  &__alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+    background: var(--dash-orange);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter 150ms ease;
+
+    &:hover { filter: brightness(1.06); text-decoration: none; color: #fff; }
   }
 
-  &__groupTitle {
-    margin: 0 0 0.875rem;
+  &__alertDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  &__links { margin-top: 1.25rem; }
+
+  &__linksTitle {
+    margin: 0 0 0.75rem;
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--theme-elevation-450);
+    color: var(--dash-muted);
   }
 
-  &__grid {
+  &__linkGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     gap: 0.75rem;
   }
 
   &__empty {
     padding: 2rem;
-    background: var(--theme-elevation-50);
-    border-radius: 10px;
-    color: var(--theme-elevation-600);
+    background: var(--dash-surface);
+    border: 1px solid var(--dash-line);
+    border-radius: var(--dash-radius);
+    color: var(--dash-muted);
   }
 }
 
-.clik-card {
+/* ---- Stat tiles ---- */
+.clik-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.clik-tile {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  min-height: 112px;
-  padding: 1.125rem 1.25rem 1.25rem;
-  border-radius: 10px;
-  border: 1px solid var(--theme-elevation-150);
-  background: var(--theme-elevation-0);
+  gap: 0.15rem;
+  padding: 1.25rem 1.35rem 1.35rem;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-line);
+  border-radius: var(--dash-radius);
   text-decoration: none;
-  transition:
-    border-color 150ms ease,
-    box-shadow 150ms ease,
-    transform 150ms ease;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 
   &:hover {
     transform: translateY(-2px);
-    border-color: var(--clik-navy, #003a79);
-    box-shadow: 0 6px 18px rgba(0, 58, 121, 0.10);
+    box-shadow: 0 8px 22px rgba(0, 58, 121, 0.09);
     text-decoration: none;
   }
 
-  &__top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.75rem;
+  &__value {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+    color: var(--dash-navy);
   }
 
   &__label {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 700;
-    line-height: 1.3;
-    color: var(--clik-navy, #003a79);
+    color: var(--dash-ink);
   }
 
-  /* The count is the only figure on the card, so it can carry weight. */
-  &__count {
-    flex-shrink: 0;
-    font-size: 1.125rem;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-    color: var(--theme-elevation-400);
-    transition: color 150ms ease;
+  &__hint {
+    font-size: 0.75rem;
+    color: var(--dash-muted);
   }
 
-  &:hover &__count {
-    color: var(--clik-orange, #ff7d00);
-  }
-
-  &__description {
-    font-size: 0.78125rem;
-    line-height: 1.5;
-    color: var(--theme-elevation-500);
-  }
-
-  &__go {
-    margin-top: auto;
-    padding-top: 0.5rem;
-    color: var(--theme-elevation-300);
-    transition: color 150ms ease, transform 150ms ease;
-  }
-
-  &:hover &__go {
-    color: var(--clik-orange, #ff7d00);
-    transform: translateX(3px);
-  }
-
-  /* The one place colour is used: something is waiting for a decision. */
-  &--waiting {
-    border-color: #ffd0a3;
-    background: #fffaf4;
-  }
-
-  &__badge {
-    margin-top: auto;
-    align-self: flex-start;
-    padding: 0.1875rem 0.5rem;
+  &__flag {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.15rem 0.5rem;
     border-radius: 999px;
-    background: var(--clik-orange, #ff7d00);
-    color: #fff;
+    background: #fff1e2;
+    color: #a34f00;
     font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: 0.01em;
   }
 }
 
-@media (max-width: 768px) {
-  .clik-dashboard {
-    padding: 1.5rem 1rem 3rem;
+/* ---- Panels ---- */
+.clik-split {
+  display: grid;
+  grid-template-columns: 1.7fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.clik-panel {
+  padding: 1.35rem 1.5rem 1.5rem;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-line);
+  border-radius: var(--dash-radius);
+  margin-bottom: 1rem;
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+
+    h2 {
+      margin: 0;
+      font-size: 0.9375rem;
+      font-weight: 800;
+    }
   }
+
+  &__sub {
+    font-size: 0.75rem;
+    color: var(--dash-muted);
+  }
+
+  &__link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dash-orange);
+    text-decoration: none;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+/* ---- Charts ---- */
+.clik-chart {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+
+  &__grid {
+    stroke: var(--dash-line);
+    stroke-width: 1;
+  }
+
+  &__bar {
+    fill: var(--dash-navy);
+    transition: fill 150ms ease;
+  }
+
+  &__bar:hover { fill: var(--dash-orange); }
+
+  &__tick {
+    font-size: 10px;
+    fill: var(--dash-muted);
+  }
+
+  /* Several chart hues sit under 3:1 on white, so values are always drawn. */
+  &__value {
+    font-size: 10px;
+    font-weight: 700;
+    fill: var(--dash-ink);
+  }
+}
+
+.clik-bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.7rem;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 84px 26px;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  &__label {
+    font-size: 0.78125rem;
+    color: var(--dash-ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__track {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--dash-ground);
+    overflow: hidden;
+  }
+
+  &__fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+  }
+
+  &__value {
+    font-size: 0.78125rem;
+    font-weight: 700;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--dash-ink);
+  }
+}
+
+/* ---- Activity table ---- */
+.clik-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+
+  th {
+    text-align: left;
+    padding: 0 0 0.6rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dash-muted);
+    border-bottom: 1px solid var(--dash-line);
+  }
+
+  td {
+    padding: 0.65rem 0.75rem 0.65rem 0;
+    border-bottom: 1px solid var(--dash-line);
+    color: var(--dash-ink);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  &__action {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    background: var(--dash-ground);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--dash-navy);
+  }
+
+  &__title {
+    max-width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__when {
+    color: var(--dash-muted);
+    white-space: nowrap;
+  }
+}
+
+/* ---- Shortcut links ---- */
+.clik-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-line);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease;
+
+  &:hover {
+    border-color: var(--dash-navy);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  &__label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--dash-navy);
+  }
+
+  &__description {
+    font-size: 0.71875rem;
+    color: var(--dash-muted);
+  }
+}
+
+@media (max-width: 1000px) {
+  .clik-split { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .clik-dash { padding: 1.25rem 1rem 3rem; }
+  .clik-table__title { max-width: 140px; }
 }
