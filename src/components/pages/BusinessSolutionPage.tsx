@@ -119,7 +119,7 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
                       <article key={index} className={styles.advantage}>
                         <div className={styles.advantageHead}>
                           <span className={styles.advantageIcon}>
-                            <Image src="/images/products/crif-bird.webp" alt="" width={36} height={21} />
+                            <Image src="/images/products/crif-bird.png" alt="" width={36} height={21} />
                           </span>
                           <h4 className={styles.advantageTitle}>{t(advantage.title, locale)}</h4>
                         </div>
@@ -142,6 +142,7 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
                     labels={labels}
                     gap={10}
                     openFirst
+                    single
                   />
                 </div>
               )}

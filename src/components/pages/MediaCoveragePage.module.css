@@ -61,11 +61,12 @@
   --title-size: 26px;
   --title-lh: 35.464px;
   --excerpt-gap: 12px;
+  /* 827:5621 shows a 4-line title in full: no clamp */
+  --title-clamp: none;
 }
 
 .cards h3 {
   min-height: 0;
-  -webkit-line-clamp: 4;
 }
 
 /* Below both columns, centred under the cards */

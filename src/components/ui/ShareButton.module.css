@@ -14,7 +14,6 @@
   border: 1px solid var(--color-primary);
   color: var(--color-primary);
   cursor: pointer;
-  transition: background-color var(--transition-figma);
 }
 
 /* Home news card: 45x44, radius 22.25 */
@@ -22,10 +21,6 @@
   width: 45px;
   height: 44px;
   border-radius: 22.25px;
-}
-
-.button:hover {
-  background: rgba(255, 125, 0, 0.15);
 }
 
 .icon {
@@ -36,6 +31,49 @@
 .large .icon {
   width: 14px;
   height: 15px;
+}
+
+/*
+ * Home pop-over (156:1084): 130x30 for the 4 Figma glyphs, right edge 20px
+ * past the button, bottom 4px above it; +30px on the left for copy-link.
+ */
+.panel {
+  position: absolute;
+  right: -20px;
+  bottom: calc(100% + 4px);
+  z-index: 2;
+  display: flex;
+  margin: 0;
+  padding: 0 5px;
+  list-style: none;
+  background: #fff;
+  box-shadow: 4px 3px 10px rgba(0, 0, 0, 0.07);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.target {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-body);
+  cursor: pointer;
+}
+
+.glyph {
+  height: 12px;
+  width: auto;
+}
+
+.copyGlyph {
+  width: 14px;
+  height: 14px;
 }
 
 .toast {

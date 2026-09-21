@@ -98,7 +98,9 @@
   display: block;
   width: 459px;
   max-width: 100%;
-  height: 265px;
+  /* 459x265; height follows the width so narrow screens show it whole */
+  height: auto;
+  aspect-ratio: 459 / 265;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -115,7 +117,9 @@
   display: block;
   width: 547px;
   max-width: 100%;
-  height: 291px;
+  /* 547x291; height follows the width so narrow screens show it whole */
+  height: auto;
+  aspect-ratio: 547 / 291;
   object-fit: cover;
 }
 

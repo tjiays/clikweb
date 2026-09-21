@@ -17,9 +17,10 @@
     box-shadow var(--accordion-duration) linear;
 }
 
-/* Expanded: 1px black frame, and the card shadow used on Business Solution. */
+/* Expanded: 1px #000@30% frame (prototype variants 1647:12316, 1432:6790)
+   and the card shadow used on Business Solution. */
 .rowOpen {
-  border-color: #000;
+  border-color: rgba(0, 0, 0, 0.3);
   box-shadow: var(--shadow-card);
 }
 

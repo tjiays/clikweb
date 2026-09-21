@@ -56,6 +56,11 @@
   border-radius: 15px;
 }
 
+/* The Figma photo (710:3750) is framed on its upper half: crop y 16.6-55.3% */
+.coverFallback {
+  object-position: 50% 25%;
+}
+
 .coverEmpty {
   background: var(--color-border);
 }
@@ -89,6 +94,14 @@
 
 .annualProse h2 {
   margin-bottom: 21.824px; /* one empty line under each heading */
+}
+
+/* Figma's text box sets the blank line under "Penerapan Tata Kelola" at 24px
+   (32.7 line) and breaks "Financial Report" with \r\n: together the
+   financial block starts 16px lower than one 21.8px line would put it
+   (Posisi table y1425, LAPORAN LABA RUGI y1914, Laba Rugi table y1974). */
+.annualBody .tables {
+  margin-top: calc(21.824px + 16px);
 }
 
 /* ---- Business development detail (716:3800) ---- */

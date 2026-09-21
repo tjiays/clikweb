@@ -202,10 +202,13 @@
   font-weight: var(--fw-bold);
   line-height: 30px;
   white-space: nowrap;
+  /* 953:5802 / 953:5812 hover: SMART_ANIMATE 0.15s ease-out */
+  transition: color var(--transition-fast);
 }
 
 .dropdownText {
   display: inline-block;
+  transition: transform var(--transition-fast);
 }
 
 /* Hover (953:5802): 12x3 orange dash at x=24, text shifts 17px right. */
@@ -219,6 +222,7 @@
   margin-top: -1.5px;
   background: var(--color-primary);
   opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
 .dropdownLink:hover,

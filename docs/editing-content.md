@@ -49,7 +49,7 @@ public/images/
   about/      growing-in-asia.png  visi-team.png  misi-target.png  lpip-photo.jpg
               crif-world.jpg  crif-stats.jpg  crif-countries.jpg  members/ (member logos)
   products/   category photos and icons, data/ icons, services/ carousel art,
-              credit-scoring/ illustrations, cb-score-gauge.webp, crif-bird.webp
+              credit-scoring/ illustrations, cb-score-gauge.webp, crif-bird.png
   careers/    strip-1..6.jpg (moving photo band), step-1..5.png (recruitment steps)
   newsroom/   logo-*.png/svg (media outlets), logos/ (moving logo strip), coverage/
   reports/    fallback report covers

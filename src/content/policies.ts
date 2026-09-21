@@ -364,11 +364,16 @@ const privacy: PolicyPage = {
     ),
 
     h('10. Hubungi Kami', '10. Contact Us'),
-    // Figma breaks the address after "No. 1-2," and sets the contact lines
-    // unbulleted, one per line.
+    // Figma 1015:4171 breaks the block after "di:", after the company name and
+    // after "No. 1-2,", and sets the contact lines unbulleted, one per line.
     p(
-      'Jika Anda memiliki pertanyaan atau kekhawatiran terkait Kebijakan Privasi ini atau praktik data kami, silakan hubungi kami di: PT CRIF Lembaga Informasi Keuangan Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No. 1-2,',
-      'If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at: PT CRIF Lembaga Informasi Keuangan Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No. 1-2,',
+      'Jika Anda memiliki pertanyaan atau kekhawatiran terkait Kebijakan Privasi ini atau praktik data kami, silakan hubungi kami di:',
+      'If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:',
+    ),
+    p('PT CRIF Lembaga Informasi Keuangan', 'PT CRIF Lembaga Informasi Keuangan'),
+    p(
+      'Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No. 1-2,',
+      'Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No. 1-2,',
     ),
     p('Kuningan Timur, Setiabudi, Jakarta 12950', 'Kuningan Timur, Setiabudi, Jakarta 12950'),
     p('Email: dpo@cbclik.com', 'Email: dpo@cbclik.com'),

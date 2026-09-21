@@ -179,6 +179,8 @@
   --excerpt-gap: 25px;
   --excerpt-lines: 4;
   --footer-pad: 14px;
+  /* Newsroom grid titles stay at Figma's 3 lines; see report/related/mobile */
+  --title-clamp: 3;
 
   height: 100%;
   min-height: var(--card-min-h);
@@ -196,6 +198,8 @@
   --title-gap: 8px;
   /* Laporan (731:3862): the excerpt follows a two-line title directly */
   --title-min-h: 0;
+  /* Figma shows the full report name, no clamp */
+  --title-clamp: none;
 }
 
 .related {
@@ -205,6 +209,8 @@
   --title-gap: 4px;
   --excerpt-gap: 4px;
   --footer-pad: 9px;
+  /* Liputan 827:5621 shows a 4-line title in full */
+  --title-clamp: none;
 }
 
 .articleMedia {
@@ -260,13 +266,15 @@
   font-size: var(--title-size);
   font-weight: var(--fw-extrabold);
   line-height: var(--title-lh);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
+/* The clamp sits on the link itself so its hit area matches the visible
+   text and never covers the excerpt below. */
 .articleTitle a {
+  display: -webkit-box;
+  -webkit-line-clamp: var(--title-clamp);
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   color: var(--color-secondary);
 }
 
@@ -291,11 +299,15 @@
   justify-content: space-between;
   gap: 1rem;
   margin-top: auto;
+  /* Share circle 16px from the card's right edge (1661:8977, 730:3688) */
+  margin-right: -4px;
   padding-top: 16px;
 }
 
+/* READ MORE hover (316:548 -> 316:550) is an instant swap */
 .readMore {
   margin-left: -1px;
+  transition: none;
 }
 
 /* Home "Berita Terbaru" card */
@@ -306,6 +318,7 @@
   --title-gap: 0;
   --excerpt-gap: 20px;
   --excerpt-lines: 8;
+  --title-clamp: 5;
   border-radius: 15px;
   box-shadow: 0 2px 30px rgba(72, 73, 121, 0.21);
 }
@@ -329,11 +342,12 @@
 
 .home .articleTitle {
   min-height: 0;
-  -webkit-line-clamp: 5;
 }
+
 
 .home .articleFooter {
   height: 66px;
+  margin-right: 0;
   padding-top: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   align-items: flex-end;
@@ -350,6 +364,9 @@
   }
   .articleTitle {
     min-height: 0;
+  }
+  .article {
+    --title-clamp: none;
   }
   .home {
     --title-size: 24px;

@@ -13,16 +13,30 @@ import { formatDate } from '@/lib/format'
 import styles from './ReportsPage.module.css'
 
 /**
- * Card cover when the CMS item has none (Figma 724:3551 gives every card a
- * photo). Real uploads always win.
+ * Card / hero cover when the CMS item has none (Figma 724:3551 gives every
+ * card a photo), or when the upload is smaller than the space it fills and
+ * would be stretched blurry (e.g. a 360px upload on the 1300px hero). The
+ * fallbacks are the Figma photos at 2000px.
  */
 const COVER_FALLBACK: Record<string, string> = {
   annual_report: '/images/reports/annual-report.jpg',
   business_development: '/images/reports/business-development.jpg',
 }
 
-const coverOf = (report: { cover?: unknown; type?: string }) =>
-  imageUrl(report.cover) ?? (report.type ? COVER_FALLBACK[report.type] ?? null : null)
+/** Display widths: list card 406px, annual-report detail hero 1300px. */
+const CARD_WIDTH = 406
+const HERO_WIDTH = 1300
+
+const coverOf = (report: { cover?: unknown; type?: string }, displayWidth: number) => {
+  const upload = imageUrl(report.cover)
+  const fallback = report.type ? (COVER_FALLBACK[report.type] ?? null) : null
+  const width =
+    report.cover && typeof report.cover === 'object'
+      ? (report.cover as { width?: unknown }).width
+      : undefined
+  const tooSmall = typeof width === 'number' && width < displayWidth
+  return upload && !(tooSmall && fallback) ? upload : fallback
+}
 
 type ReportCard = {
   id: number | string
@@ -68,7 +82,7 @@ export async function ReportsPage({ locale, page }: { locale: Locale; page: numb
                   href={detailHref('reports', report.slug, locale)}
                   author={report.author}
                   date={formatDate(report.publishDate, locale)}
-                  imageUrl={coverOf(report)}
+                  imageUrl={coverOf(report, CARD_WIDTH)}
                   imageAlt={imageAlt(report.cover)}
                   readMoreLabel={dict.common.readMore}
                   shareLabel={locale === 'id' ? 'Bagikan' : 'Share'}
@@ -130,7 +144,7 @@ export async function ReportDetailPage({
     { label: dict.dropdown.reports, href: href('reports', locale) },
     { label: report.title },
   ]
-  const cover = imageUrl(report.cover)
+  const cover = coverOf(report, HERO_WIDTH)
   const tables = (report.financialTables ?? []) as FinancialTable[]
 
   if (report.type === 'annual_report') {
@@ -154,7 +168,7 @@ export async function ReportDetailPage({
                 width={2600}
                 height={744}
                 sizes="(max-width: 1340px) 100vw, 1300px"
-                className={styles.cover}
+                className={`${styles.cover} ${cover === COVER_FALLBACK.annual_report ? styles.coverFallback : ''}`}
                 priority
               />
             ) : (

@@ -86,8 +86,9 @@
  * 100x100 illustration centred over a 20/700 navy heading, then a numbered
  * list 31px below; the note sits 60px under the longer list. */
 .howTo {
-  --static-top: 20px;
-  padding-bottom: 34px; /* + footer margin 80 = 114 */
+  /* 418:2436 / 418:2437: 2 lines of 30 in a 52px centred box overflow 4px up */
+  --static-top: 16px;
+  padding-bottom: 38px; /* + footer margin 80 = 118 */
   max-width: 1152px;
   font-size: var(--fs-body);
   line-height: 30px;
@@ -109,7 +110,7 @@
 .howColumns {
   display: grid;
   grid-template-columns: 606px 1fr;
-  margin-top: 49px;
+  margin-top: 53px;
 }
 
 .howColumn {
@@ -160,7 +161,7 @@
 }
 
 .howNote {
-  margin: 60px 0 0;
+  margin: 56px 0 0;
   padding-left: 1px;
   max-width: 1137px;
 }

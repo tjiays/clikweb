@@ -150,7 +150,8 @@ function ExternalLink(props: ComponentProps<'a'>) {
  *            (14px #9A9A9A, right), title 30/800 line 40.9, excerpt 8 lines,
  *            footer row with a 1px rgba(0,0,0,.1) top border and a 45x44 share.
  *
- * The share button uses the Web Share API, falling back to copying the link.
+ * Home cards open the Figma share pop-over; the others use the Web Share API,
+ * falling back to copying the link.
  * Cards in a CSS grid row stretch to equal heights.
  */
 export function ArticleCard({
@@ -215,7 +216,13 @@ export function ArticleCard({
           <CardLink href={href} className={`t-link-caps ${styles.readMore}`}>
             {readMoreLabel}
           </CardLink>
-          <ShareButton url={href} title={title} label={shareLabel} size={variant === 'home' ? 45 : 40} />
+          <ShareButton
+            url={href}
+            title={title}
+            label={shareLabel}
+            size={variant === 'home' ? 45 : 40}
+            variant={variant === 'home' ? 'popover' : 'native'}
+          />
         </div>
       </div>
     </article>

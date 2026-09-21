@@ -53,7 +53,7 @@ export const productCategories: ProductCategory[] = [
     icon: '/images/products/icon-credit-scoring.svg',
     illustration: '/images/products/services/credit-scoring.png',
     illustrationWidth: 180,
-    image: '/images/products/credit-scoring.png',
+    image: '/images/products/credit-scoring.jpg',
     shortDescription: {
       id: 'Financial & alternative data for smarter credit decisions.',
       en: 'Financial & alternative data for smarter credit decisions.',
@@ -77,7 +77,7 @@ export const productCategories: ProductCategory[] = [
     icon: '/images/products/icon-analytics.svg',
     illustration: '/images/products/services/analytics.png',
     illustrationWidth: 180,
-    image: '/images/products/analytics.png',
+    image: '/images/products/analytics.jpg',
     shortDescription: {
       id: 'Custom AI models across the customer lifecycle.',
       en: 'Custom AI models across the customer lifecycle.',
@@ -127,7 +127,7 @@ export const productCategories: ProductCategory[] = [
     icon: '/images/products/icon-decisioning.svg',
     illustration: '/images/products/services/decisioning.png',
     illustrationWidth: 180,
-    image: '/images/products/decisioning.png',
+    image: '/images/products/decisioning.jpg',
     shortDescription: {
       id: 'Data & AI-powered decisions at industrial scale.',
       en: 'Data & AI-powered decisions at industrial scale.',
@@ -299,7 +299,7 @@ export const productUi = {
 /* ------------------------------------------------------------------ */
 
 export const productsPage = {
-  heroImage: '/images/products/hero.png',
+  heroImage: '/images/products/hero.jpg',
   title: { id: 'Layanan dan Produk', en: 'Products & Services' },
   lead: {
     id: 'CLIK menghadirkan ekosistem solusi berbasis data untuk membantu institusi keuangan dan pelaku bisnis mengambil keputusan kredit yang lebih presisi, cepat, dan aman.',
@@ -397,7 +397,7 @@ export const businessSolutionPage = {
 type FeatureIcon = 'clock' | 'database' | 'shield' | 'people' | 'document'
 
 export const creditScoringPage = {
-  heroImage: '/images/products/credit-scoring.png',
+  heroImage: '/images/products/credit-scoring.jpg',
   title: { id: 'Credit Scoring', en: 'Credit Scoring' },
   lead: {
     id: 'Keputusan Kredit yang Lebih Cerdas, Lebih Cepat, Lebih Terpercaya.',

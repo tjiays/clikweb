@@ -41,18 +41,22 @@ export type ProductAccordionLabels = {
  *
  * `gap` is the space between rows (15 on Credit Scoring, 10 on Business
  * Solution); `openFirst` shows the first row expanded, as Business Solution
- * does.
+ * does. `single` keeps at most one row open (Business Solution lists:
+ * 1647:12312 -> 1647:12314 collapses row 1 when row 2 opens); Credit Scoring
+ * rows are standalone components in Figma and toggle independently.
  */
 export function ProductAccordion({
   rows,
   labels,
   gap = 15,
   openFirst = false,
+  single = false,
 }: {
   rows: ProductRow[]
   labels: ProductAccordionLabels
   gap?: number
   openFirst?: boolean
+  single?: boolean
 }) {
   const baseId = useId()
   const [open, setOpen] = useState<Set<string | number>>(
@@ -61,6 +65,7 @@ export function ProductAccordion({
 
   const toggle = (id: string | number) =>
     setOpen((current) => {
+      if (single) return new Set(current.has(id) ? [] : [id])
       const next = new Set(current)
       if (next.has(id)) next.delete(id)
       else next.add(id)
