@@ -61,13 +61,27 @@ export const richTextConverters: JSXConvertersFunction = ({ defaultConverters })
     return <Tag style={layoutStyle(node as AlignableNode)}>{children}</Tag>
   },
 
-  table: ({ node, nodesToJSX }) => (
-    <div className={styles.tableScroll}>
-      <table>
-        <tbody>{nodesToJSX({ nodes: node.children })}</tbody>
-      </table>
-    </div>
-  ),
+  table: ({ node, nodesToJSX }) => {
+    // Lexical stores the column widths the editor dragged out; a <colgroup>
+    // is how they survive into the page. Without this the financial
+    // statements lose their 60/40 split and the figures column goes ragged.
+    const widths = (node as { colWidths?: number[] }).colWidths
+    const total = widths?.reduce((a, b) => a + b, 0) ?? 0
+    return (
+      <div className={styles.tableScroll}>
+        <table>
+          {widths?.length && total > 0 ? (
+            <colgroup>
+              {widths.map((w, i) => (
+                <col key={i} style={{ width: `${((w / total) * 100).toFixed(4)}%` }} />
+              ))}
+            </colgroup>
+          ) : null}
+          <tbody>{nodesToJSX({ nodes: node.children })}</tbody>
+        </table>
+      </div>
+    )
+  },
 
   tablerow: ({ node, nodesToJSX }) => <tr>{nodesToJSX({ nodes: node.children })}</tr>,
 

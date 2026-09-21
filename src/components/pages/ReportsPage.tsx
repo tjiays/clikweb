@@ -145,7 +145,15 @@ export async function ReportDetailPage({
     { label: report.title },
   ]
   const cover = coverOf(report, HERO_WIDTH)
-  const tables = (report.financialTables ?? []) as FinancialTable[]
+  /*
+   * Figures used to live in their own financialTables field, invisible from
+   * the editor. They now belong in the body, written as real tables in the
+   * one editor. Reports that have already been moved carry a table in the
+   * body, so the old block steps aside for them; the rest keep rendering
+   * from the field until they are moved, which means no report ever loses
+   * its figures mid-transition.
+   */
+  const tables = bodyHasTable(report.body) ? [] : ((report.financialTables ?? []) as FinancialTable[])
 
   if (report.type === 'annual_report') {
     return (
@@ -205,6 +213,12 @@ export async function ReportDetailPage({
       </Container>
     </>
   )
+}
+
+/** True once a report's figures have been moved into the body rich text. */
+function bodyHasTable(body: unknown): boolean {
+  const children = (body as { root?: { children?: { type?: string }[] } })?.root?.children
+  return Array.isArray(children) && children.some((n) => n?.type === 'table')
 }
 
 /** Financial statements (Figma images 91/92) as real tables. */
