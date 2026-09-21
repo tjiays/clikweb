@@ -19,6 +19,11 @@ export const ProductItems: CollectionConfig = contentCollection({
   labels: { singular: 'Item Produk', plural: 'Item Produk' },
   group: 'Product',
   owners,
+  // Products have no page of their own; they appear in What We Offer.
+  previewPath: {
+    id: '/layanan-dan-produk/credit-scoring',
+    en: '/en/products-and-services/credit-scoring',
+  },
   useAsTitle: 'name',
   defaultColumns: ['name', 'category', 'productStatus', 'approvalStatus'],
   fields: [

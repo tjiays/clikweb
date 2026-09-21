@@ -60,13 +60,11 @@ language lives in `src/i18n/routes.ts`.
 | [Repository conventions](./docs/repository-conventions.md) | Branches, commits, what is committed |
 | [External links](./docs/external-links.md) | Every outbound URL and whether it is verified |
 | [Editing content](./docs/editing-content.md) | Changing page wording and images in code |
-| [CMS data model](./docs/cms-data-model.md) | The seven collections that remain |
+| [CMS collections](./docs/cms-collections.md) | The seven collections and every field |
 | [Roles and permissions](./docs/roles-and-permissions.md) | Who can reach what, and how it is enforced |
 | [Approval workflow](./docs/approval-workflow.md) | Draft to published, and the rules behind it |
 | [CMS user manual](./docs/cms-user-manual.md) | Panduan untuk tim pengisi konten (Bahasa Indonesia) |
 | [Auto-translate](./docs/auto-translate-and-glossary.md) | How English is drafted, and the glossary |
-| [Page implementation notes](./docs/page-implementation-notes.md) | How each page maps to Figma and the CMS |
-| [Seed data inventory](./docs/seed-data-inventory.md) | What is real, what is placeholder |
 | [Editor guide: Newsroom](./docs/editor-guide-newsroom.md) | Panduan News Admin (Bahasa Indonesia) |
 | [Editor guide: Karir](./docs/editor-guide-careers.md) | Panduan HR Admin (Bahasa Indonesia) |
 | [Editor guide: Marketing](./docs/editor-guide-marketing.md) | Panduan Marketing Admin (Bahasa Indonesia) |

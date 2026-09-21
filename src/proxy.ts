@@ -4,8 +4,11 @@ import { defaultLocale } from './i18n/config'
 /** Anything with a file extension is an asset, not a page. */
 const HAS_EXTENSION = /\.[^/]+$/
 
-/** Paths owned by Payload or Next, which must never be rewritten. */
-const RESERVED = ['/admin', '/api', '/_next', '/media']
+/**
+ * Paths owned by Payload, Next or the preview flow, which must never be
+ * rewritten into a language segment.
+ */
+const RESERVED = ['/admin', '/api', '/_next', '/media', '/preview', '/images']
 
 /**
  * Next 16 renamed this convention from `middleware` to `proxy`.

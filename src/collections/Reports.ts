@@ -17,6 +17,7 @@ export const Reports: CollectionConfig = contentCollection({
   labels: { singular: 'Laporan', plural: 'Laporan' },
   group: 'Report',
   owners: MODULE_OWNERS.laporan,
+  preview: { id: '/laporan', en: '/en/reports' },
   defaultColumns: ['title', 'type', 'year', 'approvalStatus'],
   fields: [
     {

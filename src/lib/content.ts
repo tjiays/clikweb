@@ -1,6 +1,7 @@
 import 'server-only'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { draftMode } from 'next/headers'
 import type { Locale } from '@/i18n/config'
 
 /**
@@ -12,6 +13,20 @@ import type { Locale } from '@/i18n/config'
  */
 
 const client = async () => getPayload({ config })
+
+/**
+ * True while an editor is previewing. Next turns this on from /preview, and
+ * it makes the queries below return the unapproved revision instead of the
+ * published one.
+ */
+const isPreview = async () => {
+  try {
+    return (await draftMode()).isEnabled
+  } catch {
+    // draftMode() is unavailable outside a request, e.g. in the sitemap.
+    return false
+  }
+}
 
 /** Picks the right language out of a bilingual pair from src/content. */
 export const t = <T extends { id: string; en: string }>(value: T | undefined, locale: Locale) =>
@@ -35,7 +50,10 @@ async function listPublished<T>(
     limit: options.limit ?? 200,
     sort: options.sort ?? 'sortOrder',
     depth: 2,
-    where: { _status: { equals: 'published' }, ...(options.where ?? {}) } as never,
+    draft: await isPreview(),
+    where: ((await isPreview())
+      ? (options.where ?? {})
+      : { _status: { equals: 'published' }, ...(options.where ?? {}) }) as never,
   })
   return docs as T[]
 }
@@ -56,7 +74,10 @@ async function listPaged<T>(
     limit,
     sort,
     depth: 2,
-    where: { _status: { equals: 'published' }, ...where } as never,
+    draft: await isPreview(),
+    where: ((await isPreview())
+      ? where
+      : { _status: { equals: 'published' }, ...where }) as never,
   })
   return {
     docs: result.docs as T[],
@@ -78,7 +99,10 @@ async function findOne<T>(
     locale,
     limit: 1,
     depth: 2,
-    where: { [field]: { equals: value }, _status: { equals: 'published' } } as never,
+    draft: await isPreview(),
+    where: ((await isPreview())
+      ? { [field]: { equals: value } }
+      : { [field]: { equals: value }, _status: { equals: 'published' } }) as never,
   })
   return (docs[0] as T) ?? null
 }

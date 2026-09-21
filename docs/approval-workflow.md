@@ -37,6 +37,11 @@ refuses, with a readable message:
 - a rejection with no reason
 - any change to an item currently in review
 
+## Seeing it before approving
+
+Open the item and press **Preview**. It opens on the real site, exactly as a
+visitor will see it, while still unapproved. Nothing is published by previewing.
+
 ## For the Approver
 
 Filter any list by **Approval Status = In Review** to see what is waiting. Open

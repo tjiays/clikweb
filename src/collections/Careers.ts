@@ -11,6 +11,7 @@ export const JobOpenings: CollectionConfig = contentCollection({
   labels: { singular: 'Lowongan Pekerjaan', plural: 'Lowongan Pekerjaan' },
   group: 'Karir',
   owners,
+  preview: { id: '/karir', en: '/en/careers' },
   defaultColumns: ['title', 'category', 'isOpen', 'approvalStatus'],
   fields: [
     localisedText('title', 'Nama posisi', true),

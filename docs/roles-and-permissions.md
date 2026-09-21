@@ -8,8 +8,7 @@ Super Admin manages users.
 | Super Admin | Full access | Everything. Changes publish directly, with no approval. |
 | HR Admin | Editor | Karir |
 | News Admin | Editor | Newsroom and Laporan |
-| Marketing Admin | Editor | Homepage, Produk & Layanan, testimonials, timeline, partner logos, CTA blocks, page content |
-| Sales Admin | Viewer | Contact form submissions only |
+| Marketing Admin | Editor | Sales Admin | Viewer | Contact form submissions only |
 | Approver | Reviewer | Sees every submitted change across all modules. Can only approve or reject. |
 
 ## What each role can reach
@@ -19,9 +18,6 @@ Super Admin manages users.
 | Karir (lowongan, kategori, konten halaman) | Full | Edit + submit | — | — | — | Approve / Reject |
 | Newsroom (artikel, author, outlet, liputan) | Full | — | Edit + submit | — | — | Approve / Reject |
 | Laporan | Full | — | Edit + submit | — | — | Approve / Reject |
-| Homepage (hero, stats, section text) | Full | — | — | Edit + submit | — | Approve / Reject |
-| Produk & Layanan | Full | — | — | Edit + submit | — | Approve / Reject |
-| Testimoni, Timeline, Partner Logo | Full | — | — | Edit + submit | — | Approve / Reject |
 | CTA Blocks, Page Content | Full | — | — | Edit + submit | — | Approve / Reject |
 | Halaman statis (kebijakan, cara, pengaduan) | Full | — | — | — | — | — |
 | Media Library | Full | Upload | Upload | Upload | — | View |

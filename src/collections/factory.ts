@@ -10,6 +10,7 @@ import {
 import { approvalFields, publishedAtField } from '@/fields/approval'
 import { enforceApprovalRules, syncPublishState } from '@/hooks/approval'
 import { recordAudit, recordDeletion } from '@/hooks/audit'
+import { previewFor } from '@/lib/preview'
 import { autoTranslateField } from '@/fields/autoTranslate'
 import { isSampleField } from '@/fields/common'
 
@@ -24,6 +25,13 @@ type Options = {
   fields: Field[]
   /** Set false for reference data that does not need reviewing. */
   approval?: boolean
+  /**
+   * The public path this item lives under, per language. Given one, the
+   * admin shows a Preview button that opens the draft on the live site.
+   */
+  preview?: { id: string; en: string }
+  /** For items with no page of their own: preview opens this page instead. */
+  previewPath?: { id: string; en: string }
 }
 
 /**
@@ -40,6 +48,8 @@ export const contentCollection = ({
   defaultColumns,
   fields,
   approval = true,
+  preview,
+  previewPath,
 }: Options): CollectionConfig => ({
   slug,
   labels,
@@ -47,6 +57,21 @@ export const contentCollection = ({
     group,
     useAsTitle,
     defaultColumns: defaultColumns ?? [useAsTitle, 'approvalStatus', 'updatedAt'],
+    ...(preview ? { preview: previewFor(preview) } : {}),
+    ...(previewPath
+      ? {
+          preview: (_doc: unknown, { locale }: { locale?: string }) => {
+            const lang = locale === 'en' ? 'en' : 'id'
+            const params = new URLSearchParams({
+              path: previewPath[lang],
+              collection: slug,
+              slug: 'section',
+              previewSecret: process.env.PAYLOAD_SECRET || '',
+            })
+            return `/preview?${params.toString()}`
+          },
+        }
+      : {}),
   },
   access: {
     // The public website reads published documents; everyone else must sign in.

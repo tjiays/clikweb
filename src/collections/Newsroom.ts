@@ -23,6 +23,7 @@ export const Articles: CollectionConfig = contentCollection({
   labels: { singular: 'Artikel', plural: 'Artikel' },
   group: 'Newsroom',
   owners: MODULE_OWNERS.newsroom,
+  preview: { id: '/newsroom', en: '/en/newsroom' },
   defaultColumns: ['title', 'author', 'publishDate', 'isFeatured', 'approvalStatus'],
   fields: [
     localisedText('title', 'Judul', true),

@@ -47,12 +47,15 @@ Indonesian and an English value for every localised field, which is the
 
 ## Data
 
-PostgreSQL, chosen because the content is relational — articles belong to
-authors, products to categories, coverage to outlets — and because the approval
+PostgreSQL, chosen because the content is relational — articles carry covers, reports carry covers,
+products belong to a category — and because the approval
 workflow needs transactions and contact submissions are permanent records.
 
-Payload owns the schema. Changing a collection means regenerating types and
-creating a migration; migrations are committed.
+Payload owns the schema for the seven collections that remain. Changing one
+means regenerating types and creating a migration; migrations are committed.
+
+Page copy and imagery are not in the database at all — they live in
+`src/content/` and `public/images/`. See [editing content](./editing-content.md).
 
 Uploaded files are written to disk, not into the database, and are backed up
 separately from it.
