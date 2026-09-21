@@ -50,16 +50,42 @@ body {
 
 /* ---- Sidebar toggle ----
    Payload pins it to the top-left, which is exactly where the CLIK logo sits,
-   so it covered the brand. Moved to the sidebar's outer edge, where it reads
-   as a handle on the panel rather than an overlay on the logo.
+   so it covered the brand. It now tucks into the sidebar's own top-right
+   corner.
 
-   Left alone below 769px: there the sidebar is full width, so the outer edge
-   would be off screen. */
+   The shift is driven by the button's own `--is-open` class rather than the
+   layout's: --nav-width stays 275px whether the sidebar is open or shut, so
+   positioning against it alone would leave the button stranded in the content
+   area once the panel closed. Closed, it returns to the left edge where it is
+   the handle that reopens the panel.
+
+   Untouched below 769px: the sidebar is full width there, and Payload's own
+   placement is already right. */
 @media (min-width: 769px) {
-  .template-default__nav-toggler-wrapper {
-    left: var(--nav-width);
-    right: auto;
-    padding-left: 6px;
+  .nav-toggler--is-open {
+    transform: translateX(calc(var(--nav-width) - var(--gutter-h) - 14px));
+    transition: transform 150ms ease;
+  }
+
+  /* On the navy panel the default light chip reads as a sticker, so the
+     button becomes part of the sidebar: no fill, white icon, orange on
+     hover, matching the links beside it. */
+  .nav-toggler--is-open .hamburger {
+    background-color: transparent;
+    box-shadow: none;
+    color: #ffffff;
+    opacity: 1;
+  }
+
+  .nav-toggler--is-open:hover .hamburger {
+    color: var(--clik-orange);
+    background-color: rgba(255, 255, 255, 0.10);
+  }
+
+  /* Payload dims the button while the panel is open; it does not need to
+     recede now that it sits among the links. */
+  .nav-toggler--is-open {
+    opacity: 1;
   }
 }
 
