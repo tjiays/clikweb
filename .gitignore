@@ -40,8 +40,8 @@ Thumbs.db
 *.swp
 
 # Test and coverage output
-coverage/
-.nyc_output/
+/coverage/
+/.nyc_output/
 
 # Payload / Next generated caches (types and migrations ARE committed)
 .turbo/
