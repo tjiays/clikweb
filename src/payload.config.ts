@@ -36,8 +36,9 @@ export default buildConfig({
         Logo: '@/components/admin/Logo#default',
         Icon: '@/components/admin/Icon#default',
       },
-      // A Dashboard link at the top of the sidebar; Payload provides none.
-      beforeNavLinks: ['@/components/admin/NavDashboardLink#default'],
+      // The whole sidebar is ours: real icon elements, and a Dashboard entry
+      // that is the same kind of item as the rest.
+      Nav: '@/components/admin/Nav#default',
       views: {
         // Replaces the default flat list of collections with grouped,
         // colour-coded cards that open each module's list directly.
