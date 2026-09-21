@@ -47,71 +47,56 @@ export const Reports: CollectionConfig = contentCollection({
           ],
         },
         {
-          /*
-           * These rows predate the editor's own table button. The two reports
-           * that use them still render from here, so the field stays; new
-           * financial statements are better built in the editor, where the
-           * text around them lives.
-           */
-          label: 'Tabel keuangan (cara lama)',
-          description:
-            'Dipakai oleh laporan yang sudah ada. Untuk laporan baru, buat tabel langsung di editor pada tab Tulisan.',
-          fields: [
-            {
-              name: 'financialTables',
-              type: 'array',
-              label: 'Tabel keuangan',
-              access: lockedForApprover,
-              labels: { singular: 'Tabel', plural: 'Tabel' },
-              fields: [
-                {
-                  ...localisedTextarea('intro', 'Teks di atas tabel (rata kiri)'),
-                  admin: {
-                    description:
-                      'e.g. "Laporan Keuangan Posisi Keuangan 31 Desember 2025 (terlampir)".',
-                  },
-                } as Field,
-                {
-                  ...localisedText('title', 'Judul tabel (tengah, tebal)'),
-                  admin: { description: 'e.g. "LAPORAN LABA RUGI". Leave empty for none.' },
-                } as Field,
-                localisedText('caption', 'Keterangan di bawah judul (tengah)'),
-                {
-                  name: 'rows',
-                  type: 'array',
-                  label: 'Baris',
-                  access: lockedForApprover,
-                  fields: [
-                    localisedText('label', 'Pos', true),
-                    { name: 'value', type: 'text', label: 'Nilai (Rp)', access: lockedForApprover },
-                    {
-                      name: 'emphasis',
-                      type: 'select',
-                      label: 'Tebal',
-                      defaultValue: 'none',
-                      access: lockedForApprover,
-                      options: [
-                        { label: 'Tidak', value: 'none' },
-                        { label: 'Pos saja', value: 'label' },
-                        { label: 'Pos dan nilai', value: 'row' },
-                      ],
-                    },
-                    {
-                      name: 'gapBefore',
-                      type: 'checkbox',
-                      label: 'Beri jarak sebelum baris ini',
-                      defaultValue: false,
-                      access: lockedForApprover,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
           label: 'Pengaturan',
           fields: [imageField('cover', 'Gambar sampul')],
+        },
+      ],
+    },
+    {
+      /*
+       * Superseded by tables written in the editor
+       * (migration 20260921_095500_report_tables_into_body). Kept, hidden,
+       * so the rows are still there if that migration is ever rolled back:
+       * ReportsPage falls back to them whenever a report's body has no table
+       * of its own. Nothing writes to it any more.
+       */
+      name: 'financialTables',
+      type: 'array',
+      label: 'Tabel keuangan (lama)',
+      access: lockedForApprover,
+      admin: { hidden: true },
+      fields: [
+        localisedTextarea('intro', 'Teks di atas tabel'),
+        localisedText('title', 'Judul tabel'),
+        localisedText('caption', 'Keterangan'),
+        {
+          name: 'rows',
+          type: 'array',
+          label: 'Baris',
+          access: lockedForApprover,
+          fields: [
+            localisedText('label', 'Pos', true),
+            { name: 'value', type: 'text', label: 'Nilai (Rp)', access: lockedForApprover },
+            {
+              name: 'emphasis',
+              type: 'select',
+              label: 'Tebal',
+              defaultValue: 'none',
+              access: lockedForApprover,
+              options: [
+                { label: 'Tidak', value: 'none' },
+                { label: 'Pos saja', value: 'label' },
+                { label: 'Pos dan nilai', value: 'row' },
+              ],
+            },
+            {
+              name: 'gapBefore',
+              type: 'checkbox',
+              label: 'Beri jarak sebelum baris ini',
+              defaultValue: false,
+              access: lockedForApprover,
+            },
+          ],
         },
       ],
     },

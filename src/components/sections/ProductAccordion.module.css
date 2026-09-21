@@ -274,3 +274,23 @@
     line-height: 27px;
   }
 }
+
+/* ---- Product picture ----
+   Figma has no image slot in the expanded card, so this is an addition: it
+   leads the main column, above "Deskripsi", at the card's own corner radius
+   and never taller than it is wide-ish, so a portrait upload cannot push the
+   text far down the page. */
+.image {
+  margin: 0 0 20px;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-bg-tint);
+}
+
+.image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  object-fit: cover;
+}

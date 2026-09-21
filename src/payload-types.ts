@@ -324,15 +324,10 @@ export interface Report {
     };
     [k: string]: unknown;
   };
+  cover?: (number | null) | Media;
   financialTables?:
     | {
-        /**
-         * e.g. "Laporan Keuangan Posisi Keuangan 31 Desember 2025 (terlampir)".
-         */
         intro?: string | null;
-        /**
-         * e.g. "LAPORAN LABA RUGI". Leave empty for none.
-         */
         title?: string | null;
         caption?: string | null;
         rows?:
@@ -347,7 +342,6 @@ export interface Report {
         id?: string | null;
       }[]
     | null;
-  cover?: (number | null) | Media;
   type: 'annual_report' | 'business_development';
   /**
    * Used in the page address. Derived from title if left blank.
@@ -485,6 +479,13 @@ export interface ProductItem {
   name: string;
   category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
+  /**
+   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar.
+   */
+  image?: (number | null) | Media;
+  /**
+   * Toolbar di atas editor: judul, daftar, tautan, perataan, gambar dan tabel.
+   */
   description?: {
     root: {
       type: string;
@@ -748,6 +749,7 @@ export interface ReportsSelect<T extends boolean = true> {
   title?: T;
   excerpt?: T;
   body?: T;
+  cover?: T;
   financialTables?:
     | T
     | {
@@ -765,7 +767,6 @@ export interface ReportsSelect<T extends boolean = true> {
             };
         id?: T;
       };
-  cover?: T;
   type?: T;
   slug?: T;
   year?: T;
@@ -820,6 +821,7 @@ export interface ProductItemsSelect<T extends boolean = true> {
   name?: T;
   category?: T;
   shortDescription?: T;
+  image?: T;
   description?: T;
   productStatus?: T;
   isNew?: T;

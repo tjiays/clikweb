@@ -13,6 +13,8 @@ export type ProductRow = {
    * cannot cross the server/client boundary.
    */
   description?: ReactNode
+  /** Rendered on the server: this is a client component. */
+  image?: ReactNode
   status: 'live' | 'ready_to_sell'
   isNew?: boolean | null
   features?: string[]
@@ -124,6 +126,7 @@ export function ProductAccordion({
               <div className={styles.bodyInner}>
                 <div className={styles.body}>
                   <div className={styles.colMain}>
+                    {row.image ? <div className={styles.image}>{row.image}</div> : null}
                     <h4 className={styles.heading}>{labels.description}</h4>
                     <div className={styles.description}>{row.description}</div>
                     {row.features && row.features.length > 0 && (

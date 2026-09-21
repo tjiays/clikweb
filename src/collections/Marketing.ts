@@ -55,7 +55,20 @@ export const ProductItems: CollectionConfig = contentCollection({
       ],
     },
     localisedTextarea('shortDescription', 'Deskripsi singkat'),
-    richText('description', 'Deskripsi'),
+    {
+      ...imageField('image', 'Gambar produk'),
+      admin: {
+        description:
+          'Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar.',
+      },
+    } as Field,
+    {
+      ...richText('description', 'Deskripsi'),
+      admin: {
+        description:
+          'Toolbar di atas editor: judul, daftar, tautan, perataan, gambar dan tabel.',
+      },
+    } as Field,
     {
       // Named productStatus, not status: Payload reserves enum_<table>_status
       // for its own draft/published state and the two would collide.
