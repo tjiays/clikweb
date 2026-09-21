@@ -82,6 +82,7 @@ export async function MediaCoveragePage({
                     title={t(item.title, locale)}
                     excerpt={t(item.excerpt, locale)}
                     href={item.externalUrl}
+                    external
                     author={item.author}
                     date={formatDate(item.publishDate, locale)}
                     imageUrl={item.cover}

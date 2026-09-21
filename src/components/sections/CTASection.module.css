@@ -128,7 +128,8 @@
 }
 
 .bannerTitle {
-  margin: 0;
+  /* Block margins only: the left margin carries --cta-offset-x from .bannerInner > * */
+  margin-block: 0;
   max-width: var(--cta-title-max, 821px);
   font-size: var(--fs-h1);
   font-weight: var(--cta-title-weight, 700);
@@ -137,7 +138,7 @@
 }
 
 .bannerText {
-  margin: var(--cta-gap-1, 31px) 0 0;
+  margin-block: var(--cta-gap-1, 31px) 0;
   max-width: var(--cta-text-max, 821px);
   font-size: var(--fs-h3);
   font-weight: var(--fw-semibold);

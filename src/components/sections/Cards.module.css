@@ -194,6 +194,8 @@
   --title-size: 26px;
   --title-lh: 36px;
   --title-gap: 8px;
+  /* Laporan (731:3862): the excerpt follows a two-line title directly */
+  --title-min-h: 0;
 }
 
 .related {
@@ -254,7 +256,7 @@
 
 .articleTitle {
   margin: var(--title-gap) 0 0;
-  min-height: calc(var(--title-lh) * 3);
+  min-height: var(--title-min-h, calc(var(--title-lh) * 3));
   font-size: var(--title-size);
   font-weight: var(--fw-extrabold);
   line-height: var(--title-lh);

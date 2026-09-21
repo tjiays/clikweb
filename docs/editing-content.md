@@ -45,11 +45,16 @@ Images are grouped by page:
 ```
 public/images/
   shared/     logos, social icons, stat and benefit icons
-  home/       hero-1.jpeg  hero-2.jpeg  hero-3.jpeg  cta-banner.jpeg
-  about/      office.png  visi.png  misi.png  crif-network.png
-  products/   hero.png, one image and one icon per category
-  careers/    1.png  2.png  3.png
-  newsroom/   media outlet logos
+  home/       hero-1..3.jpeg, stat and shield icons, solution-*.png, partners/ (testimonial logos)
+  about/      growing-in-asia.png  visi-team.png  misi-target.png  lpip-photo.jpg
+              crif-world.jpg  crif-stats.jpg  crif-countries.jpg  members/ (member logos)
+  products/   category photos and icons, data/ icons, services/ carousel art,
+              credit-scoring/ illustrations, cb-score-gauge.webp, crif-bird.webp
+  careers/    strip-1..6.jpg (moving photo band), step-1..5.png (recruitment steps)
+  newsroom/   logo-*.png/svg (media outlets), logos/ (moving logo strip), coverage/
+  reports/    fallback report covers
+  policies/   how-to illustrations
+  cta/        closing banner photos, one per page
 ```
 
 **To replace one:** drop a file in with the same name. Nothing else to change.

@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
@@ -128,6 +129,10 @@ export function TestimonialCard({
 
 type ArticleVariant = 'news' | 'report' | 'related' | 'home'
 
+function ExternalLink(props: ComponentProps<'a'>) {
+  return <a {...props} target="_blank" rel="noopener noreferrer" />
+}
+
 /**
  * Article / report card.
  *
@@ -159,6 +164,7 @@ export function ArticleCard({
   readMoreLabel,
   shareLabel,
   variant = 'news',
+  external = false,
   className,
 }: {
   title: string
@@ -172,12 +178,15 @@ export function ArticleCard({
   /** Accessible name for the share button ("Bagikan" / "Share"). */
   shareLabel?: string
   variant?: ArticleVariant
+  /** The card points at another site (Liputan Media): open it in a new tab. */
+  external?: boolean
   className?: string
 }) {
   const showAuthor = variant !== 'home' && author
+  const CardLink = external ? ExternalLink : Link
   return (
     <article className={[styles.article, styles[variant], className].filter(Boolean).join(' ')}>
-      <Link href={href} className={styles.articleMedia} tabIndex={-1} aria-hidden="true">
+      <CardLink href={href} className={styles.articleMedia} tabIndex={-1} aria-hidden="true">
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -190,7 +199,7 @@ export function ArticleCard({
         ) : (
           <div className={styles.articlePlaceholder} />
         )}
-      </Link>
+      </CardLink>
       <div className={styles.articleBody}>
         {(showAuthor || date) && (
           <p className={styles.articleMeta}>
@@ -199,13 +208,13 @@ export function ArticleCard({
           </p>
         )}
         <h3 className={styles.articleTitle}>
-          <Link href={href}>{title}</Link>
+          <CardLink href={href}>{title}</CardLink>
         </h3>
         {excerpt && <p className={styles.articleExcerpt}>{excerpt}</p>}
         <div className={styles.articleFooter}>
-          <Link href={href} className={`t-link-caps ${styles.readMore}`}>
+          <CardLink href={href} className={`t-link-caps ${styles.readMore}`}>
             {readMoreLabel}
-          </Link>
+          </CardLink>
           <ShareButton url={href} title={title} label={shareLabel} size={variant === 'home' ? 45 : 40} />
         </div>
       </div>
