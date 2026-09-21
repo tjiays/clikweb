@@ -8,6 +8,7 @@ import {
   richText,
   slugField,
   sortOrderField,
+  imageGuidance,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 
@@ -48,7 +49,14 @@ export const Reports: CollectionConfig = contentCollection({
         },
         {
           label: 'Pengaturan',
-          fields: [imageField('cover', 'Gambar sampul')],
+          fields: [
+            {
+              ...imageField('cover', 'Gambar sampul'),
+              admin: {
+                description: `Tampil di kartu laporan dan di atas halaman Laporan Tahunan. ${imageGuidance(1300, '2000x1333px seperti sampul Laporan Tahunan 2025')}`,
+              },
+            } as Field,
+          ],
         },
       ],
     },

@@ -8,6 +8,7 @@ import {
   richText,
   slugField,
   sortOrderField,
+  imageGuidance,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 
@@ -58,8 +59,7 @@ export const ProductItems: CollectionConfig = contentCollection({
     {
       ...imageField('image', 'Gambar produk'),
       admin: {
-        description:
-          'Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar.',
+        description: `Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. ${imageGuidance(640, '1280x720px')}`,
       },
     } as Field,
     {

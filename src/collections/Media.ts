@@ -1,9 +1,13 @@
 import type { CollectionConfig } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { APIError } from 'payload'
 import { isSuperAdmin, isApprover, isSalesAdmin } from '@/access'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+/** Matches config.upload.limits.fileSize in src/payload.config.ts. */
+const MAX_UPLOAD_BYTES = 20 * 1024 * 1024
 
 /**
  * Shared media library. Editors upload and reuse; the Approver may look but
@@ -24,6 +28,26 @@ export const Media: CollectionConfig = {
     create: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),
     update: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),
     delete: ({ req: { user } }) => isSuperAdmin(user),
+  },
+  hooks: {
+    beforeValidate: [
+      ({ req }) => {
+        /*
+         * The parser already refuses anything over 20MB, but its message is
+         * generic. Catching it here names the actual size, which is the
+         * difference between an editor resizing the file and an editor
+         * filing a bug.
+         */
+        const size = req?.file?.size
+        if (typeof size === 'number' && size > MAX_UPLOAD_BYTES) {
+          const mb = (size / 1024 / 1024).toFixed(1)
+          throw new APIError(
+            `Gambar ini berukuran ${mb}MB, melebihi batas 20MB. Perkecil ukurannya lalu unggah lagi.`,
+            413,
+          )
+        }
+      },
+    ],
   },
   fields: [
     {

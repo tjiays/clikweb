@@ -8,6 +8,7 @@ import {
   richText,
   seoFields,
   slugField,
+  imageGuidance,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 
@@ -60,7 +61,12 @@ export const Articles: CollectionConfig = contentCollection({
           label: 'Pengaturan',
           description: 'Gambar, artikel terkait dan SEO.',
           fields: [
-            imageField('cover', 'Gambar sampul'),
+            {
+              ...imageField('cover', 'Gambar sampul'),
+              admin: {
+                description: `Tampil di kartu artikel. ${imageGuidance(800, '1200x800px')}`,
+              },
+            } as Field,
             {
               name: 'banner',
               type: 'upload',
@@ -68,8 +74,7 @@ export const Articles: CollectionConfig = contentCollection({
               label: 'Gambar banner (halaman detail)',
               access: lockedForApprover,
               admin: {
-                description:
-                  'Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.',
+                description: `Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. ${imageGuidance(1300, '2600x744px')}`,
               },
             },
             {

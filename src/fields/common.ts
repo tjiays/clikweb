@@ -111,3 +111,13 @@ export const isSampleField: Field = {
     description: 'Seed content from the design. Replace before launch.',
   },
 }
+
+/**
+ * Guidance under an image field: what size to aim for, and the 20MB ceiling.
+ *
+ * `displayWidth` is the widest the picture is ever drawn on the site, so an
+ * upload narrower than it gets stretched and goes soft. The examples quote a
+ * real file already in the library rather than an invented ideal.
+ */
+export const imageGuidance = (displayWidth: number, example: string) =>
+  `Minimal ${displayWidth}px lebar; disarankan ${example}. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).`
