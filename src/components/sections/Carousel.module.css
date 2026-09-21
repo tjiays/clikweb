@@ -82,3 +82,149 @@
     grid-auto-columns: 88%;
   }
 }
+
+/* ================================================================== */
+/* Slide variants: Home solutions (1780:10846) and testimonials        */
+/* (627:5394). The track moves with a transform; timing is set inline. */
+/* ================================================================== */
+.slideWrap {
+  position: relative;
+}
+
+.viewport {
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.slideTrack {
+  display: flex;
+  gap: var(--gap);
+  will-change: transform;
+}
+
+.slideItem {
+  flex: 0 0 min(var(--item-w), 100%);
+  min-width: 0;
+}
+
+.slideDots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.slideDot {
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  transition:
+    width var(--transition-figma),
+    background-color var(--transition-figma),
+    opacity var(--transition-figma);
+}
+
+/* ---- Solutions: clip 1300 wide; shadow room under the cards ---- */
+.solutions .viewport {
+  padding-bottom: 8px;
+}
+
+/* Group 2365: 15px circles, 16px apart, navy / navy 30%, 21px under the cards */
+.solutions .slideDots {
+  gap: 16px;
+  margin-top: 13px; /* + 8px shadow room = 21px */
+}
+
+.solutions .slideDot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--color-secondary);
+  opacity: 0.3;
+}
+
+.solutions .slideDotActive {
+  opacity: 1;
+}
+
+/* "Product/Variant10": 60x60 #FF7D00 circle, 16x28 white chevron.
+   Next at the right edge over the peeking card; previous at the left edge,
+   shown only after moving (opacity 0 on the first page). */
+.bigArrow {
+  position: absolute;
+  top: 145px;
+  z-index: 2;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--transition-figma),
+    visibility var(--transition-figma);
+}
+
+.bigArrowShown {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bigArrowNext {
+  right: 0;
+}
+
+.bigArrowPrev {
+  left: 0;
+}
+
+.bigArrow:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+/* ---- Testimonials: Group 2329, 9px under the cards ---- */
+.testimonials .slideItem {
+  display: flex;
+}
+
+.testimonials .slideItem > * {
+  flex: 1;
+}
+
+.testimonials .slideDots {
+  gap: 15px;
+  margin-top: 9px;
+}
+
+.testimonials .slideDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 15px;
+  background: #d9d9d9;
+}
+
+.testimonials .slideDotActive {
+  width: 20px;
+  background: var(--color-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slideDot,
+  .bigArrow {
+    transition: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .bigArrow {
+    width: 48px;
+    height: 48px;
+    top: 146px;
+  }
+}
