@@ -6,6 +6,7 @@ import * as migration_20260921_092132_product_image from './20260921_092132_prod
 import * as migration_20260921_093000_report_covers_into_cms from './20260921_093000_report_covers_into_cms';
 import * as migration_20260921_094500_annual_report_cover from './20260921_094500_annual_report_cover';
 import * as migration_20260921_095500_report_tables_into_body from './20260921_095500_report_tables_into_body';
+import * as migration_20260921_101248_drop_report_year from './20260921_101248_drop_report_year';
 
 export const migrations = [
   {
@@ -31,21 +32,26 @@ export const migrations = [
   {
     up: migration_20260921_092132_product_image.up,
     down: migration_20260921_092132_product_image.down,
-    name: '20260921_092132_product_image'
+    name: '20260921_092132_product_image',
   },
   {
     up: migration_20260921_093000_report_covers_into_cms.up,
     down: migration_20260921_093000_report_covers_into_cms.down,
-    name: '20260921_093000_report_covers_into_cms'
+    name: '20260921_093000_report_covers_into_cms',
   },
   {
     up: migration_20260921_094500_annual_report_cover.up,
     down: migration_20260921_094500_annual_report_cover.down,
-    name: '20260921_094500_annual_report_cover'
+    name: '20260921_094500_annual_report_cover',
   },
   {
     up: migration_20260921_095500_report_tables_into_body.up,
     down: migration_20260921_095500_report_tables_into_body.down,
-    name: '20260921_095500_report_tables_into_body'
+    name: '20260921_095500_report_tables_into_body',
+  },
+  {
+    up: migration_20260921_101248_drop_report_year.up,
+    down: migration_20260921_101248_drop_report_year.down,
+    name: '20260921_101248_drop_report_year'
   },
 ];

@@ -24,7 +24,7 @@ export const Reports: CollectionConfig = contentCollection({
   group: 'Report',
   owners: MODULE_OWNERS.laporan,
   preview: { id: '/laporan', en: '/en/reports' },
-  defaultColumns: ['title', 'type', 'year', 'approvalStatus'],
+  defaultColumns: ['title', 'type', 'publishDate', 'approvalStatus'],
   fields: [
     {
       type: 'tabs',
@@ -122,13 +122,6 @@ export const Reports: CollectionConfig = contentCollection({
       ],
     },
     slugField(),
-    {
-      name: 'year',
-      type: 'number',
-      required: true,
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
-    },
     {
       // A name rather than a relationship, as on Newsroom articles.
       name: 'author',

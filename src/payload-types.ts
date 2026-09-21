@@ -158,9 +158,12 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Tampil di kartu artikel. Minimal 800px lebar; disarankan 1200x800px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
+   */
   cover?: (number | null) | Media;
   /**
-   * Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.
+   * Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. Minimal 1300px lebar; disarankan 2600x744px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
    */
   banner?: (number | null) | Media;
   /**
@@ -324,6 +327,9 @@ export interface Report {
     };
     [k: string]: unknown;
   };
+  /**
+   * Tampil di kartu laporan dan di atas halaman Laporan Tahunan. Minimal 1300px lebar; disarankan 2000x1333px seperti sampul Laporan Tahunan 2025. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
+   */
   cover?: (number | null) | Media;
   financialTables?:
     | {
@@ -347,7 +353,6 @@ export interface Report {
    * Used in the page address. Derived from title if left blank.
    */
   slug: string;
-  year: number;
   /**
    * Shown on the report card, left of the date.
    */
@@ -480,7 +485,7 @@ export interface ProductItem {
   category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
   /**
-   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar.
+   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. Minimal 640px lebar; disarankan 1280x720px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
    */
   image?: (number | null) | Media;
   /**
@@ -769,7 +774,6 @@ export interface ReportsSelect<T extends boolean = true> {
       };
   type?: T;
   slug?: T;
-  year?: T;
   author?: T;
   publishDate?: T;
   sortOrder?: T;
