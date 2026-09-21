@@ -1,0 +1,46 @@
+/* Read-only status shown to editors in place of the select. */
+.clik-status {
+  margin-bottom: 1rem;
+}
+
+.clik-status__label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--theme-elevation-600);
+  font-size: 0.8rem;
+}
+
+.clik-status__pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.clik-status__pill--draft {
+  background: var(--theme-elevation-100);
+  color: var(--theme-elevation-700);
+}
+
+.clik-status__pill--review {
+  background: var(--clik-orange-light);
+  color: var(--clik-navy);
+}
+
+.clik-status__pill--approved {
+  background: var(--clik-navy);
+  color: #fff;
+}
+
+.clik-status__pill--rejected {
+  background: #fde4e4;
+  color: #8c1d1d;
+}
+
+.clik-status__hint {
+  margin: 8px 0 0;
+  color: var(--theme-elevation-600);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
