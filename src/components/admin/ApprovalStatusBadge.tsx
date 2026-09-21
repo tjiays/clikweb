@@ -15,7 +15,6 @@ import './ApprovalStatusBadge.scss'
  * instead would have let Payload revert the status the submit hook sets.
  */
 const LABELS: Record<string, { text: string; tone: string }> = {
-  draft: { text: 'Draft', tone: 'draft' },
   in_review: { text: 'Menunggu peninjauan', tone: 'review' },
   approved: { text: 'Disetujui — tayang', tone: 'approved' },
   rejected: { text: 'Ditolak — perlu diperbaiki', tone: 'rejected' },

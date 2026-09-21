@@ -196,7 +196,7 @@ export interface Article {
    */
   hideFromList?: boolean | null;
   isSample?: boolean | null;
-  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
+  approvalStatus?: ('in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -348,7 +348,7 @@ export interface Report {
    */
   sortOrder?: number | null;
   isSample?: boolean | null;
-  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
+  approvalStatus?: ('in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -431,7 +431,7 @@ export interface JobOpening {
    */
   sortOrder?: number | null;
   isSample?: boolean | null;
-  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
+  approvalStatus?: ('in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -501,7 +501,7 @@ export interface ProductItem {
    */
   sortOrder?: number | null;
   isSample?: boolean | null;
-  approvalStatus?: ('draft' | 'in_review' | 'approved' | 'rejected') | null;
+  approvalStatus?: ('in_review' | 'approved' | 'rejected') | null;
   /**
    * Required when rejecting. The editor sees this.
    */

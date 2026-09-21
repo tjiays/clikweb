@@ -2,7 +2,6 @@ import type { Field } from 'payload'
 import { contentFieldAccess, decisionFieldAccess, isSuperAdmin } from '@/access'
 
 export const APPROVAL_STATUSES = {
-  draft: 'draft',
   inReview: 'in_review',
   approved: 'approved',
   rejected: 'rejected',
@@ -11,7 +10,15 @@ export const APPROVAL_STATUSES = {
 export type ApprovalStatus = (typeof APPROVAL_STATUSES)[keyof typeof APPROVAL_STATUSES]
 
 /**
- * The Draft -> Submit -> Approve or Reject workflow from intent/03-cms.md.
+ * The Submit -> Approve or Reject workflow.
+ *
+ * There is no Draft. Saving is what submits an item, so nothing ever sat in
+ * Draft except by accident — and an item in Draft could not be approved,
+ * because the Approver may only decide on something in review, so it was a
+ * dead end as well as a dead state. Work in progress is simply an item in
+ * review that nobody has decided on yet, and its author can keep editing it.
+ *
+ * Adapted from intent/03-cms.md.
  *
  * Every change by an HR, News or Marketing Admin passes through it. Super
  * Admin changes skip it and publish directly. Rejection requires a reason.
@@ -38,9 +45,8 @@ export const approvalFields: Field[] = [
     name: 'approvalStatus',
     type: 'select',
     required: true,
-    defaultValue: APPROVAL_STATUSES.draft,
+    defaultValue: APPROVAL_STATUSES.inReview,
     options: [
-      { label: 'Draft', value: APPROVAL_STATUSES.draft },
       { label: 'In Review', value: APPROVAL_STATUSES.inReview },
       { label: 'Approved', value: APPROVAL_STATUSES.approved },
       { label: 'Rejected', value: APPROVAL_STATUSES.rejected },

@@ -7,6 +7,7 @@ import * as migration_20260921_093000_report_covers_into_cms from './20260921_09
 import * as migration_20260921_094500_annual_report_cover from './20260921_094500_annual_report_cover';
 import * as migration_20260921_095500_report_tables_into_body from './20260921_095500_report_tables_into_body';
 import * as migration_20260921_101248_drop_report_year from './20260921_101248_drop_report_year';
+import * as migration_20260921_104918_drop_draft_status from './20260921_104918_drop_draft_status';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20260921_101248_drop_report_year.up,
     down: migration_20260921_101248_drop_report_year.down,
-    name: '20260921_101248_drop_report_year'
+    name: '20260921_101248_drop_report_year',
+  },
+  {
+    up: migration_20260921_104918_drop_draft_status.up,
+    down: migration_20260921_104918_drop_draft_status.down,
+    name: '20260921_104918_drop_draft_status'
   },
 ];

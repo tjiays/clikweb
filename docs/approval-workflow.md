@@ -1,5 +1,39 @@
 # Approval workflow
 
+Three statuses, and only one of them is on the website.
+
+| Status | Meaning | Public site |
+| --- | --- | --- |
+| **In Review** | Submitted, waiting for a decision | No |
+| **Approved** | Signed off | **Yes — live** |
+| **Rejected** | Sent back, reason required | No |
+
+There is no Draft. Saving is what submits an item, so Draft was never a state
+anyone chose — and an item in Draft could not be approved either, because the
+Approver may only decide on something in review. It was a dead end as well as
+a dead state. Work in progress is simply an item in review that nobody has
+decided on yet, and its author can keep editing it until they do.
+
+## Who moves what
+
+| Role | On save | Can set |
+| --- | --- | --- |
+| HR / News / Marketing Admin | In Review, always | nothing — there is no status control on their form |
+| Approver | — | Approved, Rejected (reason required), and only on an item in review |
+| Super Admin | In Review by default | any status, including Approved in the same save that creates the item |
+
+An editor sees where their work stands as a read-only pill, not a control.
+
+## Locking
+
+An item in review is locked to everyone except the person who submitted it.
+The Approver is not reading a moving target, and an author is not locked out
+of their own half-written piece by their first save.
+
+---
+
+## Original notes
+
 Every content change by an HR, News or Marketing Admin goes through review.
 Super Admin changes publish directly. Rejection always requires a reason.
 

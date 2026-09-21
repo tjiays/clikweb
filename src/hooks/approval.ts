@@ -7,8 +7,8 @@ import { isApprover, isSuperAdmin } from '@/access'
  * Enforces the approval rules that the admin UI alone cannot guarantee,
  * because the REST and GraphQL APIs reach the same data.
  *
- *  - Super Admin publishes directly.
- *  - Editors may only move an item to Draft or In Review.
+ *  - Super Admin may set any status, including approving as they save.
+ *  - An editor's save always submits for review; they have no other option.
  *  - Only the Approver may approve or reject, and only from In Review.
  *  - Rejecting requires a reason.
  *  - An item In Review is locked: its editor cannot change it.
@@ -26,8 +26,9 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   const previous = originalDoc?.approvalStatus as string | undefined
 
   if (isSuperAdmin(user)) {
-    // Super Admin skips the workflow entirely.
-    if (operation === 'create' && !next) data.approvalStatus = APPROVAL_STATUSES.approved
+    // Super Admin is trusted with any status, including approving in the
+    // same save that creates the item. Without a choice they get the field
+    // default, In Review, like everybody else.
     return data
   }
 
@@ -73,8 +74,7 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     }
   }
 
-  const editorAllowed: string[] = [APPROVAL_STATUSES.draft, APPROVAL_STATUSES.inReview]
-  if (!editorAllowed.includes(target)) {
+  if (target !== APPROVAL_STATUSES.inReview) {
     throw new APIError(
       'Only the Approver can approve or reject. Submit it for review instead.',
       403,
