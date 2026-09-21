@@ -6,7 +6,7 @@ import { lockedForApprover } from './approval'
  * (open item O6). Pass localized: false where the value is a proper noun that
  * reads the same in both languages, such as a media outlet's name.
  */
-export const slugField = (from = 'title', localized = true): Field => ({
+export const slugField = (from = 'title', localized = true, hiddenFromForm = true): Field => ({
   name: 'slug',
   type: 'text',
   required: true,
@@ -15,7 +15,13 @@ export const slugField = (from = 'title', localized = true): Field => ({
   access: lockedForApprover,
   admin: {
     position: 'sidebar',
-    description: `Terisi otomatis dari ${from === 'title' ? 'judul' : from} saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.`,
+    /*
+     * Hidden, not removed. It is still the address of the page, still
+     * required, and still derived from the title on save — but nobody has to
+     * type it, and shown on the form it invited edits that quietly break
+     * every existing link to the page.
+     */
+    hidden: hiddenFromForm,
   },
   hooks: {
     beforeValidate: [
@@ -135,7 +141,7 @@ export const imageGuidance = (displayWidth: number, example: string) =>
  * less thing to type. It is a plain default, not a lock: an editor filing a
  * piece written by someone else just types over it.
  */
-export const authorField = (label = 'Penulis', description?: string): Field => ({
+export const authorField = (label = 'Penulis', description?: string | null): Field => ({
   name: 'author',
   type: 'text',
   label,
@@ -144,12 +150,18 @@ export const authorField = (label = 'Penulis', description?: string): Field => (
     (user as { name?: string } | null | undefined)?.name ?? '',
   admin: {
     position: 'sidebar',
-    description: description ?? 'Terisi otomatis dengan nama Anda. Ubah bila perlu.',
+    // null asks for no note at all: the field fills itself, so on a tidy
+    // sidebar there is nothing left worth saying about it.
+    ...(description === null ? {} : { description: description ?? 'Terisi otomatis dengan nama Anda. Ubah bila perlu.' }),
   },
 })
 
 /** Publish date, defaulting to now. */
-export const publishDateField = (required: boolean, description: string): Field => ({
+export const publishDateField = (
+  required: boolean,
+  description: string | null,
+  { withTime = true }: { withTime?: boolean } = {},
+): Field => ({
   name: 'publishDate',
   type: 'date',
   label: 'Tanggal publikasi',
@@ -158,7 +170,9 @@ export const publishDateField = (required: boolean, description: string): Field 
   defaultValue: () => new Date().toISOString(),
   admin: {
     position: 'sidebar',
-    description,
-    date: { pickerAppearance: 'dayAndTime' },
+    ...(description === null ? {} : { description }),
+    // Articles keep the clock: two posts on one day are ordered by it.
+    // Reports are ordered by rank, so the time is noise on the form.
+    date: { pickerAppearance: withTime ? 'dayAndTime' : 'dayOnly' },
   },
 })

@@ -178,9 +178,6 @@ export interface Article {
    * Terisi otomatis dengan nama Anda. Ubah bila perlu.
    */
   author?: string | null;
-  /**
-   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
-   */
   slug: string;
   /**
    * Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.
@@ -352,17 +349,8 @@ export interface Report {
       }[]
     | null;
   type: 'annual_report' | 'business_development';
-  /**
-   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
-   */
   slug: string;
-  /**
-   * Terisi otomatis dengan nama Anda. Tampil di kartu laporan, di kiri tanggal.
-   */
   author?: string | null;
-  /**
-   * Terisi otomatis dengan hari ini. Tampil di kartu laporan.
-   */
   publishDate?: string | null;
   /**
    * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
@@ -396,9 +384,6 @@ export interface Report {
 export interface JobOpening {
   id: number;
   title: string;
-  /**
-   * Terisi otomatis dari judul saat disimpan. Ini bagian dari alamat halaman — ubah hanya bila perlu, karena mengubahnya memutus tautan lama.
-   */
   slug: string;
   category: 'information-technology' | 'analysis-reporting' | 'sales-business-development';
   responsibilities?: {

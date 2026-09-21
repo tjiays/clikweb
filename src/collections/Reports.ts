@@ -125,8 +125,9 @@ export const Reports: CollectionConfig = contentCollection({
     },
     slugField(),
     // A name rather than a relationship, as on Newsroom articles.
-    authorField('Penulis', 'Terisi otomatis dengan nama Anda. Tampil di kartu laporan, di kiri tanggal.'),
-    publishDateField(false, 'Terisi otomatis dengan hari ini. Tampil di kartu laporan.'),
+    authorField('Penulis', null),
+    // Date only: reports are ordered by rank, so the clock added nothing.
+    publishDateField(false, null, { withTime: false }),
     sortOrderField,
   ],
 })
