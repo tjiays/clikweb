@@ -10,13 +10,13 @@ import {
   mediaLogoStrip,
   mediaLogoStripGap,
   mediaLogoStripSeconds,
-  mediaOutlets,
+  mediaListButtons,
 } from '@/content/newsroom'
 import { getArticlesPage, getFeaturedArticles, imageUrl, imageAlt } from '@/lib/content'
-import { formatDate } from '@/lib/format'
+import { formatNewsDate } from '@/lib/format'
 import styles from './NewsroomPage.module.css'
 
-/** Featured News shows 8 titles in Figma (1783:10734). */
+/** Featured News shows 8 titles in Figma (1783:10696). */
 const FEATURED_LIMIT = 8
 
 /** Newsroom — Figma 305:1082 (page 1) and 1661:8648 (page 2). */
@@ -51,7 +51,7 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
           <NewsroomSidebar
             locale={locale}
             featured={featured}
-            outlets={mediaOutlets}
+            buttons={mediaListButtons}
             featuredLabel={dict.newsroom.featured}
             outletsLabel={dict.newsroom.mediaList}
           />
@@ -67,7 +67,7 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
                     title={article.title}
                     excerpt={article.excerpt}
                     href={detailHref('newsroom', article.slug, locale)}
-                    date={formatDate(article.publishDate, locale)}
+                    date={formatNewsDate(article.publishDate)}
                     author={article.author}
                     imageUrl={imageUrl(article.cover)}
                     imageAlt={imageAlt(article.cover)}

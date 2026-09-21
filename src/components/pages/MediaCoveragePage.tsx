@@ -5,11 +5,11 @@ import { ArticleCard } from '@/components/sections/Cards'
 import { NewsroomSidebar } from '@/components/sections/NewsroomSidebar'
 import { Pagination } from '@/components/ui/Pagination'
 import { getDictionary } from '@/i18n'
-import { href, mediaOutletHref } from '@/i18n/routes'
+import { href, detailHref, mediaOutletHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import { mediaOutlets, mediaCoverage } from '@/content/newsroom'
-import { getFeaturedArticles, t } from '@/lib/content'
-import { formatDate } from '@/lib/format'
+import { mediaOutlets, mediaCoverage, mediaListButtons } from '@/content/newsroom'
+import { getArticlesBySlugs, getFeaturedArticles, imageUrl, imageAlt } from '@/lib/content'
+import { formatNewsDate } from '@/lib/format'
 import styles from './MediaCoveragePage.module.css'
 
 const PER_PAGE = 6
@@ -20,6 +20,9 @@ const FEATURED_LIMIT = 8
  * right "Liputan Media" + the outlet name (orange, with the dash-bar-dash
  * ornament) and the outlet's coverage as the same 406x660 article cards,
  * two per row. Pagination always shows, even with one page.
+ *
+ * The coverage cards are Newsroom articles (Figma shows two of them here),
+ * listed per outlet in src/content/newsroom.ts.
  */
 export async function MediaCoveragePage({
   locale,
@@ -39,7 +42,10 @@ export async function MediaCoveragePage({
 
   // Coverage is a fixed list in src/content/newsroom.ts, so it is paged here
   // rather than by the database.
-  const all = mediaCoverage.filter((c) => c.outlet === slug)
+  const all = await getArticlesBySlugs(
+    locale,
+    mediaCoverage.filter((c) => c.outlet === slug).map((c) => c.article),
+  )
   const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE))
   const current = Math.min(Math.max(1, page), totalPages)
   const docs = all.slice((current - 1) * PER_PAGE, current * PER_PAGE)
@@ -61,7 +67,7 @@ export async function MediaCoveragePage({
           <NewsroomSidebar
             locale={locale}
             featured={featured}
-            outlets={mediaOutlets}
+            buttons={mediaListButtons}
             featuredLabel={dict.newsroom.featured}
             outletsLabel={dict.newsroom.mediaList}
           />
@@ -78,15 +84,14 @@ export async function MediaCoveragePage({
               <div className={styles.cards}>
                 {docs.map((item) => (
                   <ArticleCard
-                    key={item.externalUrl + item.title.id}
-                    title={t(item.title, locale)}
-                    excerpt={t(item.excerpt, locale)}
-                    href={item.externalUrl}
-                    external
+                    key={item.id}
+                    title={item.title}
+                    excerpt={item.excerpt}
+                    href={detailHref('newsroom', item.slug, locale)}
                     author={item.author}
-                    date={formatDate(item.publishDate, locale)}
-                    imageUrl={item.cover}
-                    imageAlt=""
+                    date={formatNewsDate(item.publishDate)}
+                    imageUrl={imageUrl(item.cover)}
+                    imageAlt={imageAlt(item.cover)}
                     readMoreLabel={dict.common.readMore}
                     shareLabel={shareName}
                   />

@@ -12,11 +12,15 @@ penggunaan sehari-hari, bukan untuk developer.
 | Judul | Judul berita |
 | Slug | Terisi otomatis dari judul. Ini yang muncul di alamat halaman. |
 | Ringkasan | 1–2 kalimat. Muncul di kartu berita, bukan di halaman detail. |
-| Isi artikel | Naskah lengkap. Bisa berisi gambar, tabel, dan tautan. |
-| Gambar sampul | Muncul di kartu dan di bagian atas halaman detail. |
-| Author | Pilih dari daftar. Tambahkan author baru lewat menu Author. |
-| Tanggal publikasi | Menentukan urutan. Yang terbaru tampil lebih dulu. |
+| Isi artikel | Naskah lengkap. Bisa berisi gambar, tabel, dan tautan. Paragraf tampil rapat; beri satu baris kosong untuk memberi jarak. |
+| Gambar sampul | Muncul di kartu, dan di bagian atas halaman detail bila Gambar banner kosong. |
+| Gambar banner (halaman detail) | Opsional. Gambar lebar 1300x372 di atas halaman detail. |
+| Penulis | Nama penulis, ditulis bebas. |
+| Tanggal publikasi | Menentukan urutan. Yang terbaru tampil lebih dulu; di hari yang sama, jam yang lebih akhir tampil lebih dulu. |
 | Featured News | Centang agar muncul di daftar Featured News pada sidebar Newsroom. |
+| Posisi di Featured News | Nomor urut di daftar Featured News (1 = paling atas). Boleh lebih dari satu nomor. Kosong: tampil setelah yang bernomor. |
+| Sembunyikan dari daftar | Artikel tidak muncul di kartu Newsroom, Home, dan "Anda mungkin juga tertarik dengan", tetapi halamannya dan tautan Featured News tetap berfungsi. |
+| Anda mungkin juga tertarik dengan | Pilih sampai 3 artikel terkait. Kosong: artikel terbaru. |
 | SEO | Judul dan deskripsi untuk mesin pencari. Kosongkan jika ragu. |
 
 Setelah selesai, ubah **Approval Status** menjadi **In Review** lalu simpan.
@@ -32,14 +36,10 @@ Nama produk dan singkatan seperti CLIK, CRIF, dan OJK tidak diterjemahkan.
 
 ## Liputan Media
 
-Dua menu bekerja bersama:
-
-- **Partner Logo (Media)** — daftar media, misalnya Kumparan atau Kontan.
-  Setiap media punya logo dan slug. Logo ini muncul di strip atas Newsroom dan
-  di grid Daftar Media.
-- **Liputan Media** — artikel tentang CLIK yang terbit di media tersebut.
-  Isi **External URL** dengan tautan ke artikel aslinya; kartu ini akan membuka
-  situs media di tab baru, bukan halaman di website CLIK.
+Daftar media, tombol **Daftar Media**, strip logo di atas Newsroom, dan
+liputan tiap media tidak diatur di CMS. Semuanya ada di kode
+(`src/content/newsroom.ts`) dan diubah oleh developer. Liputan tiap media
+adalah artikel Newsroom yang dipilih berdasarkan slug.
 
 ## Laporan
 

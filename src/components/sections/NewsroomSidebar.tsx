@@ -4,7 +4,7 @@ import { Marquee } from '@/components/sections/Marquee'
 import { SectionTitle } from '@/components/sections/SectionTitle'
 import { detailHref, mediaOutletHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
-import type { Logo, MediaOutlet } from '@/content/newsroom'
+import type { Logo, MediaListButton } from '@/content/newsroom'
 
 import styles from './NewsroomSidebar.module.css'
 
@@ -16,13 +16,13 @@ import styles from './NewsroomSidebar.module.css'
 export function NewsroomSidebar({
   locale,
   featured,
-  outlets,
+  buttons,
   featuredLabel,
   outletsLabel,
 }: {
   locale: Locale
   featured: { id: string | number; slug: string; title: string }[]
-  outlets: MediaOutlet[]
+  buttons: MediaListButton[]
   featuredLabel: string
   outletsLabel: string
 }) {
@@ -34,8 +34,9 @@ export function NewsroomSidebar({
             {featuredLabel}
           </SectionTitle>
           <ul className={styles.featured}>
-            {featured.map((article) => (
-              <li key={article.id}>
+            {featured.map((article, i) => (
+              // One article can hold two places in the list, so key by place.
+              <li key={`${i}-${article.id}`}>
                 <Link href={detailHref('newsroom', article.slug, locale)}>{article.title}</Link>
               </li>
             ))}
@@ -43,16 +44,21 @@ export function NewsroomSidebar({
         </section>
       )}
 
-      {outlets.length > 0 && (
+      {buttons.length > 0 && (
         <section className={styles.outletsBlock}>
           <SectionTitle size="md" weight={700} ruleGap={7} className={styles.heading}>
             {outletsLabel}
           </SectionTitle>
           <ul className={styles.outlets}>
-            {outlets.map((outlet) => (
-              <li key={outlet.slug}>
-                <Link href={mediaOutletHref(outlet.slug, locale)} className={styles.outlet}>
-                  <LogoImage logo={outlet.logo} alt={outlet.name} className={styles.outletLogo} />
+            {buttons.map((button, i) => (
+              <li key={`${i}-${button.logo.name}`}>
+                <Link href={mediaOutletHref(button.outlet, locale)} className={styles.outlet}>
+                  <LogoImage
+                    logo={button.logo}
+                    alt={button.logo.name}
+                    className={styles.outletLogo}
+                    dx={button.dx}
+                  />
                 </Link>
               </li>
             ))}
@@ -63,7 +69,17 @@ export function NewsroomSidebar({
   )
 }
 
-function LogoImage({ logo, alt, className }: { logo: Logo; alt: string; className?: string }) {
+function LogoImage({
+  logo,
+  alt,
+  className,
+  dx,
+}: {
+  logo: Logo
+  alt: string
+  className?: string
+  dx?: number
+}) {
   return (
     <Image
       src={logo.src}
@@ -72,7 +88,11 @@ function LogoImage({ logo, alt, className }: { logo: Logo; alt: string; classNam
       height={logo.height}
       unoptimized
       className={className}
-      style={{ width: logo.width, height: logo.height }}
+      style={{
+        width: logo.width,
+        height: logo.height,
+        ...(dx ? { transform: `translateX(${dx}px)` } : {}),
+      }}
     />
   )
 }

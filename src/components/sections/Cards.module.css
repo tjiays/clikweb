@@ -179,8 +179,8 @@
   --excerpt-gap: 25px;
   --excerpt-lines: 4;
   --footer-pad: 14px;
-  /* Newsroom grid titles stay at Figma's 3 lines; see report/related/mobile */
-  --title-clamp: 3;
+  /* Newsroom cards show the whole title: 1661:9017 runs to 4 lines */
+  --title-clamp: none;
 
   height: 100%;
   min-height: var(--card-min-h);

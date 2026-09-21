@@ -20,8 +20,7 @@ export type Logo = {
  * right-to-left one set every 10 s (145.4 px/s), so the list ends with a repeat
  * of the first two logos exactly as in the design.
  *
- * These are the brand marks the design uses. To show the real outlets instead,
- * build this list from `mediaOutlets` (each outlet has the same Logo shape).
+ * These are the brand marks the design uses.
  */
 const L = (name: string, file: string, width: number, height = 32): Logo => ({
   name,
@@ -45,113 +44,39 @@ export const mediaLogoStrip: Logo[] = [
 export const mediaLogoStripSeconds = 10
 export const mediaLogoStripGap = 23
 
+/** A media outlet with a Liputan Media page (Figma 827:5603). */
 export type MediaOutlet = {
   slug: string
   name: string
-  logo: Logo
-  websiteUrl: string
 }
 
-export const mediaOutlets: MediaOutlet[] = [
-  {
-    slug: 'kumparan',
-    name: 'Kumparan',
-    logo: { name: 'Kumparan', src: '/images/newsroom/logo-kumparan.png', width: 132, height: 32 },
-    websiteUrl: 'https://kumparan.com/',
-  },
-  {
-    slug: 'bisnis-indonesia',
-    name: 'Bisnis Indonesia',
-    logo: { name: 'Bisnis Indonesia', src: '/images/newsroom/logo-bisnis.svg', width: 168, height: 24 },
-    websiteUrl: 'https://bisnis.com/',
-  },
-  {
-    slug: 'kontan',
-    name: 'Kontan',
-    logo: { name: 'Kontan', src: '/images/newsroom/logo-kontan.png', width: 130, height: 32 },
-    websiteUrl: 'https://kontan.co.id/',
-  },
-  {
-    slug: 'katadata',
-    name: 'Katadata',
-    logo: { name: 'Katadata', src: '/images/newsroom/logo-katadata.png', width: 141, height: 32 },
-    websiteUrl: 'https://katadata.co.id/',
-  },
+/** Figma names one outlet, on its Liputan Media page 827:5603 ("Kumparan"). */
+export const mediaOutlets: MediaOutlet[] = [{ slug: 'kumparan', name: 'Kumparan' }]
+
+/**
+ * The "Daftar Media" buttons (Figma 825:5491-5498), in reading order: row by
+ * row, left then right. Each shows a logo from the design, and every one of
+ * them opens the Liputan Media page (Variant2 → 827:5603 in the prototype).
+ * `dx` nudges a logo off centre where Figma places it off centre.
+ */
+export type MediaListButton = { logo: Logo; outlet: string; dx?: number }
+
+export const mediaListButtons: MediaListButton[] = [
+  { logo: L('ArtVenue', 'artvenue', 166), outlet: 'kumparan' }, // 825:5492
+  { logo: L('WAVESMARATHON', 'wavesmarathon', 187), outlet: 'kumparan', dx: 3 }, // 825:5491
+  { logo: L('Zoomerr', 'zoomerr', 133), outlet: 'kumparan', dx: -7 }, // 825:5494
+  { logo: L('SHELLS', 'shells', 124), outlet: 'kumparan', dx: -8 }, // 825:5493
+  { logo: L('kontrastr', 'kontrastr', 131, 30), outlet: 'kumparan' }, // 825:5495
+  { logo: L('SmartFinder', 'smartfinder', 176), outlet: 'kumparan' }, // 825:5496
+  { logo: L('SHELLS', 'shells', 124), outlet: 'kumparan' }, // 825:5498
+  { logo: L('ArtVenue', 'artvenue', 166), outlet: 'kumparan' }, // 825:5497
 ]
 
-export type Localised = { id: string; en: string }
-
-export type MediaCoverageItem = {
-  outlet: string
-  title: Localised
-  excerpt: Localised
-  /** Byline shown on the left of the card meta row. */
-  author: string
-  /** 406x232 card image (static asset, 2x). */
-  cover: string
-  externalUrl: string
-  publishDate: string
-}
-
-export const mediaCoverage: MediaCoverageItem[] = [
-  {
-    outlet: 'kumparan',
-    title: { id: 'CLIK dan Pertumbuhan Biro Kredit Swasta', en: 'CLIK and the Growth of Private Credit Bureaus' },
-    excerpt: {
-      id: 'Biro kredit swasta makin berperan dalam membantu lembaga keuangan menilai calon debitur secara lebih cepat dan akurat. CLIK menjadi salah satu pelaku yang tumbuh bersama industri...',
-      en: 'Private credit bureaus play a growing role in helping lenders assess applicants faster and more accurately. CLIK is one of the players growing with the industry...',
-    },
-    author: 'Kumparan',
-    cover: '/images/newsroom/coverage/coverage-1.jpg',
-    externalUrl: 'https://kumparan.com/',
-    publishDate: '2026-08-22',
-  },
-  {
-    outlet: 'bisnis-indonesia',
-    title: { id: 'Biro Kredit Swasta Perluas Layanan', en: 'Private Credit Bureaus Widen Their Services' },
-    excerpt: {
-      id: 'Layanan biro kredit kini tidak hanya berupa laporan kredit, tetapi juga skor, analitik portofolio, dan pemantauan risiko untuk lembaga keuangan...',
-      en: 'Credit bureau services now go beyond credit reports to scores, portfolio analytics and risk monitoring for financial institutions...',
-    },
-    author: 'Bisnis Indonesia',
-    cover: '/images/newsroom/coverage/coverage-3.jpg',
-    externalUrl: 'https://bisnis.com/',
-    publishDate: '2026-07-01',
-  },
-  {
-    outlet: 'kumparan',
-    title: { id: 'Menakar Peran Data Kredit di Industri Keuangan', en: 'Weighing the Role of Credit Data in Finance' },
-    excerpt: {
-      id: 'Data kredit yang lengkap membantu lembaga keuangan mengambil keputusan pembiayaan dengan lebih tepat, sekaligus membuka akses kredit bagi lebih banyak masyarakat...',
-      en: 'Complete credit data helps lenders make better financing decisions while opening access to credit for more people...',
-    },
-    author: 'Kumparan',
-    cover: '/images/newsroom/coverage/coverage-2.jpg',
-    externalUrl: 'https://kumparan.com/',
-    publishDate: '2026-06-10',
-  },
-  {
-    outlet: 'kontan',
-    title: { id: 'Skor Kredit Jadi Andalan Lembaga Pembiayaan', en: 'Credit Scores Become a Mainstay for Lenders' },
-    excerpt: {
-      id: 'Perusahaan pembiayaan semakin mengandalkan skor kredit untuk mempercepat proses persetujuan tanpa mengorbankan kualitas portofolio...',
-      en: 'Finance companies increasingly rely on credit scores to speed up approvals without sacrificing portfolio quality...',
-    },
-    author: 'Kontan',
-    cover: '/images/newsroom/coverage/coverage-4.jpg',
-    externalUrl: 'https://kontan.co.id/',
-    publishDate: '2026-05-18',
-  },
-  {
-    outlet: 'katadata',
-    title: { id: 'Data Kredit dan Inklusi Keuangan Indonesia', en: 'Credit Data and Financial Inclusion in Indonesia' },
-    excerpt: {
-      id: 'Pemanfaatan data kredit alternatif dinilai dapat mendorong inklusi keuangan, terutama bagi pelaku UMKM dan masyarakat yang belum memiliki riwayat kredit...',
-      en: 'Using alternative credit data is seen as a way to drive financial inclusion, especially for small businesses and people with no credit history...',
-    },
-    author: 'Katadata',
-    cover: '/images/newsroom/coverage/coverage-5.jpg',
-    externalUrl: 'https://katadata.co.id/',
-    publishDate: '2026-04-02',
-  },
+/**
+ * Coverage listed on each outlet's Liputan Media page: Newsroom articles, by
+ * slug, in the order of Figma 827:5603 (cards 827:5615, 827:5628).
+ */
+export const mediaCoverage: { outlet: string; article: string }[] = [
+  { outlet: 'kumparan', article: 'temukan-nasabah-berikutnya-sebelum-kompetitor' },
+  { outlet: 'kumparan', article: 'apa-itu-risiko-kredit-dan-cara-menghindarinya' },
 ]

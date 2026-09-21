@@ -85,6 +85,14 @@
   margin: 20px 0 23px; /* row bottom 736 → line 756 → body 780 */
 }
 
+/* Figma 559:2820 sets the body line after line, with no space between
+   paragraphs or around lists; an empty line in the text is the only gap. */
+.article .body p,
+.article .body ul,
+.article .body ol {
+  margin: 0;
+}
+
 /* ---- Related: #E0F1FC band from y=3026 to the footer ---- */
 .related {
   margin-top: 112px; /* body bottom 2914 → band 3026 */

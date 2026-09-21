@@ -10,7 +10,7 @@ import { href, detailHref } from '@/i18n/routes'
 import type { Locale } from '@/i18n/config'
 import { site } from '@/content/site'
 import { getArticleBySlug, getRelatedArticles, imageUrl, imageAlt } from '@/lib/content'
-import { formatDate } from '@/lib/format'
+import { formatNewsDate } from '@/lib/format'
 import styles from './ArticleDetailPage.module.css'
 
 /**
@@ -35,10 +35,12 @@ export async function ArticleDetailPage({
   ])
   if (!article) notFound()
 
-  const related = await getRelatedArticles(locale, article.id, 3)
+  const related = await getRelatedArticles(locale, article, 3)
   const base = site.websiteUrl.replace(/\/$/, '')
   const shareUrl = `${base}${detailHref('newsroom', article.slug, locale)}`
-  const cover = imageUrl(article.cover)
+  // The wide banner, when the article has one; otherwise the card cover.
+  const bannerImage = imageUrl(article.banner) ? article.banner : article.cover
+  const cover = imageUrl(bannerImage)
   const shareName = dict.newsroom.share.replace(/:$/, '')
 
   return (
@@ -60,7 +62,7 @@ export async function ArticleDetailPage({
           {cover ? (
             <Image
               src={cover}
-              alt={imageAlt(article.cover)}
+              alt={imageAlt(bannerImage)}
               width={1300}
               height={372}
               sizes="(max-width: 1340px) 100vw, 1300px"
@@ -82,7 +84,7 @@ export async function ArticleDetailPage({
           <div className={styles.meta}>
             {article.publishDate ? (
               <time dateTime={article.publishDate} className={styles.date}>
-                {formatDate(article.publishDate, locale)}
+                {formatNewsDate(article.publishDate)}
               </time>
             ) : (
               <span />
@@ -92,7 +94,7 @@ export async function ArticleDetailPage({
 
           <hr className={styles.divider} />
 
-          <RichText data={article.body} />
+          <RichText data={article.body} className={styles.body} />
         </article>
       </Container>
 
@@ -111,7 +113,7 @@ export async function ArticleDetailPage({
                   title={item.title}
                   excerpt={item.excerpt}
                   href={detailHref('newsroom', item.slug, locale)}
-                  date={formatDate(item.publishDate, locale)}
+                  date={formatNewsDate(item.publishDate)}
                   author={item.author}
                   imageUrl={imageUrl(item.cover)}
                   imageAlt={imageAlt(item.cover)}
