@@ -5,10 +5,10 @@ import {
   imageField,
   localisedText,
   localisedTextarea,
-  richText,
   slugField,
   sortOrderField,
   imageGuidance,
+  imageAtLeast,
   authorField,
   publishDateField,
 } from '@/fields/common'
@@ -29,89 +29,85 @@ export const Reports: CollectionConfig = contentCollection({
   useAsTitle: 'titleId',
   defaultColumns: ['titleId', 'type', 'publishDate', 'approvalStatus'],
   fields: [
+    /*
+     * One page, no tabs — the cover first, then the writing. It was split
+     * across Tulisan and Pengaturan, which meant the picture lived on a tab
+     * nobody opened while writing, and a report could be finished without
+     * anyone noticing it had none.
+     */
     {
-      type: 'tabs',
-      tabs: [
+      ...imageField('cover', 'Gambar sampul'),
+      /*
+       * Only the Annual Report draws a 1300px hero; a Business Development
+       * report shows its cover on the 406px card and nothing wider.
+       */
+      validate: imageAtLeast((data) =>
+        (data as { type?: string })?.type === 'business_development' ? 406 : 1300,
+      ),
+      admin: {
+        description: `Tampil di kartu laporan dan di atas halaman Laporan Tahunan. ${imageGuidance(1300, '2000x1333px seperti sampul Laporan Tahunan 2025')}`,
+      },
+    } as Field,
+    {
+      type: 'row',
+      fields: [
         {
-          label: 'Tulisan',
-          description:
-            'Kedua bahasa ada di halaman ini. Judul dan isi wajib diisi keduanya — laporan tidak bisa disetujui bila salah satu kosong.',
-          fields: [
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'titleId',
-                  type: 'text',
-                  label: 'Judul (Bahasa Indonesia)',
-                  required: true,
-                  access: lockedForApprover,
-                  admin: { width: '50%' },
-                },
-                {
-                  name: 'titleEn',
-                  type: 'text',
-                  label: 'Title (English)',
-                  required: true,
-                  access: lockedForApprover,
-                  admin: { width: '50%' },
-                },
-              ],
-            },
-            {
-              type: 'row',
-              fields: [
-                {
-                  name: 'excerptId',
-                  type: 'textarea',
-                  label: 'Ringkasan (Bahasa Indonesia)',
-                  access: lockedForApprover,
-                  admin: { width: '50%', description: 'Satu atau dua kalimat, tampil di kartu laporan.' },
-                },
-                {
-                  name: 'excerptEn',
-                  type: 'textarea',
-                  label: 'Summary (English)',
-                  access: lockedForApprover,
-                  admin: { width: '50%', description: 'One or two sentences, shown on the report card.' },
-                },
-              ],
-            },
-            {
-              name: 'bodyId',
-              type: 'richText',
-              label: 'Isi laporan (Bahasa Indonesia)',
-              required: true,
-              access: lockedForApprover,
-              admin: {
-                description:
-                  'Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.',
-              },
-            },
-            {
-              name: 'bodyEn',
-              type: 'richText',
-              label: 'Report body (English)',
-              required: true,
-              access: lockedForApprover,
-              admin: {
-                description: 'The same report in English. Use Auto-translate to draft it, then edit.',
-              },
-            },
-          ],
+          name: 'titleId',
+          type: 'text',
+          label: 'Judul (Bahasa Indonesia)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
         },
         {
-          label: 'Pengaturan',
-          fields: [
-            {
-              ...imageField('cover', 'Gambar sampul'),
-              admin: {
-                description: `Tampil di kartu laporan dan di atas halaman Laporan Tahunan. ${imageGuidance(1300, '2000x1333px seperti sampul Laporan Tahunan 2025')}`,
-              },
-            } as Field,
-          ],
+          name: 'titleEn',
+          type: 'text',
+          label: 'Title (English)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
         },
       ],
+    },
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'excerptId',
+          type: 'textarea',
+          label: 'Ringkasan (Bahasa Indonesia)',
+          access: lockedForApprover,
+          admin: { width: '50%', description: 'Satu atau dua kalimat, tampil di kartu laporan.' },
+        },
+        {
+          name: 'excerptEn',
+          type: 'textarea',
+          label: 'Summary (English)',
+          access: lockedForApprover,
+          admin: { width: '50%', description: 'One or two sentences, shown on the report card.' },
+        },
+      ],
+    },
+    {
+      name: 'bodyId',
+      type: 'richText',
+      label: 'Isi laporan (Bahasa Indonesia)',
+      required: true,
+      access: lockedForApprover,
+      admin: {
+        description:
+          'Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.',
+      },
+    },
+    {
+      name: 'bodyEn',
+      type: 'richText',
+      label: 'Report body (English)',
+      required: true,
+      access: lockedForApprover,
+      admin: {
+        description: 'The same report in English. Use Auto-translate to draft it, then edit.',
+      },
     },
     {
       /*

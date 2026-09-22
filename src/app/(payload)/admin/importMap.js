@@ -16,6 +16,7 @@ import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e0
 import { default as default_02dc2ea48120144c5139fa69d9ee430e } from '@/components/admin/AutoTranslateButton'
 import { default as default_d1b604399efb175d075300c0936dfa7c } from '@/components/admin/LanguageStatus'
 import { default as default_02a6c7f26fc82c947dad6a4035a82bd1 } from '@/components/admin/ApprovalStatusBadge'
+import { default as default_861cf3714da76cec1b335a641a19ddcb } from '@/components/admin/BackToListOnSave'
 import { default as default_7d49ba020347320f1985b4c3026ed00f } from '@/components/admin/ReviewActions'
 import { default as default_31ffc25acaffc3cac161411fda6e6f83 } from '@/components/admin/SaveDraftUnlessApprover'
 import { default as default_a9d4b87e0306b3ddfe97926a52a69591 } from '@/components/admin/Nav'
@@ -44,6 +45,7 @@ export const importMap = {
   "@/components/admin/AutoTranslateButton#default": default_02dc2ea48120144c5139fa69d9ee430e,
   "@/components/admin/LanguageStatus#default": default_d1b604399efb175d075300c0936dfa7c,
   "@/components/admin/ApprovalStatusBadge#default": default_02a6c7f26fc82c947dad6a4035a82bd1,
+  "@/components/admin/BackToListOnSave#default": default_861cf3714da76cec1b335a641a19ddcb,
   "@/components/admin/ReviewActions#default": default_7d49ba020347320f1985b4c3026ed00f,
   "@/components/admin/SaveDraftUnlessApprover#default": default_31ffc25acaffc3cac161411fda6e6f83,
   "@/components/admin/Nav#default": default_a9d4b87e0306b3ddfe97926a52a69591,

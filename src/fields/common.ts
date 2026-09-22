@@ -180,3 +180,67 @@ export const publishDateField = (
     date: { pickerAppearance: withTime ? 'dayAndTime' : 'dayOnly' },
   },
 })
+
+/**
+ * Refuses an image too small for the space it has to fill, or over the size
+ * limit.
+ *
+ * The advice in the field description was only advice, and a picture narrower
+ * than its slot does not fail loudly — it just goes soft, which nobody
+ * notices until it is on the website. This checks the file that was actually
+ * chosen, whether it was just uploaded or picked from the library.
+ */
+export const imageAtLeast =
+  (minWidth: number | ((data: Record<string, unknown>) => number)) =>
+  async (
+    value: unknown,
+    {
+      req,
+      data,
+      previousValue,
+    }: { req?: { payload?: any }; data?: Record<string, unknown>; previousValue?: unknown },
+  ) => {
+    if (!value || !req?.payload) return true
+
+    const idOf = (v: unknown) => (typeof v === 'object' && v ? (v as { id?: unknown }).id : v)
+    const id = idOf(value)
+    if (!id) return true
+
+    /*
+     * Only a newly chosen picture is held to this. Several items were saved
+     * before the rule existed — an 1134px article banner, a 740px report
+     * cover — and refusing those would make the records unsavable, so their
+     * authors could not fix anything else about them either. Leave the
+     * picture alone and nothing happens; change it and it has to be good
+     * enough.
+     */
+    if (previousValue !== undefined && String(idOf(previousValue) ?? '') === String(id)) {
+      return true
+    }
+
+    let media: { width?: number; filesize?: number; filename?: string } | null = null
+    try {
+      media = await req.payload.findByID({
+        collection: 'media',
+        id: id as never,
+        depth: 0,
+        overrideAccess: true,
+        req,
+      })
+    } catch {
+      // A file that cannot be read is not this field's problem to report.
+      return true
+    }
+
+    const MAX_BYTES = 20 * 1024 * 1024
+    if (typeof media?.filesize === 'number' && media.filesize > MAX_BYTES) {
+      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas 20MB.`
+    }
+
+    const min = typeof minWidth === 'function' ? minWidth(data ?? {}) : minWidth
+    if (typeof media?.width === 'number' && media.width < min) {
+      return `Gambar ini hanya ${media.width}px lebar, minimal ${min}px. Yang lebih kecil akan tampak pecah. Pilih atau unggah gambar yang lebih besar.`
+    }
+
+    return true
+  }

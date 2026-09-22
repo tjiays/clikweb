@@ -71,6 +71,9 @@ export const contentCollection = ({
             edit: {
               PublishButton: '@/components/admin/ReviewActions#default',
               SaveDraftButton: '@/components/admin/SaveDraftUnlessApprover#default',
+              // Renders nothing; it just watches for a save and returns to
+              // the list, so a create ends somewhere that confirms it worked.
+              beforeDocumentControls: ['@/components/admin/BackToListOnSave#default'],
             },
           },
         }

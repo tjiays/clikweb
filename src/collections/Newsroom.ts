@@ -9,6 +9,7 @@ import {
   seoFields,
   slugField,
   imageGuidance,
+  imageAtLeast,
   authorField,
   publishDateField,
 } from '@/fields/common'
@@ -65,6 +66,7 @@ export const Articles: CollectionConfig = contentCollection({
           fields: [
             {
               ...imageField('cover', 'Gambar sampul'),
+              validate: imageAtLeast(800),
               admin: {
                 description: `Tampil di kartu artikel. ${imageGuidance(800, '1200x800px')}`,
               },
@@ -75,6 +77,7 @@ export const Articles: CollectionConfig = contentCollection({
               relationTo: 'media',
               label: 'Gambar banner (halaman detail)',
               access: lockedForApprover,
+              validate: imageAtLeast(1300),
               admin: {
                 description: `Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. ${imageGuidance(1300, '2600x744px')}`,
               },
