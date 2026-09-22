@@ -26,19 +26,26 @@ body {
   font-family: var(--font-body);
 }
 
-/* ---- Actions ---- */
-.btn--style-primary .btn__content,
+/* ---- Actions ----
+   Set Payload's own variables rather than background-color directly. Publish
+   is a split button — the label and the caret that opens "publish in this
+   language" are two elements — and the caret paints itself from --bg-color.
+   Overriding the property alone left the label orange and the caret on
+   Payload's default dark, which is why the button had two colours. */
 .btn--style-primary {
-  background-color: var(--clik-orange);
-  border-color: var(--clik-orange);
-  color: #fff;
+  --bg-color: var(--clik-orange);
+  --color: #fff;
+  --hover-bg: var(--clik-orange-light);
+  --hover-color: var(--clik-navy);
+  --btn-border: 1px solid var(--clik-orange);
+  --hover-btn-border: 1px solid var(--clik-orange-light);
 }
 
-.btn--style-primary:hover,
-.btn--style-primary:focus-visible {
-  background-color: var(--clik-orange-light);
-  border-color: var(--clik-orange-light);
-  color: var(--clik-navy);
+/* The caret's divider is drawn in the page background, which cut a pale notch
+   through the orange. A faint white keeps the two halves one button while
+   leaving the caret findable. */
+.btn--withPopup .popup-button {
+  border-left-color: rgba(255, 255, 255, 0.4);
 }
 
 .btn--style-secondary {

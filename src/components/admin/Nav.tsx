@@ -146,8 +146,13 @@ export default function Nav() {
         const items = group.items.filter((item) => canSee(item.slug))
         if (items.length === 0) return null
         return (
+          /*
+           * No heading. Each group holds one or two links whose labels
+           * already say what they are ("Artikel", "Laporan"), so the heading
+           * above them repeated the word in smaller type. The grouping
+           * survives as the gap between blocks.
+           */
           <div className="cnav__group" key={group.title}>
-            <p className="cnav__groupTitle">{group.title}</p>
             {items.map(renderItem)}
           </div>
         )
