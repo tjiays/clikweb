@@ -142,21 +142,23 @@ export default function Nav() {
         <img src="/images/shared/logo-clik-white.png" alt="CLIK" />
       </Link>
 
-      {GROUPS.map((group) => {
-        const items = group.items.filter((item) => canSee(item.slug))
-        if (items.length === 0) return null
-        return (
-          /*
-           * No heading. Each group holds one or two links whose labels
-           * already say what they are ("Artikel", "Laporan"), so the heading
-           * above them repeated the word in smaller type. The grouping
-           * survives as the gap between blocks.
-           */
-          <div className="cnav__group" key={group.title}>
-            {items.map(renderItem)}
-          </div>
-        )
-      })}
+      <div className="cnav__scroll">
+        {GROUPS.map((group) => {
+          const items = group.items.filter((item) => canSee(item.slug))
+          if (items.length === 0) return null
+          return (
+            /*
+             * No heading. Each group holds one or two links whose labels
+             * already say what they are ("Artikel", "Laporan"), so the
+             * heading above them repeated the word in smaller type. The
+             * grouping survives as the gap between blocks.
+             */
+            <div className="cnav__group" key={group.title}>
+              {items.map(renderItem)}
+            </div>
+          )
+        })}
+      </div>
 
       <div className="cnav__foot">
         <Link href="/admin/account" className="cnav__item cnav__item--small">
