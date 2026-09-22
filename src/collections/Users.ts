@@ -1,10 +1,11 @@
 import type { CollectionConfig } from 'payload'
 import { ROLE_OPTIONS, ROLES, isSuperAdmin } from '@/access'
+import { bothLanguages } from '@/i18n/admin'
 
 /** Only Super Admin manages users (intent/03-cms.md §1). */
 export const Users: CollectionConfig = {
   slug: 'users',
-  labels: { singular: 'User', plural: 'Users & Roles' },
+  labels: { singular: bothLanguages('users'), plural: bothLanguages('users') },
   admin: {
     group: 'Pengaturan',
     useAsTitle: 'email',

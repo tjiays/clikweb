@@ -3,12 +3,13 @@ import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
 import { localisedText, richText, slugField, sortOrderField } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
 
 const owners = MODULE_OWNERS.karir
 
 export const JobOpenings: CollectionConfig = contentCollection({
   slug: 'job-openings',
-  labels: { singular: 'Lowongan Pekerjaan', plural: 'Lowongan Pekerjaan' },
+  labels: { singular: bothLanguages('careers'), plural: bothLanguages('careers') },
   group: 'Karir',
   owners,
   preview: { id: '/karir', en: '/en/careers' },

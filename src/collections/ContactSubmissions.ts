@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isSalesAdmin, isSuperAdmin } from '@/access'
+import { bothLanguages } from '@/i18n/admin'
 
 /**
  * Contact form submissions (intent/04). Stored permanently and never deleted
@@ -9,7 +10,7 @@ import { isSalesAdmin, isSuperAdmin } from '@/access'
  */
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
-  labels: { singular: 'Data Masuk', plural: 'Data Masuk (Hubungi Kami)' },
+  labels: { singular: bothLanguages('enquiries'), plural: bothLanguages('enquiries') },
   admin: {
     group: 'Data',
     useAsTitle: 'email',

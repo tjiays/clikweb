@@ -11,6 +11,7 @@ import {
   publishDateField,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
 
 /**
  * Articles are the only Newsroom collection left in the CMS.
@@ -27,7 +28,7 @@ import { lockedForApprover } from '@/fields/approval'
  */
 export const Articles: CollectionConfig = contentCollection({
   slug: 'articles',
-  labels: { singular: 'News', plural: 'News' },
+  labels: { singular: bothLanguages('news'), plural: bothLanguages('news') },
   group: 'Newsroom',
   owners: MODULE_OWNERS.newsroom,
   preview: { id: '/newsroom', en: '/en/newsroom' },

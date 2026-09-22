@@ -13,6 +13,7 @@ import {
   publishDateField,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
 
 /**
  * Laporan — managed by News Admin (confirmed decision 15).
@@ -22,7 +23,7 @@ import { lockedForApprover } from '@/fields/approval'
  */
 export const Reports: CollectionConfig = contentCollection({
   slug: 'reports',
-  labels: { singular: 'Laporan', plural: 'Laporan' },
+  labels: { singular: bothLanguages('reports'), plural: bothLanguages('reports') },
   group: 'Report',
   owners: MODULE_OWNERS.laporan,
   preview: { id: '/laporan', en: '/en/reports' },

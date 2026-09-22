@@ -1,4 +1,4 @@
-import type { CollectionConfig, Field } from 'payload'
+import type { CollectionConfig, Field, StaticLabel } from 'payload'
 import {
   moduleEditor,
   moduleEditorOrApprover,
@@ -16,7 +16,8 @@ import { isSampleField } from '@/fields/common'
 
 type Options = {
   slug: string
-  labels: { singular: string; plural: string }
+  /** A plain string, or one per admin language: { en, id }. */
+  labels: { singular: StaticLabel; plural: StaticLabel }
   group: string
   /** Editor roles that own this module. */
   owners: Role[]

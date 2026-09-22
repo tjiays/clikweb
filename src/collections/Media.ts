@@ -7,6 +7,7 @@ import { isSuperAdmin, isApprover, isSalesAdmin } from '@/access'
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 import { MAX_UPLOAD_MB } from '@/fields/common'
+import { bothLanguages } from '@/i18n/admin'
 
 /** Matches config.upload.limits.fileSize in src/payload.config.ts. */
 const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
@@ -23,7 +24,7 @@ const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
  */
 export const Media: CollectionConfig = {
   slug: 'media',
-  labels: { singular: 'Media', plural: 'Media Library' },
+  labels: { singular: bothLanguages('media'), plural: bothLanguages('media') },
   admin: { group: 'Media', useAsTitle: 'filename' },
   access: {
     read: () => true,

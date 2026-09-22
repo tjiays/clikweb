@@ -12,6 +12,7 @@ import {
   imageAtLeast,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
 
 const owners = MODULE_OWNERS.marketing
 const group = 'Konten Website'
@@ -29,7 +30,7 @@ const productList = (name: string, label: string, itemLabel: string): Field => (
 
 export const ProductItems: CollectionConfig = contentCollection({
   slug: 'product-items',
-  labels: { singular: 'Item Produk', plural: 'Item Produk' },
+  labels: { singular: bothLanguages('products'), plural: bothLanguages('products') },
   group: 'Product',
   owners,
   // Products have no page of their own; they appear in What We Offer.

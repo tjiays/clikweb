@@ -2,6 +2,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { contentEditor } from './fields/editor'
 import { MAX_UPLOAD_MB } from './fields/common'
+import { adminI18n } from './i18n/admin'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -52,6 +53,9 @@ export default buildConfig({
 
   // Indonesian is the source language; English is produced by translation
   // and reviewed by the team. Every localised field carries both.
+  // The admin panel in Indonesian or English, per user. See src/i18n/admin.ts.
+  i18n: adminI18n,
+
   localization: {
     locales: [
       { label: 'Bahasa Indonesia', code: 'id' },

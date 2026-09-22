@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { superAdminOnly } from '@/access'
+import { bothLanguages } from '@/i18n/admin'
 
 /**
  * Who did what, and when. Written by hooks, never by hand.
@@ -7,7 +8,7 @@ import { superAdminOnly } from '@/access'
  */
 export const AuditLog: CollectionConfig = {
   slug: 'audit-log',
-  labels: { singular: 'Audit Log Entry', plural: 'Audit Log' },
+  labels: { singular: bothLanguages('auditLog'), plural: bothLanguages('auditLog') },
   admin: {
     group: 'Data',
     defaultColumns: ['action', 'collectionSlug', 'user', 'createdAt'],
