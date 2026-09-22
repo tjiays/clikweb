@@ -56,6 +56,23 @@ export const contentCollection = ({
   admin: {
     group,
     useAsTitle,
+    /*
+     * The Approver reads and decides; they do not write. These replace Save
+     * draft and Publish with Setujui / Tolak for that role, and leave
+     * Payload's own buttons in place for everyone else. Duplicate and Delete
+     * already disappear on their own, since the Approver has neither create
+     * nor delete permission.
+     */
+    ...(approval
+      ? {
+          components: {
+            edit: {
+              PublishButton: '@/components/admin/ReviewActions#default',
+              SaveDraftButton: '@/components/admin/SaveDraftUnlessApprover#default',
+            },
+          },
+        }
+      : {}),
     defaultColumns: defaultColumns ?? [useAsTitle, 'approvalStatus', 'updatedAt'],
     ...(preview
       ? { preview: previewFor(preview), livePreview: livePreviewFor(preview) }

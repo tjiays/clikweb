@@ -81,6 +81,25 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     )
   }
 
+  /*
+   * Nothing empty reaches the review queue.
+   *
+   * An item awaiting review is stored as a Payload draft, and Payload skips
+   * required-field checks on drafts — so a report saved with nothing in it
+   * went to the Approver as an untitled row with no content to judge. The
+   * title is checked here instead, at the point of submitting.
+   */
+  if (target === APPROVAL_STATUSES.inReview) {
+    const title = data.title ?? originalDoc?.title
+    const hasTitle =
+      typeof title === 'string'
+        ? title.trim().length > 0
+        : Boolean(title && typeof title === 'object' && Object.values(title).some((v) => String(v ?? '').trim()))
+    if (!hasTitle) {
+      throw new APIError('Beri judul lebih dulu sebelum menyimpan — tanpa judul, item ini tidak bisa ditinjau.', 400)
+    }
+  }
+
   data.approvalStatus = target
 
   if (target === APPROVAL_STATUSES.inReview && previous !== APPROVAL_STATUSES.inReview) {

@@ -15,6 +15,8 @@ import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1e
 import { FixedToolbarFeatureClient as FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_02dc2ea48120144c5139fa69d9ee430e } from '@/components/admin/AutoTranslateButton'
 import { default as default_02a6c7f26fc82c947dad6a4035a82bd1 } from '@/components/admin/ApprovalStatusBadge'
+import { default as default_7d49ba020347320f1985b4c3026ed00f } from '@/components/admin/ReviewActions'
+import { default as default_31ffc25acaffc3cac161411fda6e6f83 } from '@/components/admin/SaveDraftUnlessApprover'
 import { default as default_a9d4b87e0306b3ddfe97926a52a69591 } from '@/components/admin/Nav'
 import { default as default_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { default as default_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
@@ -40,6 +42,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#FixedToolbarFeatureClient": FixedToolbarFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/components/admin/AutoTranslateButton#default": default_02dc2ea48120144c5139fa69d9ee430e,
   "@/components/admin/ApprovalStatusBadge#default": default_02a6c7f26fc82c947dad6a4035a82bd1,
+  "@/components/admin/ReviewActions#default": default_7d49ba020347320f1985b4c3026ed00f,
+  "@/components/admin/SaveDraftUnlessApprover#default": default_31ffc25acaffc3cac161411fda6e6f83,
   "@/components/admin/Nav#default": default_a9d4b87e0306b3ddfe97926a52a69591,
   "@/components/admin/Icon#default": default_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#default": default_a44df17d0fc3dcd873dae43dc3bf66bd,
