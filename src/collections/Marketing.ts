@@ -9,7 +9,8 @@ import {
   slugField,
   sortOrderField,
   imageGuidance,
-  imageAtLeast,
+  imageRule,
+  IMAGE_RULES,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 import { bothLanguages } from '@/i18n/admin'
@@ -60,9 +61,12 @@ export const ProductItems: CollectionConfig = contentCollection({
     localisedTextarea('shortDescription', 'Deskripsi singkat'),
     {
       ...imageField('image', 'Gambar produk'),
-      validate: imageAtLeast(640),
+      validate: imageRule(IMAGE_RULES.productImage),
       admin: {
-        description: `Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. ${imageGuidance(640, '1280x720px')}`,
+        description: imageGuidance(
+          IMAGE_RULES.productImage,
+          'Muncul di atas Deskripsi saat baris produk dibuka; kosongkan bila produk ini tidak punya gambar.',
+        ),
       },
     } as Field,
     {

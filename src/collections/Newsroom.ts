@@ -6,7 +6,8 @@ import {
   richText,
   slugField,
   imageGuidance,
-  imageAtLeast,
+  imageRule,
+  IMAGE_RULES,
   authorField,
   publishDateField,
 } from '@/fields/common'
@@ -42,9 +43,9 @@ export const Articles: CollectionConfig = contentCollection({
      */
     {
       ...imageField('cover', 'Gambar sampul'),
-      validate: imageAtLeast(800),
+      validate: imageRule(IMAGE_RULES.articleCover),
       admin: {
-        description: `Tampil di kartu artikel. ${imageGuidance(800, '1200x800px')}`,
+        description: imageGuidance(IMAGE_RULES.articleCover, 'Tampil di kartu artikel.'),
       },
     } as Field,
     {
@@ -53,9 +54,12 @@ export const Articles: CollectionConfig = contentCollection({
       relationTo: 'media',
       label: 'Gambar banner (halaman detail)',
       access: lockedForApprover,
-      validate: imageAtLeast(1300),
+      validate: imageRule(IMAGE_RULES.articleBanner),
       admin: {
-        description: `Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. ${imageGuidance(1300, '2600x744px')}`,
+        description: imageGuidance(
+          IMAGE_RULES.articleBanner,
+          'Opsional. Gambar lebar di atas halaman artikel; kosongkan untuk memakai Gambar sampul.',
+        ),
       },
     },
     {

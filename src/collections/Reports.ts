@@ -8,7 +8,8 @@ import {
   slugField,
   sortOrderField,
   imageGuidance,
-  imageAtLeast,
+  imageRule,
+  IMAGE_RULES,
   authorField,
   publishDateField,
 } from '@/fields/common'
@@ -40,13 +41,21 @@ export const Reports: CollectionConfig = contentCollection({
       ...imageField('cover', 'Gambar sampul'),
       /*
        * Only the Annual Report draws a 1300px hero; a Business Development
-       * report shows its cover on the 406px card and nothing wider.
+       * report shows its cover on the 416px card and nothing wider, so it is
+       * held to the card's requirement instead.
        */
-      validate: imageAtLeast((data) =>
-        (data as { type?: string })?.type === 'business_development' ? 406 : 1300,
+      validate: imageRule((data) =>
+        (data as { type?: string })?.type === 'business_development'
+          ? IMAGE_RULES.reportCoverBusiness
+          : IMAGE_RULES.reportCoverAnnual,
       ),
       admin: {
-        description: `Tampil di kartu laporan dan di atas halaman Laporan Tahunan. ${imageGuidance(1300, '2000x1333px seperti sampul Laporan Tahunan 2025')}`,
+        description:
+          imageGuidance(
+            IMAGE_RULES.reportCoverAnnual,
+            'Tampil di kartu laporan, dan sebagai gambar besar di atas halaman Laporan Tahunan.',
+          ) +
+          ` Untuk Laporan Perkembangan Usaha yang hanya tampil di kartu, minimal ${IMAGE_RULES.reportCoverBusiness.minWidth}px sudah cukup.`,
       },
     } as Field,
     {

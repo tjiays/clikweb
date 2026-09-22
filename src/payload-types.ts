@@ -136,11 +136,11 @@ export interface UserAuthOperations {
 export interface Article {
   id: number;
   /**
-   * Tampil di kartu artikel. Minimal 800px lebar; disarankan 1200x800px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Tampil di kartu artikel. Disarankan 1456x832px (perbandingan 7:4, mendatar). Minimal 832px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
   cover?: (number | null) | Media;
   /**
-   * Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. Minimal 1300px lebar; disarankan 2600x744px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Opsional. Gambar lebar di atas halaman artikel; kosongkan untuk memakai Gambar sampul. Disarankan 2600x744px (perbandingan 3,5:1, memanjang). Minimal 1300px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
   banner?: (number | null) | Media;
   titleId: string;
@@ -310,7 +310,7 @@ export interface User {
 export interface Report {
   id: number;
   /**
-   * Tampil di kartu laporan dan di atas halaman Laporan Tahunan. Minimal 1300px lebar; disarankan 2000x1333px seperti sampul Laporan Tahunan 2025. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Tampil di kartu laporan, dan sebagai gambar besar di atas halaman Laporan Tahunan. Disarankan 2000x1333px (mendatar). Minimal 1300px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP). Untuk Laporan Perkembangan Usaha yang hanya tampil di kartu, minimal 832px sudah cukup.
    */
   cover?: (number | null) | Media;
   titleId: string;
@@ -492,7 +492,7 @@ export interface ProductItem {
   category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
   /**
-   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. Minimal 640px lebar; disarankan 1280x720px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Muncul di atas Deskripsi saat baris produk dibuka; kosongkan bila produk ini tidak punya gambar. Disarankan 1280x720px (perbandingan 16:9, mendatar). Minimal 1280px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
   image?: (number | null) | Media;
   /**

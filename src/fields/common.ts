@@ -146,16 +146,6 @@ export const isSampleField: Field = {
 }
 
 /**
- * Guidance under an image field: what size to aim for, and the size ceiling.
- *
- * `displayWidth` is the widest the picture is ever drawn on the site, so an
- * upload narrower than it gets stretched and goes soft. The examples quote a
- * real file already in the library rather than an invented ideal.
- */
-export const imageGuidance = (displayWidth: number, example: string) =>
-  `Minimal ${displayWidth}px lebar; disarankan ${example}. Gambar yang lebih kecil akan tampak pecah. Maksimal ${MAX_UPLOAD_MB}MB (JPG, PNG atau WebP).`
-
-/**
  * Fills a byline with the name of whoever is writing, so the field is one
  * less thing to type. It is a plain default, not a lock: an editor filing a
  * piece written by someone else just types over it.
@@ -205,8 +195,84 @@ export const publishDateField = (
  * notices until it is on the website. This checks the file that was actually
  * chosen, whether it was just uploaded or picked from the library.
  */
-export const imageAtLeast =
-  (minWidth: number | ((data: Record<string, unknown>) => number)) =>
+
+/**
+ * What a picture has to be, for one place it appears.
+ *
+ * `minWidth` is twice the width the slot is drawn at, because that is what a
+ * retina screen asks for — a card rendered 416px wide wants an 832px file.
+ * The ratio bounds are deliberately loose: they exist to catch a portrait
+ * photo dropped into a landscape slot, not to argue about 1.7 against 1.8.
+ *
+ * The wording and the check are both built from this, so the field cannot
+ * promise one thing and enforce another.
+ */
+export type ImageRule = {
+  /** Twice the CSS width of the slot. */
+  minWidth: number
+  /** Acceptable width-to-height range. */
+  ratio: { min: number; max: number }
+  /** A real size that works, quoted to the editor. */
+  recommended: string
+  /** How to describe the shape, in Indonesian. */
+  shape: string
+}
+
+export const IMAGE_RULES = {
+  /* Card: aspect-ratio 406/232 in Cards.module.css, drawn 416px wide. */
+  articleCover: {
+    minWidth: 832,
+    ratio: { min: 1.2, max: 3 },
+    recommended: '1456x832px',
+    shape: 'perbandingan 7:4, mendatar',
+  },
+  /* Banner: aspect-ratio 1300/372 on the article page, drawn 1300px wide. */
+  articleBanner: {
+    minWidth: 1300,
+    ratio: { min: 2.8, max: 4.2 },
+    recommended: '2600x744px',
+    shape: 'perbandingan 3,5:1, memanjang',
+  },
+  /* An annual report also fills the 1300px hero above its page. */
+  reportCoverAnnual: {
+    minWidth: 1300,
+    ratio: { min: 1.2, max: 3 },
+    recommended: '2000x1333px',
+    shape: 'mendatar',
+  },
+  /* A business development report only ever appears on the card. */
+  reportCoverBusiness: {
+    minWidth: 832,
+    ratio: { min: 1.2, max: 3 },
+    recommended: '1456x832px',
+    shape: 'perbandingan 7:4, mendatar',
+  },
+  /* Product row image, drawn 640px wide. */
+  productImage: {
+    minWidth: 1280,
+    ratio: { min: 1.2, max: 3 },
+    recommended: '1280x720px',
+    shape: 'perbandingan 16:9, mendatar',
+  },
+} satisfies Record<string, ImageRule>
+
+/** The note under an image field, written from the rule it is checked against. */
+export const imageGuidance = (rule: ImageRule, intro: string) =>
+  `${intro} Disarankan ${rule.recommended} (${rule.shape}). ` +
+  `Minimal ${rule.minWidth}px lebar — lebih kecil akan tampak pecah. ` +
+  `Maksimal ${MAX_UPLOAD_MB}MB (JPG, PNG atau WebP).`
+
+/**
+ * Refuses a picture that is too small, the wrong shape, or over the limit.
+ *
+ * Only a newly chosen file is checked. Several images were saved before these
+ * rules existed — an 1134px banner that came from the Figma export, a 740px
+ * cover — and refusing those would make the records unsavable, so their
+ * authors could not fix anything else about them either. Leave the picture
+ * alone and nothing happens; change it and it has to be right.
+ */
+export const imageRule =
+  (rule: ImageRule | ((data: Record<string, unknown>) => ImageRule)) =>
   async (
     value: unknown,
     {
@@ -220,20 +286,11 @@ export const imageAtLeast =
     const idOf = (v: unknown) => (typeof v === 'object' && v ? (v as { id?: unknown }).id : v)
     const id = idOf(value)
     if (!id) return true
-
-    /*
-     * Only a newly chosen picture is held to this. Several items were saved
-     * before the rule existed — an 1134px article banner, a 740px report
-     * cover — and refusing those would make the records unsavable, so their
-     * authors could not fix anything else about them either. Leave the
-     * picture alone and nothing happens; change it and it has to be good
-     * enough.
-     */
     if (previousValue !== undefined && String(idOf(previousValue) ?? '') === String(id)) {
       return true
     }
 
-    let media: { width?: number; filesize?: number; filename?: string } | null = null
+    let media: { width?: number; height?: number; filesize?: number } | null = null
     try {
       media = await req.payload.findByID({
         collection: 'media',
@@ -247,13 +304,23 @@ export const imageAtLeast =
       return true
     }
 
+    const r = typeof rule === 'function' ? rule(data ?? {}) : rule
+
     if (typeof media?.filesize === 'number' && media.filesize > MAX_UPLOAD_MB * 1024 * 1024) {
-      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas ${MAX_UPLOAD_MB}MB.`
+      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas ${MAX_UPLOAD_MB}MB. Perkecil lalu unggah lagi.`
     }
 
-    const min = typeof minWidth === 'function' ? minWidth(data ?? {}) : minWidth
-    if (typeof media?.width === 'number' && media.width < min) {
-      return `Gambar ini hanya ${media.width}px lebar, minimal ${min}px. Yang lebih kecil akan tampak pecah. Pilih atau unggah gambar yang lebih besar.`
+    const { width, height } = media ?? {}
+    if (typeof width === 'number' && typeof height === 'number' && height > 0) {
+      const ratio = width / height
+      if (ratio < r.ratio.min || ratio > r.ratio.max) {
+        const orientation = ratio < 1 ? 'tegak' : ratio > r.ratio.max ? 'terlalu memanjang' : 'terlalu persegi'
+        return `Gambar ini ${orientation} (${width}x${height}). Tempat ini ${r.shape} — gunakan gambar seperti ${r.recommended}.`
+      }
+    }
+
+    if (typeof width === 'number' && width < r.minWidth) {
+      return `Gambar ini hanya ${width}px lebar, minimal ${r.minWidth}px. Yang lebih kecil akan tampak pecah. Disarankan ${r.recommended}.`
     }
 
     return true
