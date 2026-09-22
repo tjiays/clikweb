@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 import { useAuth } from '@payloadcms/ui'
 import type { ReactNode } from 'react'
 import './Nav.scss'
@@ -111,6 +112,20 @@ export default function Nav() {
   const pathname = usePathname() ?? ''
   const { user } = useAuth()
   const role = (user as { role?: Role } | null | undefined)?.role
+
+  /*
+   * Stamp the role on <body> so stylesheets can trim the admin for a role
+   * that has no business with part of it — the Approver reads and decides,
+   * so the Edit / Versions tab strip is noise on their screen. The sidebar is
+   * the one component that already knows who is signed in on every page.
+   */
+  useEffect(() => {
+    if (!role) return
+    document.body.dataset.role = role
+    return () => {
+      delete document.body.dataset.role
+    }
+  }, [role])
 
   const canSee = (slug: string) => {
     if (!slug) return true // the dashboard is always reachable

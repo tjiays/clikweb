@@ -243,3 +243,11 @@ body {
 .live-preview-window__wrapper {
   background: #fafafa;
 }
+
+/* ---- The Approver's screen ----
+   They open an item to read it and choose Setujui or Tolak. The tab strip
+   above the document offers Edit and Versions, neither of which is a thing
+   they do, so it goes. The role comes from components/admin/Nav.tsx. */
+body[data-role='approver'] .doc-tabs {
+  display: none;
+}

@@ -18,6 +18,7 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   req,
   originalDoc,
   operation,
+  collection,
 }) => {
   const user = req.user
   if (!user || !data) return data
@@ -82,21 +83,46 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   }
 
   /*
-   * Nothing empty reaches the review queue.
+   * Nothing untitled reaches the review queue, and "titled" means titled in
+   * Indonesian.
    *
-   * An item awaiting review is stored as a Payload draft, and Payload skips
-   * required-field checks on drafts — so a report saved with nothing in it
-   * went to the Approver as an untitled row with no content to judge. The
-   * title is checked here instead, at the point of submitting.
+   * Two things conspired here. An item awaiting review is stored as a Payload
+   * draft, and Payload skips required-field checks on drafts, so "title is
+   * required" never ran. And a title is per-language: a report written while
+   * the admin was switched to English got an English title and no Indonesian
+   * one, so it reached the Approver as a blank row and opened blank too,
+   * because the admin lists and reads the default language.
+   *
+   * Indonesian is the source language (intent/04), so that is the one that
+   * has to be there. Writing English first is still fine — it just cannot be
+   * submitted until the Indonesian side has a title.
    */
   if (target === APPROVAL_STATUSES.inReview) {
-    const title = data.title ?? originalDoc?.title
-    const hasTitle =
-      typeof title === 'string'
-        ? title.trim().length > 0
-        : Boolean(title && typeof title === 'object' && Object.values(title).some((v) => String(v ?? '').trim()))
+    const filled = (value: unknown) => String(value ?? '').trim().length > 0
+    const locale = (req as { locale?: string }).locale
+    let hasTitle = false
+
+    if (!locale || locale === 'id') {
+      hasTitle = filled(data.title ?? originalDoc?.title)
+    } else if (originalDoc?.id && req.payload && collection?.slug) {
+      // Writing another language: look up what Indonesian actually holds.
+      const existing = await req.payload.findByID({
+        collection: collection.slug as never,
+        id: originalDoc.id as never,
+        locale: 'id',
+        depth: 0,
+        overrideAccess: true,
+        draft: true,
+        req,
+      })
+      hasTitle = filled((existing as { title?: unknown })?.title)
+    }
+
     if (!hasTitle) {
-      throw new APIError('Beri judul lebih dulu sebelum menyimpan — tanpa judul, item ini tidak bisa ditinjau.', 400)
+      throw new APIError(
+        'Beri judul Bahasa Indonesia lebih dulu. Tanpa judul dalam bahasa utama, item ini tampil kosong di daftar dan tidak bisa ditinjau.',
+        400,
+      )
     }
   }
 

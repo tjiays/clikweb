@@ -56,6 +56,8 @@ export const contentCollection = ({
   admin: {
     group,
     useAsTitle,
+    // The API tab is a developer's shortcut; nobody editing content needs it.
+    hideAPIURL: true,
     /*
      * The Approver reads and decides; they do not write. These replace Save
      * draft and Publish with Setujui / Tolak for that role, and leave
