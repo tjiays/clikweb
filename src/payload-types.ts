@@ -295,15 +295,38 @@ export interface User {
  */
 export interface Report {
   id: number;
-  title: string;
+  titleId: string;
+  titleEn: string;
   /**
-   * Satu atau dua kalimat. Muncul di kartu laporan.
+   * Satu atau dua kalimat, tampil di kartu laporan.
    */
-  excerpt?: string | null;
+  excerptId?: string | null;
   /**
-   * Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.
+   * One or two sentences, shown on the report card.
    */
-  body: {
+  excerptEn?: string | null;
+  /**
+   * Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.
+   */
+  bodyId: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * The same report in English. Use Auto-translate to draft it, then edit.
+   */
+  bodyEn: {
     root: {
       type: string;
       children: {
@@ -715,9 +738,12 @@ export interface ArticlesSelect<T extends boolean = true> {
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
-  title?: T;
-  excerpt?: T;
-  body?: T;
+  titleId?: T;
+  titleEn?: T;
+  excerptId?: T;
+  excerptEn?: T;
+  bodyId?: T;
+  bodyEn?: T;
   cover?: T;
   financialTables?:
     | T

@@ -26,27 +26,78 @@ export const Reports: CollectionConfig = contentCollection({
   group: 'Report',
   owners: MODULE_OWNERS.laporan,
   preview: { id: '/laporan', en: '/en/reports' },
-  defaultColumns: ['title', 'type', 'publishDate', 'approvalStatus'],
+  useAsTitle: 'titleId',
+  defaultColumns: ['titleId', 'type', 'publishDate', 'approvalStatus'],
   fields: [
     {
       type: 'tabs',
       tabs: [
         {
           label: 'Tulisan',
-          description: 'Tulis laporan di sini. Gambar, tabel dan perataan ada di toolbar editor.',
+          description:
+            'Kedua bahasa ada di halaman ini. Judul dan isi wajib diisi keduanya — laporan tidak bisa disetujui bila salah satu kosong.',
           fields: [
-            localisedText('title', 'Judul', true),
             {
-              ...localisedTextarea('excerpt', 'Ringkasan'),
-              admin: { description: 'Satu atau dua kalimat. Muncul di kartu laporan.' },
-            } as Field,
+              type: 'row',
+              fields: [
+                {
+                  name: 'titleId',
+                  type: 'text',
+                  label: 'Judul (Bahasa Indonesia)',
+                  required: true,
+                  access: lockedForApprover,
+                  admin: { width: '50%' },
+                },
+                {
+                  name: 'titleEn',
+                  type: 'text',
+                  label: 'Title (English)',
+                  required: true,
+                  access: lockedForApprover,
+                  admin: { width: '50%' },
+                },
+              ],
+            },
             {
-              ...richText('body', 'Isi laporan', true),
+              type: 'row',
+              fields: [
+                {
+                  name: 'excerptId',
+                  type: 'textarea',
+                  label: 'Ringkasan (Bahasa Indonesia)',
+                  access: lockedForApprover,
+                  admin: { width: '50%', description: 'Satu atau dua kalimat, tampil di kartu laporan.' },
+                },
+                {
+                  name: 'excerptEn',
+                  type: 'textarea',
+                  label: 'Summary (English)',
+                  access: lockedForApprover,
+                  admin: { width: '50%', description: 'One or two sentences, shown on the report card.' },
+                },
+              ],
+            },
+            {
+              name: 'bodyId',
+              type: 'richText',
+              label: 'Isi laporan (Bahasa Indonesia)',
+              required: true,
+              access: lockedForApprover,
               admin: {
                 description:
-                  'Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.',
+                  'Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.',
               },
-            } as Field,
+            },
+            {
+              name: 'bodyEn',
+              type: 'richText',
+              label: 'Report body (English)',
+              required: true,
+              access: lockedForApprover,
+              admin: {
+                description: 'The same report in English. Use Auto-translate to draft it, then edit.',
+              },
+            },
           ],
         },
         {
@@ -123,7 +174,7 @@ export const Reports: CollectionConfig = contentCollection({
         { label: 'Laporan Perkembangan Usaha', value: 'business_development' },
       ],
     },
-    slugField(),
+    slugField('titleId', false),
     // A name rather than a relationship, as on Newsroom articles.
     authorField('Penulis', null),
     // Date only: reports are ordered by rank, so the clock added nothing.

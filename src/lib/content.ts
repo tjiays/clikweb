@@ -190,16 +190,39 @@ export const getRelatedArticles = async (
 
 /* ---- Report ---- */
 /*
+ * Reports keep both languages side by side in the CMS rather than behind the
+ * locale switcher, so an editor can see that one of them is empty. That means
+ * titleId/titleEn rather than one localised title, and the pages should not
+ * have to care: this flattens the pair down to the language being served, so
+ * ReportsPage still reads report.title, report.excerpt and report.body.
+ */
+const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale) => {
+  if (!doc) return doc
+  const L = locale === 'en' ? 'En' : 'Id'
+  return {
+    ...doc,
+    title: doc[`title${L}`] ?? doc.titleId ?? '',
+    excerpt: doc[`excerpt${L}`] ?? doc.excerptId ?? '',
+    // Fall back to Indonesian rather than render an empty page, in the window
+    // before a report has been translated. Approval refuses a half-translated
+    // report, so a published one always has both.
+    body: doc[`body${L}`] ?? doc.bodyId ?? null,
+  }
+}
+
+/*
  * Urutan first, then newest. Every report defaults to rank 0, so in practice
  * the list is newest-first on its own and a new report lands at the top
  * without anyone renumbering the ones already there. A lower rank pins a
  * report above that block.
  */
-export const getReportsPage = (locale: Locale, page = 1) =>
-  listPaged<any>('reports', locale, page, 6, ['sortOrder', '-createdAt'])
+export const getReportsPage = async (locale: Locale, page = 1) => {
+  const result = await listPaged<any>('reports', locale, page, 6, ['sortOrder', '-createdAt'])
+  return { ...result, docs: result.docs.map((doc) => forLocale(doc, locale)) }
+}
 
-export const getReportBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('reports', 'slug', slug, locale)
+export const getReportBySlug = async (locale: Locale, slug: string) =>
+  forLocale(await findOne<any>('reports', 'slug', slug, locale), locale)
 
 /* ---- Karir ---- */
 export const getOpenJobs = (locale: Locale) =>

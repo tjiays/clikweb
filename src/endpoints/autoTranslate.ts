@@ -126,15 +126,42 @@ export const autoTranslateEndpoint: Endpoint = {
             depth: 0,
           })
 
-      // Only fields with no English value yet.
+      /*
+       * Reports keep both languages as a visible pair — titleId next to
+       * titleEn — rather than behind the locale switcher, so there is no
+       * English locale to read or write for them. Same job, different
+       * addresses: read the Id side, write the En side of the same document.
+       */
+      const paired = Boolean((source as Record<string, unknown>)?.titleId !== undefined)
+
       const pending: Record<string, string> = {}
       const fieldsToWrite: string[] = []
-      for (const [key, value] of Object.entries(source as Record<string, unknown>)) {
-        if (SKIP_KEYS.has(key)) continue
-        if (!isBlank((existing as Record<string, unknown>)?.[key])) continue
-        const before = Object.keys(pending).length
-        collect(value, key, pending)
-        if (Object.keys(pending).length > before) fieldsToWrite.push(key)
+      const writeAs: Record<string, string> = {}
+
+      if (paired) {
+        const src = source as Record<string, unknown>
+        for (const base of ['title', 'excerpt', 'body']) {
+          const from = `${base}Id`
+          const to = `${base}En`
+          if (!(from in src)) continue
+          // Leave anything already written in English alone.
+          if (!isBlank(src[to])) continue
+          const before = Object.keys(pending).length
+          collect(src[from], from, pending)
+          if (Object.keys(pending).length > before) {
+            fieldsToWrite.push(from)
+            writeAs[from] = to
+          }
+        }
+      } else {
+        // Only fields with no English value yet.
+        for (const [key, value] of Object.entries(source as Record<string, unknown>)) {
+          if (SKIP_KEYS.has(key)) continue
+          if (!isBlank((existing as Record<string, unknown>)?.[key])) continue
+          const before = Object.keys(pending).length
+          collect(value, key, pending)
+          if (Object.keys(pending).length > before) fieldsToWrite.push(key)
+        }
       }
 
       if (Object.keys(pending).length === 0) {
@@ -148,7 +175,8 @@ export const autoTranslateEndpoint: Endpoint = {
 
       const data: Record<string, unknown> = {}
       for (const key of fieldsToWrite) {
-        data[key] = apply((source as Record<string, unknown>)[key], key, translated)
+        const target = writeAs[key] ?? key
+        data[target] = apply((source as Record<string, unknown>)[key], key, translated)
       }
 
       if (global) {
@@ -164,7 +192,8 @@ export const autoTranslateEndpoint: Endpoint = {
         await req.payload.update({
           collection: collection as never,
           id: id as string,
-          locale: 'en',
+          // A paired document has no English locale to write into.
+          ...(paired ? {} : { locale: 'en' as never }),
           draft: true,
           data: data as never,
           overrideAccess: false,

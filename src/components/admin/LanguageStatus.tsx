@@ -47,10 +47,21 @@ export default function LanguageStatus() {
       .then((r) => (r.ok ? r.json() : null))
       .then((doc) => {
         if (cancelled || !doc) return
-        setTitle({ id: filled(doc.title?.id), en: filled(doc.title?.en) })
-        if ('body' in doc) {
+        // Reports keep a visible pair; everything else keeps one localised
+        // field, which locale=all returns as { id, en }.
+        const paired = 'titleId' in doc
+        setTitle(
+          paired
+            ? { id: filled(doc.titleId), en: filled(doc.titleEn) }
+            : { id: filled(doc.title?.id), en: filled(doc.title?.en) },
+        )
+        if (paired ? 'bodyId' in doc : 'body' in doc) {
           setHasBody(true)
-          setBody({ id: richFilled(doc.body?.id), en: richFilled(doc.body?.en) })
+          setBody(
+            paired
+              ? { id: richFilled(doc.bodyId), en: richFilled(doc.bodyEn) }
+              : { id: richFilled(doc.body?.id), en: richFilled(doc.body?.en) },
+          )
         }
       })
       .catch(() => {})

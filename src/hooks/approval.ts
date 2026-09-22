@@ -61,15 +61,23 @@ const assertBothLanguages = async ({
   const LANG = { id: 'Bahasa Indonesia', en: 'English' } as const
   const missing: string[] = []
 
-  for (const [code, name] of Object.entries(LANG)) {
-    const title = (doc?.title as Record<string, unknown> | undefined)?.[code]
-    if (!textFilled(title)) missing.push(`judul ${name}`)
+  /*
+   * Two shapes to read. Most collections keep one localised field, which
+   * comes back as { id, en }. Reports keep a visible pair — titleId and
+   * titleEn — so both languages are on the page at once.
+   */
+  const paired = doc && 'titleId' in doc
+  const pick = (base: string, code: string) =>
+    paired
+      ? doc[`${base}${code === 'en' ? 'En' : 'Id'}`]
+      : (doc?.[base] as Record<string, unknown> | undefined)?.[code]
 
+  const hasBody = Boolean(doc && (paired ? 'bodyId' in doc : 'body' in doc))
+
+  for (const [code, name] of Object.entries(LANG)) {
+    if (!textFilled(pick('title', code))) missing.push(`judul ${name}`)
     // Only collections that carry a body are held to it.
-    if (doc && 'body' in doc) {
-      const body = (doc.body as Record<string, unknown> | undefined)?.[code]
-      if (!richTextFilled(body)) missing.push(`isi ${name}`)
-    }
+    if (hasBody && !richTextFilled(pick('body', code))) missing.push(`isi ${name}`)
   }
 
   if (missing.length) {
@@ -185,7 +193,11 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     const locale = (req as { locale?: string }).locale
     let hasTitle = false
 
-    if (!locale || locale === 'id') {
+    // Reports hold both languages on the page, so the Indonesian title is
+    // simply there in the request — no locale reading needed.
+    if (data.titleId !== undefined || originalDoc?.titleId !== undefined) {
+      hasTitle = filled(data.titleId ?? originalDoc?.titleId)
+    } else if (!locale || locale === 'id') {
       hasTitle = filled(data.title ?? originalDoc?.title)
     } else if (originalDoc?.id && req.payload && collection?.slug) {
       // Writing another language: look up what Indonesian actually holds.

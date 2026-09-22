@@ -8,6 +8,7 @@ import * as migration_20260921_094500_annual_report_cover from './20260921_09450
 import * as migration_20260921_095500_report_tables_into_body from './20260921_095500_report_tables_into_body';
 import * as migration_20260921_101248_drop_report_year from './20260921_101248_drop_report_year';
 import * as migration_20260921_104918_drop_draft_status from './20260921_104918_drop_draft_status';
+import * as migration_20260922_063014_reports_paired_languages from './20260922_063014_reports_paired_languages';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20260921_104918_drop_draft_status.up,
     down: migration_20260921_104918_drop_draft_status.down,
-    name: '20260921_104918_drop_draft_status'
+    name: '20260921_104918_drop_draft_status',
+  },
+  {
+    up: migration_20260922_063014_reports_paired_languages.up,
+    down: migration_20260922_063014_reports_paired_languages.down,
+    name: '20260922_063014_reports_paired_languages'
   },
 ];
