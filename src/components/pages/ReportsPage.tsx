@@ -85,7 +85,6 @@ export async function ReportsPage({ locale, page }: { locale: Locale; page: numb
                   imageUrl={coverOf(report, CARD_WIDTH)}
                   imageAlt={imageAlt(report.cover)}
                   readMoreLabel={dict.common.readMore}
-                  shareLabel={locale === 'id' ? 'Bagikan' : 'Share'}
                 />
               ))}
             </div>

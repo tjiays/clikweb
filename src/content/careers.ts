@@ -135,8 +135,6 @@ export const careers = {
     },
   ],
   /** Share control on job cards and the job detail header. */
-  share: { id: 'bagikan', en: 'share' },
-  linkCopied: { id: 'Tautan disalin', en: 'Link copied' },
 }
 
 /** Detail Lowongan static copy (Figma 571:3858; the Figma frame is English). */

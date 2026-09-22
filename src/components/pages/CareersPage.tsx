@@ -5,7 +5,6 @@ import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
 import { JobRow, BriefcaseIcon } from '@/components/sections/JobRow'
-import { JobShare } from '@/components/sections/JobShare'
 import { Marquee } from '@/components/sections/Marquee'
 import { RichText } from '@/components/ui/RichText'
 import { Button } from '@/components/ui/Button'
@@ -162,8 +161,6 @@ export async function CareersPage({ locale }: { locale: Locale }) {
                   applyMailto={applyMailto(job, careersEmail)}
                   applyLabel={dict.careers.apply}
                   detailLabel={dict.careers.viewDetail}
-                  shareLabel={t(careers.share, locale)}
-                  copiedLabel={t(careers.linkCopied, locale)}
                 />
               ))}
             </div>
@@ -250,13 +247,6 @@ export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: st
               <Button href={applyMailto(job, careersEmail)} external size="sm" className={styles.detailApply}>
                 {dict.careers.apply}
               </Button>
-              <JobShare
-                url={detailHref('careers', job.slug, locale)}
-                title={job.title}
-                label={t(careers.share, locale)}
-                copiedLabel={t(careers.linkCopied, locale)}
-                showLabel
-              />
             </div>
           </header>
 
