@@ -115,6 +115,30 @@ async function findOne<T>(
 /* ---- Newsroom ---- */
 
 /** Articles marked "hide from list" keep their page but stay off the cards. */
+const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale): T => {
+  if (!doc || doc.titleId === undefined) return doc as T
+  const L = locale === 'en' ? 'En' : 'Id'
+  return {
+    ...doc,
+    title: doc[`title${L}`] ?? doc.titleId ?? '',
+    excerpt: doc[`excerpt${L}`] ?? doc.excerptId ?? '',
+    /*
+     * Fall back to Indonesian rather than render an empty page, in the window
+     * before something has been translated. Approval refuses a
+     * half-translated item, so anything published has both.
+     */
+    body: doc[`body${L}`] ?? doc.bodyId ?? null,
+    seo: {
+      title: doc[`seoTitle${L}`] ?? doc.seoTitleId ?? '',
+      description: doc[`seoDescription${L}`] ?? doc.seoDescriptionId ?? '',
+    },
+    // Related articles arrive as whole documents and need the same treatment.
+    ...(Array.isArray(doc.relatedArticles)
+      ? { relatedArticles: doc.relatedArticles.map((a: any) => forLocale(a, locale)) }
+      : {}),
+  } as T
+}
+
 const listedArticles = {
   or: [{ hideFromList: { equals: false } }, { hideFromList: { exists: false } }],
 }
@@ -122,11 +146,14 @@ const listedArticles = {
 /** Same day: the later time comes first, so the order is always the same. */
 const NEWEST_FIRST = ['-publishDate', '-id']
 
-export const getLatestArticles = (locale: Locale, limit = 3) =>
-  listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST, where: listedArticles })
+export const getLatestArticles = async (locale: Locale, limit = 3) =>
+  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST, where: listedArticles }))
+    .map((doc) => forLocale(doc, locale))
 
-export const getArticlesPage = (locale: Locale, page = 1) =>
-  listPaged<any>('articles', locale, page, 6, NEWEST_FIRST, listedArticles)
+export const getArticlesPage = async (locale: Locale, page = 1) => {
+  const result = await listPaged<any>('articles', locale, page, 6, NEWEST_FIRST, listedArticles)
+  return { ...result, docs: result.docs.map((doc) => forLocale(doc, locale)) }
+}
 
 /**
  * Featured News, in the order the editors numbered them. An article may hold
@@ -148,11 +175,11 @@ export const getFeaturedArticles = async (locale: Locale, limit = 8) => {
     for (const place of places) placed.push({ place, article })
   }
   placed.sort((a, b) => a.place - b.place)
-  return [...placed.map((p) => p.article), ...rest].slice(0, limit)
+  return [...placed.map((p) => p.article), ...rest].slice(0, limit).map((a) => forLocale(a, locale))
 }
 
-export const getArticleBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('articles', 'slug', slug, locale)
+export const getArticleBySlug = async (locale: Locale, slug: string) =>
+  forLocale(await findOne<any>('articles', 'slug', slug, locale), locale)
 
 export const getArticlesBySlugs = async (locale: Locale, slugs: string[]) => {
   if (slugs.length === 0) return []
@@ -162,7 +189,10 @@ export const getArticlesBySlugs = async (locale: Locale, slugs: string[]) => {
     where: { slug: { in: slugs } },
     sort: NEWEST_FIRST,
   })
-  return slugs.map((slug) => docs.find((d) => d.slug === slug)).filter(Boolean)
+  return slugs
+    .map((slug) => docs.find((d) => d.slug === slug))
+    .filter(Boolean)
+    .map((doc) => forLocale(doc, locale))
 }
 
 /**
@@ -178,14 +208,17 @@ export const getRelatedArticles = async (
     (a): a is { id: number; _status?: string } =>
       Boolean(a) && typeof a === 'object' && (a as { _status?: string })._status === 'published',
   )
-  if (picked.length > 0) return picked.slice(0, limit)
+  if (picked.length > 0) return picked.slice(0, limit).map((a) => forLocale(a, locale))
   const articles = await listPublished<any>('articles', {
     locale,
     limit: limit + 1,
     sort: NEWEST_FIRST,
     where: listedArticles,
   })
-  return articles.filter((a) => a.id !== article.id).slice(0, limit)
+  return articles
+    .filter((a) => a.id !== article.id)
+    .slice(0, limit)
+    .map((a) => forLocale(a, locale))
 }
 
 /* ---- Report ---- */
@@ -196,19 +229,7 @@ export const getRelatedArticles = async (
  * have to care: this flattens the pair down to the language being served, so
  * ReportsPage still reads report.title, report.excerpt and report.body.
  */
-const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale) => {
-  if (!doc) return doc
-  const L = locale === 'en' ? 'En' : 'Id'
-  return {
-    ...doc,
-    title: doc[`title${L}`] ?? doc.titleId ?? '',
-    excerpt: doc[`excerpt${L}`] ?? doc.excerptId ?? '',
-    // Fall back to Indonesian rather than render an empty page, in the window
-    // before a report has been translated. Approval refuses a half-translated
-    // report, so a published one always has both.
-    body: doc[`body${L}`] ?? doc.bodyId ?? null,
-  }
-}
+
 
 /*
  * Urutan first, then newest. Every report defaults to rank 0, so in practice

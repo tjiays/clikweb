@@ -140,7 +140,7 @@ export const autoTranslateEndpoint: Endpoint = {
 
       if (paired) {
         const src = source as Record<string, unknown>
-        for (const base of ['title', 'excerpt', 'body']) {
+        for (const base of ['title', 'excerpt', 'body', 'seoTitle', 'seoDescription']) {
           const from = `${base}Id`
           const to = `${base}En`
           if (!(from in src)) continue

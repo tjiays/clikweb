@@ -9,6 +9,7 @@ import * as migration_20260921_095500_report_tables_into_body from './20260921_0
 import * as migration_20260921_101248_drop_report_year from './20260921_101248_drop_report_year';
 import * as migration_20260921_104918_drop_draft_status from './20260921_104918_drop_draft_status';
 import * as migration_20260922_063014_reports_paired_languages from './20260922_063014_reports_paired_languages';
+import * as migration_20260922_074642_articles_paired_languages from './20260922_074642_articles_paired_languages';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20260922_063014_reports_paired_languages.up,
     down: migration_20260922_063014_reports_paired_languages.down,
-    name: '20260922_063014_reports_paired_languages'
+    name: '20260922_063014_reports_paired_languages',
+  },
+  {
+    up: migration_20260922_074642_articles_paired_languages.up,
+    down: migration_20260922_074642_articles_paired_languages.down,
+    name: '20260922_074642_articles_paired_languages'
   },
 ];

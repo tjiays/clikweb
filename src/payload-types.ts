@@ -135,15 +135,28 @@ export interface UserAuthOperations {
  */
 export interface Article {
   id: number;
-  title: string;
   /**
-   * Satu atau dua kalimat. Muncul di kartu artikel, bukan di halaman artikel.
+   * Tampil di kartu artikel. Minimal 800px lebar; disarankan 1200x800px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
-  excerpt?: string | null;
+  cover?: (number | null) | Media;
   /**
-   * Toolbar di atas editor: judul bagian, tebal/miring, daftar, tautan, perataan, gambar dan tabel.
+   * Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. Minimal 1300px lebar; disarankan 2600x744px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
-  body?: {
+  banner?: (number | null) | Media;
+  titleId: string;
+  titleEn: string;
+  /**
+   * Muncul di kartu artikel, bukan di halaman artikel.
+   */
+  excerptId?: string | null;
+  /**
+   * Shown on the article card, not on the article page.
+   */
+  excerptEn?: string | null;
+  /**
+   * Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.
+   */
+  bodyId?: {
     root: {
       type: string;
       children: {
@@ -159,21 +172,31 @@ export interface Article {
     [k: string]: unknown;
   } | null;
   /**
-   * Tampil di kartu artikel. Minimal 800px lebar; disarankan 1200x800px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
+   * The same article in English. Use Auto-translate to draft it, then edit.
    */
-  cover?: (number | null) | Media;
-  /**
-   * Opsional. Gambar lebar di atas halaman artikel (1300x372). Kosongkan untuk memakai Gambar sampul. Minimal 1300px lebar; disarankan 2600x744px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
-   */
-  banner?: (number | null) | Media;
+  bodyEn?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Up to 3 articles, in order. Empty: the newest articles.
    */
   relatedArticles?: (number | Article)[] | null;
-  seo?: {
-    title?: string | null;
-    description?: string | null;
-  };
+  seoTitleId?: string | null;
+  seoTitleEn?: string | null;
+  seoDescriptionId?: string | null;
+  seoDescriptionEn?: string | null;
   /**
    * Terisi otomatis dengan nama Anda. Ubah bila perlu.
    */
@@ -295,6 +318,10 @@ export interface User {
  */
 export interface Report {
   id: number;
+  /**
+   * Tampil di kartu laporan dan di atas halaman Laporan Tahunan. Minimal 1300px lebar; disarankan 2000x1333px seperti sampul Laporan Tahunan 2025. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   */
+  cover?: (number | null) | Media;
   titleId: string;
   titleEn: string;
   /**
@@ -341,10 +368,6 @@ export interface Report {
     };
     [k: string]: unknown;
   };
-  /**
-   * Tampil di kartu laporan dan di atas halaman Laporan Tahunan. Minimal 1300px lebar; disarankan 2000x1333px seperti sampul Laporan Tahunan 2025. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
-   */
-  cover?: (number | null) | Media;
   financialTables?:
     | {
         intro?: string | null;
@@ -478,7 +501,7 @@ export interface ProductItem {
   category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
   /**
-   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. Minimal 640px lebar; disarankan 1280x720px. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).
+   * Muncul di atas Deskripsi saat baris produk dibuka. Kosongkan bila produk ini tidak punya gambar. Minimal 640px lebar; disarankan 1280x720px. Gambar yang lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
    */
   image?: (number | null) | Media;
   /**
@@ -703,18 +726,19 @@ export interface PayloadMigration {
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
-  title?: T;
-  excerpt?: T;
-  body?: T;
   cover?: T;
   banner?: T;
+  titleId?: T;
+  titleEn?: T;
+  excerptId?: T;
+  excerptEn?: T;
+  bodyId?: T;
+  bodyEn?: T;
   relatedArticles?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
+  seoTitleId?: T;
+  seoTitleEn?: T;
+  seoDescriptionId?: T;
+  seoDescriptionEn?: T;
   author?: T;
   slug?: T;
   publishDate?: T;
@@ -738,13 +762,13 @@ export interface ArticlesSelect<T extends boolean = true> {
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
+  cover?: T;
   titleId?: T;
   titleEn?: T;
   excerptId?: T;
   excerptEn?: T;
   bodyId?: T;
   bodyEn?: T;
-  cover?: T;
   financialTables?:
     | T
     | {

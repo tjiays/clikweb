@@ -590,9 +590,9 @@ const run = async () => {
     if (keep.has(a.id as number)) continue
     if (a.isSample) {
       await payload.delete({ collection: 'articles', id: a.id, overrideAccess: true })
-      log(`deleted sample article ${a.id} "${a.title}"`)
+      log(`deleted sample article ${a.id} "${a.titleId}"`)
     } else {
-      log(`KEPT non-sample article ${a.id} "${a.title}" (not in Figma — review by hand)`)
+      log(`KEPT non-sample article ${a.id} "${a.titleId}" (not in Figma — review by hand)`)
     }
   }
 

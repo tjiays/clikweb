@@ -72,11 +72,16 @@ const assertBothLanguages = async ({
       ? doc[`${base}${code === 'en' ? 'En' : 'Id'}`]
       : (doc?.[base] as Record<string, unknown> | undefined)?.[code]
 
-  const hasBody = Boolean(doc && (paired ? 'bodyId' in doc : 'body' in doc))
+  /*
+   * A body is only required in both languages if it exists in one. Four of
+   * the articles are headline-and-link pieces with no body at all, and
+   * insisting on one would have made them impossible to approve again — the
+   * rule is about half-finished translation, not about mandating a body.
+   */
+  const hasBody = ['id', 'en'].some((code) => richTextFilled(pick('body', code)))
 
   for (const [code, name] of Object.entries(LANG)) {
     if (!textFilled(pick('title', code))) missing.push(`judul ${name}`)
-    // Only collections that carry a body are held to it.
     if (hasBody && !richTextFilled(pick('body', code))) missing.push(`isi ${name}`)
   }
 
