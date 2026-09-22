@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, PublishButton, useAuth, useForm } from '@payloadcms/ui'
+import { Button, PublishButton, useAuth, useForm, useFormFields } from '@payloadcms/ui'
 import './ReviewActions.scss'
 
 /**
@@ -15,16 +15,34 @@ import './ReviewActions.scss'
  * Rejecting asks for the reason here rather than leaving the editor to find a
  * field further up the sidebar, because a rejection without one is refused by
  * the server and the save would simply fail.
+ *
+ * The buttons appear only while an item is actually in review. A decision is
+ * refused on anything else — the rule is that only a submitted item can be
+ * decided on — so on an approved or rejected report they were controls that
+ * could not work. What replaces them is the standing of the item, since that
+ * is all there is to say once the decision is made.
  */
 export default function ReviewActions() {
   const { user } = useAuth()
   const { submit } = useForm()
+  const status = useFormFields(([fields]) => fields?.approvalStatus?.value) as string | undefined
   const [rejecting, setRejecting] = useState(false)
   const [reason, setReason] = useState('')
   const [busy, setBusy] = useState(false)
 
   if ((user as { role?: string } | null)?.role !== 'approver') {
     return <PublishButton />
+  }
+
+  if (status !== 'in_review') {
+    const settled: Record<string, string> = {
+      approved: 'Sudah disetujui dan tayang di website. Tidak ada yang perlu Anda lakukan.',
+      rejected: 'Sudah ditolak. Menunggu penulis memperbaiki dan mengirim ulang.',
+    }
+    const note = status ? settled[status] : null
+    // A document with no status yet is one the Approver cannot have reached.
+    if (!note) return null
+    return <p className="clik-review__settled">{note}</p>
   }
 
   const decide = async (overrides: Record<string, unknown>) => {

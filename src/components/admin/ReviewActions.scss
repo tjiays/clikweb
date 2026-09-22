@@ -33,3 +33,14 @@
   flex-direction: column;
   gap: 0.375rem;
 }
+
+/* Shown in place of the buttons once the decision has been made. */
+.clik-review__settled {
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 4px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-elevation-700);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
