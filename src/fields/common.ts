@@ -1,3 +1,18 @@
+/*
+ * The ceiling on an upload, in megabytes.
+ *
+ * Set against what the library actually holds: the largest file is 608kB and
+ * the median is 299kB, so this is roughly eight times the biggest image
+ * anyone has needed. It is not a target — it is there to catch a
+ * print-resolution or uncompressed file being uploaded without being resized,
+ * which is the mistake that actually happens. The earlier 20MB was thirty
+ * times the largest file and would never have caught anything.
+ *
+ * nginx accepts 25M and Next's Server Action limit is 25mb, so this is the
+ * limit an editor meets first, with a readable message.
+ */
+export const MAX_UPLOAD_MB = 5
+
 import type { Field } from 'payload'
 import { lockedForApprover } from './approval'
 
@@ -131,14 +146,14 @@ export const isSampleField: Field = {
 }
 
 /**
- * Guidance under an image field: what size to aim for, and the 20MB ceiling.
+ * Guidance under an image field: what size to aim for, and the size ceiling.
  *
  * `displayWidth` is the widest the picture is ever drawn on the site, so an
  * upload narrower than it gets stretched and goes soft. The examples quote a
  * real file already in the library rather than an invented ideal.
  */
 export const imageGuidance = (displayWidth: number, example: string) =>
-  `Minimal ${displayWidth}px lebar; disarankan ${example}. Gambar yang lebih kecil akan tampak pecah. Maksimal 20MB (JPG, PNG atau WebP).`
+  `Minimal ${displayWidth}px lebar; disarankan ${example}. Gambar yang lebih kecil akan tampak pecah. Maksimal ${MAX_UPLOAD_MB}MB (JPG, PNG atau WebP).`
 
 /**
  * Fills a byline with the name of whoever is writing, so the field is one
@@ -232,9 +247,8 @@ export const imageAtLeast =
       return true
     }
 
-    const MAX_BYTES = 20 * 1024 * 1024
-    if (typeof media?.filesize === 'number' && media.filesize > MAX_BYTES) {
-      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas 20MB.`
+    if (typeof media?.filesize === 'number' && media.filesize > MAX_UPLOAD_MB * 1024 * 1024) {
+      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas ${MAX_UPLOAD_MB}MB.`
     }
 
     const min = typeof minWidth === 'function' ? minWidth(data ?? {}) : minWidth

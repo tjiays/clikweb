@@ -1,6 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { contentEditor } from './fields/editor'
+import { MAX_UPLOAD_MB } from './fields/common'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -85,14 +86,14 @@ export default buildConfig({
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   /*
-   * 20MB per upload. Enforced here at the parser so an oversized file is
+   * The upload ceiling, from MAX_UPLOAD_MB. Enforced here at the parser so an oversized file is
    * refused before anything is written to disk; Media adds the readable
    * message. nginx allows 25M, so the limit an editor meets is this one.
    */
   upload: {
-    limits: { fileSize: 20 * 1024 * 1024 },
+    limits: { fileSize: MAX_UPLOAD_MB * 1024 * 1024 },
     abortOnLimit: true,
-    responseOnLimit: 'Ukuran file melebihi 20MB. Perkecil gambar lalu unggah lagi.',
+    responseOnLimit: `Ukuran file melebihi ${MAX_UPLOAD_MB}MB. Perkecil gambar lalu unggah lagi.`,
   },
   db: postgresAdapter({
     pool: {
