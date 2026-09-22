@@ -1,0 +1,50 @@
+/* Sidebar summary of what each language still needs. */
+.clik-lang {
+  margin-bottom: 1rem;
+}
+
+.clik-lang__heading {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--theme-elevation-600);
+  font-size: 0.8rem;
+}
+
+.clik-lang__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2px 0;
+  font-size: 0.8rem;
+}
+
+.clik-lang__dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.clik-lang__dot--ok {
+  background: var(--clik-navy);
+}
+
+.clik-lang__dot--gap {
+  background: var(--clik-orange);
+}
+
+.clik-lang__name {
+  flex: 1;
+  color: var(--theme-elevation-800);
+}
+
+.clik-lang__note {
+  color: var(--theme-elevation-600);
+}
+
+.clik-lang__hint {
+  margin: 6px 0 0;
+  color: var(--theme-elevation-600);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}

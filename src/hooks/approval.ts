@@ -13,6 +13,74 @@ import { isApprover, isSuperAdmin } from '@/access'
  *  - Rejecting requires a reason.
  *  - An item In Review is locked: its editor cannot change it.
  */
+
+/** Does a Lexical value actually contain anything? */
+const richTextFilled = (value: unknown): boolean => {
+  const children = (value as { root?: { children?: unknown[] } })?.root?.children
+  if (!Array.isArray(children) || children.length === 0) return false
+  // A single empty paragraph is what an untouched editor serialises to.
+  return JSON.stringify(children).replace(/"text":""/g, '').includes('"text":"')
+}
+
+const textFilled = (value: unknown): boolean => String(value ?? '').trim().length > 0
+
+/**
+ * Nothing goes live half-translated.
+ *
+ * Checked when an item is approved rather than when it is submitted: saving
+ * is what submits, so an editor cannot fill the second language before the
+ * first save — demanding both at that point would make it impossible to
+ * create anything at all. By approval time both have had their chance, and
+ * approval is the step that actually puts the page in front of readers.
+ *
+ * Read with locale 'all', which returns { id, en } untouched. A normal read
+ * would apply the configured fallback and hand back the Indonesian text for
+ * a missing English field, so every check would pass.
+ */
+const assertBothLanguages = async ({
+  req,
+  collectionSlug,
+  id,
+}: {
+  req: { payload?: any; locale?: string }
+  collectionSlug: string
+  id: unknown
+}) => {
+  if (!req.payload || !id) return
+
+  const doc = await req.payload.findByID({
+    collection: collectionSlug,
+    id,
+    locale: 'all',
+    depth: 0,
+    draft: true,
+    overrideAccess: true,
+    req,
+  })
+
+  const LANG = { id: 'Bahasa Indonesia', en: 'English' } as const
+  const missing: string[] = []
+
+  for (const [code, name] of Object.entries(LANG)) {
+    const title = (doc?.title as Record<string, unknown> | undefined)?.[code]
+    if (!textFilled(title)) missing.push(`judul ${name}`)
+
+    // Only collections that carry a body are held to it.
+    if (doc && 'body' in doc) {
+      const body = (doc.body as Record<string, unknown> | undefined)?.[code]
+      if (!richTextFilled(body)) missing.push(`isi ${name}`)
+    }
+  }
+
+  if (missing.length) {
+    throw new APIError(
+      `Belum bisa disetujui — ${missing.join(', ')} masih kosong. ` +
+        'Lengkapi kedua bahasa lebih dulu (gunakan tombol Auto-translate bila perlu).',
+      400,
+    )
+  }
+}
+
 export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   data,
   req,
@@ -29,7 +97,15 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   if (isSuperAdmin(user)) {
     // Super Admin is trusted with any status, including approving in the
     // same save that creates the item. Without a choice they get the field
-    // default, In Review, like everybody else.
+    // default, In Review, like everybody else. The one thing they are not
+    // exempt from is publishing something only half translated.
+    if (next === APPROVAL_STATUSES.approved && originalDoc?.id) {
+      await assertBothLanguages({
+        req: req as never,
+        collectionSlug: String(collection?.slug ?? ''),
+        id: originalDoc.id,
+      })
+    }
     return data
   }
 
@@ -46,6 +122,13 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     }
     if (next === APPROVAL_STATUSES.rejected && !String(data.rejectionReason || '').trim()) {
       throw new APIError('A rejection must include a reason.', 400)
+    }
+    if (next === APPROVAL_STATUSES.approved) {
+      await assertBothLanguages({
+        req: req as never,
+        collectionSlug: String(collection?.slug ?? ''),
+        id: originalDoc?.id,
+      })
     }
     data.reviewedBy = user.id
     data.reviewedAt = new Date().toISOString()

@@ -30,6 +30,17 @@ const decides = (user: unknown) =>
 
 export const approvalFields: Field[] = [
   {
+    // Which language still needs work, since only one is on screen at a time.
+    name: 'languageStatus',
+    type: 'ui',
+    admin: {
+      position: 'sidebar',
+      components: {
+        Field: '@/components/admin/LanguageStatus#default',
+      },
+    },
+  },
+  {
     // What an editor sees instead of the select: the same answer, no control.
     name: 'approvalStatusDisplay',
     type: 'ui',
