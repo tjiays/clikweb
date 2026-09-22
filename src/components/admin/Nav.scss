@@ -10,6 +10,10 @@
 .cnav {
   --cnav-navy: #003a79;
   --cnav-orange: #ff7d00;
+  /* One gap between any two links, wherever they fall. Used by both the
+     menu and each group, so a group boundary spaces exactly like an
+     ordinary neighbour. */
+  --cnav-gap: 0.25rem;
 
   display: flex;
   flex-direction: column;
@@ -42,18 +46,22 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    /* Room for the last group so it does not sit flush against the rule. */
-    padding-bottom: 0.25rem;
+    gap: var(--cnav-gap);
+    /* Room for the last link so it does not sit flush against the rule. */
+    padding-bottom: var(--cnav-gap);
   }
 
+  /*
+   * A group is now only a wrapper. With the headings gone it says nothing to
+   * the eye, so it must not space differently either: two links inside one
+   * group sat 2px apart while two across a boundary sat 18px, which read as
+   * uneven rather than as grouping.
+   */
   &__group {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    /* The only thing separating one group from the next now the headings
-       are gone, so it does the whole job on its own. */
-    margin-bottom: 0.875rem;
+    gap: var(--cnav-gap);
+    margin-bottom: 0;
   }
 
   /* Every item, Dashboard included, is this element at this indentation. */
@@ -111,9 +119,10 @@
        whose middle section already takes the slack. */
     flex-shrink: 0;
     padding-top: 1rem;
+    margin-top: var(--cnav-gap);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: var(--cnav-gap);
   }
 }
