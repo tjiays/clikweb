@@ -27,7 +27,7 @@ import { lockedForApprover } from '@/fields/approval'
  */
 export const Articles: CollectionConfig = contentCollection({
   slug: 'articles',
-  labels: { singular: 'Artikel', plural: 'Artikel' },
+  labels: { singular: 'News', plural: 'News' },
   group: 'Newsroom',
   owners: MODULE_OWNERS.newsroom,
   preview: { id: '/newsroom', en: '/en/newsroom' },
@@ -174,15 +174,22 @@ export const Articles: CollectionConfig = contentCollection({
       true,
       'Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.',
     ),
+    /*
+     * Featured News and the two list controls are no longer decisions anyone
+     * makes. Every article shows in both lists, newest first, so there is
+     * nothing to tick — and a new piece lands at the top of each without
+     * anyone remembering to promote it.
+     *
+     * The fields stay, hidden, rather than being dropped: they hold the
+     * hand-ordering from the Figma build, and that is the only record of it
+     * if this is ever reversed.
+     */
     {
       name: 'isFeatured',
       type: 'checkbox',
       label: 'Featured News',
       access: lockedForApprover,
-      admin: {
-        position: 'sidebar',
-        description: 'Shows in the Featured News list on the Newsroom page.',
-      },
+      admin: { position: 'sidebar', hidden: true },
     },
     {
       name: 'featuredPositions',
@@ -191,12 +198,7 @@ export const Articles: CollectionConfig = contentCollection({
       min: 1,
       label: 'Posisi di Featured News',
       access: lockedForApprover,
-      admin: {
-        position: 'sidebar',
-        condition: (data) => Boolean(data?.isFeatured),
-        description:
-          'Place in the Featured News list (1 = top). An article may take more than one place. Empty: after the numbered ones, newest first.',
-      },
+      admin: { position: 'sidebar', hidden: true },
     },
     {
       name: 'hideFromList',
@@ -204,11 +206,7 @@ export const Articles: CollectionConfig = contentCollection({
       label: 'Sembunyikan dari daftar',
       defaultValue: false,
       access: lockedForApprover,
-      admin: {
-        position: 'sidebar',
-        description:
-          'Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.',
-      },
+      admin: { position: 'sidebar', hidden: true },
     },
   ],
 })

@@ -206,17 +206,8 @@ export interface Article {
    * Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.
    */
   publishDate: string;
-  /**
-   * Shows in the Featured News list on the Newsroom page.
-   */
   isFeatured?: boolean | null;
-  /**
-   * Place in the Featured News list (1 = top). An article may take more than one place. Empty: after the numbered ones, newest first.
-   */
   featuredPositions?: number[] | null;
-  /**
-   * Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.
-   */
   hideFromList?: boolean | null;
   isSample?: boolean | null;
   approvalStatus?: ('in_review' | 'approved' | 'rejected') | null;

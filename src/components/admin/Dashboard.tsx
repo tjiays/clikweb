@@ -23,7 +23,7 @@ const EDITORS: Record<string, Role[]> = {
 }
 
 const CONTENT: Card[] = [
-  { label: 'Artikel', description: 'Berita dan insight', slug: 'articles', roles: EDITORS.news },
+  { label: 'News', description: 'Berita dan insight', slug: 'articles', roles: EDITORS.news },
   { label: 'Laporan', description: 'Laporan tahunan dan perkembangan usaha', slug: 'reports', roles: EDITORS.news },
   { label: 'Item Produk', description: 'Produk pada Business Solution', slug: 'product-items', roles: EDITORS.marketing },
   { label: 'Lowongan Pekerjaan', description: 'Posisi yang sedang dibuka', slug: 'job-openings', roles: EDITORS.hr },
@@ -38,7 +38,7 @@ const SETTINGS: Card[] = [
 
 /** The four figures worth putting at the top, in reading order. */
 const TILES = [
-  { slug: 'articles', label: 'Artikel', hint: 'dipublikasikan' },
+  { slug: 'articles', label: 'News', hint: 'dipublikasikan' },
   { slug: 'product-items', label: 'Item Produk', hint: 'di Business Solution' },
   { slug: 'job-openings', label: 'Lowongan', hint: 'terdaftar' },
   { slug: 'contact-submissions', label: 'Data Masuk', hint: 'dari formulir kontak' },

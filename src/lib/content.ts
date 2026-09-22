@@ -139,44 +139,36 @@ const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale)
   } as T
 }
 
-const listedArticles = {
-  or: [{ hideFromList: { equals: false } }, { hideFromList: { exists: false } }],
-}
+/*
+ * Every published article is listed. There used to be a hideFromList flag
+ * keeping some off the cards while they sat in Featured News; that is no
+ * longer a choice anyone makes, so the filter goes with it.
+ */
 
 /** Same day: the later time comes first, so the order is always the same. */
 const NEWEST_FIRST = ['-publishDate', '-id']
 
 export const getLatestArticles = async (locale: Locale, limit = 3) =>
-  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST, where: listedArticles }))
+  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST }))
     .map((doc) => forLocale(doc, locale))
 
 export const getArticlesPage = async (locale: Locale, page = 1) => {
-  const result = await listPaged<any>('articles', locale, page, 6, NEWEST_FIRST, listedArticles)
+  const result = await listPaged<any>('articles', locale, page, 6, NEWEST_FIRST)
   return { ...result, docs: result.docs.map((doc) => forLocale(doc, locale)) }
 }
 
 /**
- * Featured News, in the order the editors numbered them. An article may hold
- * more than one place (Figma 1783:10696 lists one twice). Featured articles
- * without a number follow, newest first.
+ * Featured News: simply the newest articles.
+ *
+ * It used to be a hand-ordered list — a checkbox to promote an article and a
+ * number to place it. Nobody has to remember either now: whatever was
+ * published last is at the top here and at the top of the Newsroom cards,
+ * which is what an editor expects after pressing save.
  */
-export const getFeaturedArticles = async (locale: Locale, limit = 8) => {
-  const articles = await listPublished<any>('articles', {
-    locale,
-    limit: 100,
-    sort: NEWEST_FIRST,
-    where: { isFeatured: { equals: true } },
-  })
-  const placed: { place: number; article: any }[] = []
-  const rest: any[] = []
-  for (const article of articles) {
-    const places = (article.featuredPositions ?? []).filter((n: unknown) => typeof n === 'number')
-    if (places.length === 0) rest.push(article)
-    for (const place of places) placed.push({ place, article })
-  }
-  placed.sort((a, b) => a.place - b.place)
-  return [...placed.map((p) => p.article), ...rest].slice(0, limit).map((a) => forLocale(a, locale))
-}
+export const getFeaturedArticles = async (locale: Locale, limit = 8) =>
+  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST })).map((a) =>
+    forLocale(a, locale),
+  )
 
 export const getArticleBySlug = async (locale: Locale, slug: string) =>
   forLocale(await findOne<any>('articles', 'slug', slug, locale), locale)
@@ -213,7 +205,6 @@ export const getRelatedArticles = async (
     locale,
     limit: limit + 1,
     sort: NEWEST_FIRST,
-    where: listedArticles,
   })
   return articles
     .filter((a) => a.id !== article.id)

@@ -72,7 +72,7 @@ const GROUPS: { title: string; items: Item[] }[] = [
   {
     title: 'Newsroom',
     items: [
-      { slug: 'articles', label: 'Artikel', icon: I('M4 4h11a2 2 0 012 2v12a2 2 0 002 2H6a2 2 0 01-2-2V4zm3 4h7M7 11h7M7 14h4') },
+      { slug: 'articles', label: 'News', icon: I('M4 4h11a2 2 0 012 2v12a2 2 0 002 2H6a2 2 0 01-2-2V4zm3 4h7M7 11h7M7 14h4') },
     ],
   },
   {
