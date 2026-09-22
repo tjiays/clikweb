@@ -39,6 +39,58 @@ export type Paged<T> = {
   totalDocs: number
 }
 
+/*
+ * Scheduling.
+ *
+ * Approval is what makes something live; the publish date used to be only a
+ * label and a sort key, so an approved article dated next Monday appeared at
+ * once — and, sorting newest first, pinned itself above everything until the
+ * real date caught up. It now holds the item back until its day begins.
+ *
+ * The boundary is midnight in Jakarta, so an item dated Monday appears in
+ * the first minute of Monday there, whatever time of day was typed. WIB is
+ * a fixed +7 with no daylight saving, which is what makes this arithmetic
+ * safe to do by hand.
+ */
+const SCHEDULED_BY_DATE = new Set(['articles', 'reports'])
+
+const startOfTomorrowInJakarta = () => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date())
+  const at = (type: string) => parts.find((p) => p.type === type)?.value ?? '01'
+  const midnightToday = new Date(`${at('year')}-${at('month')}-${at('day')}T00:00:00+07:00`)
+  midnightToday.setUTCDate(midnightToday.getUTCDate() + 1)
+  return midnightToday.toISOString()
+}
+
+/**
+ * The public conditions for a collection: published, and — where the
+ * collection is dated — not still in the future.
+ *
+ * Job openings carry a postedDate rather than a publishDate, so they are left
+ * out: asking for a field they do not have would have hidden every job. An
+ * item with no date at all was never scheduled, so it stays visible.
+ */
+export const publicWhere = (collection: string, extra: Record<string, unknown> = {}) => {
+  const published = { _status: { equals: 'published' }, ...extra }
+  if (!SCHEDULED_BY_DATE.has(collection)) return published
+  return {
+    and: [
+      published,
+      {
+        or: [
+          { publishDate: { less_than: startOfTomorrowInJakarta() } },
+          { publishDate: { exists: false } },
+        ],
+      },
+    ],
+  }
+}
+
 async function listPublished<T>(
   collection: string,
   options: {
@@ -58,7 +110,7 @@ async function listPublished<T>(
     draft: await isPreview(),
     where: ((await isPreview())
       ? (options.where ?? {})
-      : { _status: { equals: 'published' }, ...(options.where ?? {}) }) as never,
+      : publicWhere(collection, options.where ?? {})) as never,
   })
   return docs as T[]
 }
@@ -80,9 +132,7 @@ async function listPaged<T>(
     sort,
     depth: 2,
     draft: await isPreview(),
-    where: ((await isPreview())
-      ? where
-      : { _status: { equals: 'published' }, ...where }) as never,
+    where: ((await isPreview()) ? where : publicWhere(collection, where)) as never,
   })
   return {
     docs: result.docs as T[],
@@ -107,7 +157,7 @@ async function findOne<T>(
     draft: await isPreview(),
     where: ((await isPreview())
       ? { [field]: { equals: value } }
-      : { [field]: { equals: value }, _status: { equals: 'published' } }) as never,
+      : publicWhere(collection, { [field]: { equals: value } })) as never,
   })
   return (docs[0] as T) ?? null
 }
@@ -196,9 +246,16 @@ export const getRelatedArticles = async (
   article: { id: string | number; relatedArticles?: unknown },
   limit = 3,
 ) => {
+  // These arrive whole from the relationship rather than through a query, so
+  // they miss publicWhere and have to be held to the same rule by hand.
+  const live = startOfTomorrowInJakarta()
   const picked = (Array.isArray(article.relatedArticles) ? article.relatedArticles : []).filter(
-    (a): a is { id: number; _status?: string } =>
-      Boolean(a) && typeof a === 'object' && (a as { _status?: string })._status === 'published',
+    (a): a is { id: number; _status?: string; publishDate?: string } => {
+      if (!a || typeof a !== 'object') return false
+      const doc = a as { _status?: string; publishDate?: string }
+      if (doc._status !== 'published') return false
+      return !doc.publishDate || doc.publishDate < live
+    },
   )
   if (picked.length > 0) return picked.slice(0, limit).map((a) => forLocale(a, locale))
   const articles = await listPublished<any>('articles', {

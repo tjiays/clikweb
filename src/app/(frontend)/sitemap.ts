@@ -4,6 +4,7 @@ import config from '@payload-config'
 import { routes, type RouteKey } from '@/i18n/routes'
 import { locales } from '@/i18n/config'
 import { mediaOutlets } from '@/content/newsroom'
+import { publicWhere } from '@/lib/content'
 
 /**
  * sitemap.xml covering both languages.
@@ -68,7 +69,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           locale,
           limit: 1000,
           depth: 0,
-          where: { _status: { equals: 'published' } } as never,
+          // Nothing that has not reached its publish day yet.
+          where: publicWhere(collection.slug) as never,
         })
 
         for (const doc of docs as { slug?: string; updatedAt?: string }[]) {
