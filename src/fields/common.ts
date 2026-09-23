@@ -222,18 +222,30 @@ export type ImageRule = {
 
 export const IMAGE_RULES = {
   /* Card: aspect-ratio 406/232 in Cards.module.css, drawn 416px wide. */
+  /*
+   * 1140x650 is a real export from the Figma set, and the largest of the six
+   * card covers there. The six average 897x513 and every one of them is 1.75,
+   * so the shape is settled; the size is the biggest the design has actually
+   * produced rather than a number worked back from the slot.
+   */
   articleCover: {
     minWidth: 832,
     ratio: { min: 1.2, max: 3 },
-    recommended: '1456x832px',
+    recommended: '1140x650px',
     label: { en: '7:4', id: '7:4' },
     shape: { en: 'landscape', id: 'mendatar' },
   },
   /* Banner: aspect-ratio 1300/372 on the article page, drawn 1300px wide. */
+  /*
+   * The slot's own dimensions, straight off aspect-ratio 1300/372 in
+   * ArticleDetailPage.module.css. The one banner in the Figma set is 1134x324
+   * at the same 3.5, which is narrower than the space it fills, so the design
+   * itself is the better target here.
+   */
   articleBanner: {
     minWidth: 1300,
     ratio: { min: 2.8, max: 4.2 },
-    recommended: '2600x744px',
+    recommended: '1300x372px',
     label: { en: '3.5:1', id: '3,5:1' },
     shape: { en: 'wide', id: 'memanjang' },
   },
@@ -246,11 +258,12 @@ export const IMAGE_RULES = {
     shape: { en: 'landscape', id: 'mendatar' },
   },
   /* A business development report only ever appears on the card. */
+  /* Card only. 1218x833 is the real business development cover; rounded. */
   reportCoverBusiness: {
     minWidth: 832,
     ratio: { min: 1.2, max: 3 },
-    recommended: '1456x832px',
-    label: { en: '7:4', id: '7:4' },
+    recommended: '1200x800px',
+    label: { en: '3:2', id: '3:2' },
     shape: { en: 'landscape', id: 'mendatar' },
   },
   /* Product row image, drawn 640px wide. */

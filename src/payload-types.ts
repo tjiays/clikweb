@@ -136,11 +136,11 @@ export interface UserAuthOperations {
 export interface Article {
   id: number;
   /**
-   * Ratio 7:4; min 1456x832px; max 5MB
+   * Ratio 7:4; min 1140x650px; max 5MB
    */
   cover?: (number | null) | Media;
   /**
-   * Ratio 3.5:1; min 2600x744px; max 5MB
+   * Ratio 3.5:1; min 1300x372px; max 5MB
    */
   banner?: (number | null) | Media;
   titleId: string;
