@@ -31,9 +31,10 @@ function applyMailto(job: any, fallbackEmail: string) {
 }
 
 /** Photo band (Figma Component 10): one set of six photos is 3161px wide
- *  (sizes + 48px gaps) and moves by one set every 10s. */
+ *  (sizes + 48px gaps). Figma moves a set every 10s (~316px/s), which the
+ *  owner found too fast to look at, so it runs at 25s (~126px/s) instead. */
 const STRIP_GAP = 48
-const STRIP_SECONDS = 10
+const STRIP_SECONDS = 25
 
 /** Karir — Figma 415:2692, per intent/02 §2.16. */
 export async function CareersPage({ locale }: { locale: Locale }) {
