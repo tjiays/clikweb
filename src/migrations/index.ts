@@ -15,6 +15,8 @@ import * as migration_20260923_104006_products_drop_legacy from './20260923_1040
 import * as migration_20260923_140000_product_sequences from './20260923_140000_product_sequences';
 import * as migration_20260923_142420_careers_apply_url from './20260923_142420_careers_apply_url';
 import * as migration_20260923_142545_careers_drop_unused from './20260923_142545_careers_drop_unused';
+import * as migration_20260923_144613 from './20260923_144613';
+import * as migration_20260923_150000_career_categories from './20260923_150000_career_categories';
 
 export const migrations = [
   {
@@ -100,6 +102,16 @@ export const migrations = [
   {
     up: migration_20260923_142545_careers_drop_unused.up,
     down: migration_20260923_142545_careers_drop_unused.down,
-    name: '20260923_142545_careers_drop_unused'
+    name: '20260923_142545_careers_drop_unused',
+  },
+  {
+    up: migration_20260923_144613.up,
+    down: migration_20260923_144613.down,
+    name: '20260923_144613',
+  },
+  {
+    up: migration_20260923_150000_career_categories.up,
+    down: migration_20260923_150000_career_categories.down,
+    name: '20260923_150000_career_categories'
   },
 ];

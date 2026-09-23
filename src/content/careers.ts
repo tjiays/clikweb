@@ -154,8 +154,21 @@ export const jobDetail = {
 }
 
 /** Fixed list; a vacancy picks one of these in the CMS. */
+/*
+ * The departments a vacancy can belong to. One list: the site reads it to
+ * label a job card, and the CMS builds its dropdown from it, so the two
+ * cannot drift apart. Adding a department here is all it takes.
+ *
+ * The slug is what lands in the database, so changing one needs the rows
+ * changed with it — see 20260923_150000_career_categories.
+ */
 export const jobCategories = [
-  { slug: 'information-technology', name: { id: 'Information Technology', en: 'Information Technology' } },
-  { slug: 'analysis-reporting', name: { id: 'Analysis & Reporting', en: 'Analysis & Reporting' } },
-  { slug: 'sales-business-development', name: { id: 'Sales & Business Development', en: 'Sales & Business Development' } },
+  { slug: 'it', name: { id: 'IT', en: 'IT' } },
+  { slug: 'analytics', name: { id: 'Analytics', en: 'Analytics' } },
+  {
+    slug: 'sales-business-development',
+    name: { id: 'Sales & Business Development', en: 'Sales & Business Development' },
+  },
+  { slug: 'operations', name: { id: 'Operations', en: 'Operations' } },
+  { slug: 'finance', name: { id: 'Finance', en: 'Finance' } },
 ]

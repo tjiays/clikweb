@@ -4,6 +4,7 @@ import { MODULE_OWNERS } from '@/access'
 import { localisedText, richText, slugField, sortOrderField } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 import { bothLanguages } from '@/i18n/admin'
+import { jobCategories } from '@/content/careers'
 
 const owners = MODULE_OWNERS.karir
 
@@ -22,18 +23,17 @@ export const JobOpenings: CollectionConfig = contentCollection({
     localisedText('title', 'Nama posisi', true),
     slugField(),
     {
-      // The category list is fixed and lives in src/content/careers.ts, so it
-      // is a select rather than its own collection.
+      /*
+       * Built from jobCategories in src/content/careers.ts, which is also
+       * what the site reads to label a job card. Two hand-kept lists had
+       * already started to disagree on wording.
+       */
       name: 'category',
       type: 'select',
       label: 'Kategori',
       required: true,
       access: lockedForApprover,
-      options: [
-        { label: 'Information Technology', value: 'information-technology' },
-        { label: 'Analysis & Reporting', value: 'analysis-reporting' },
-        { label: 'Sales & Business Development', value: 'sales-business-development' },
-      ],
+      options: jobCategories.map((c) => ({ label: c.name.en, value: c.slug })),
     },
     richText('responsibilities', 'Key Responsibilities'),
     richText('minimumQualifications', 'Minimum Qualifications'),

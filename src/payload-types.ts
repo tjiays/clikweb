@@ -407,7 +407,7 @@ export interface JobOpening {
   id: number;
   title: string;
   slug: string;
-  category: 'information-technology' | 'analysis-reporting' | 'sales-business-development';
+  category: 'it' | 'analytics' | 'sales-business-development' | 'operations' | 'finance';
   responsibilities?: {
     root: {
       type: string;
