@@ -14,9 +14,22 @@
  */
 
 :root {
+  /*
+   * The website's own tokens, from src/styles/tokens.css, so the CMS and the
+   * site it edits are the same brand rather than two near-misses. These are
+   * the Figma values in intent/01-design-system.md; the deck brand spec is a
+   * different system with a different navy, orange and typeface, and applies
+   * to decks, not to this.
+   */
   --clik-orange: #ff7d00;
   --clik-orange-light: #ffbb7b;
   --clik-navy: #003a79;
+  --clik-page: #fafafa;
+  --clik-surface: #ffffff;
+  --clik-tint: #f1faff;
+  --clik-border: #dbe4f0;
+  --clik-muted: #697077;
+  --clik-radius: 10px;
 
   --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: var(--font-body);
@@ -261,4 +274,104 @@ body[data-collection='articles'] .localizer,
 body[data-collection='reports'] .localizer,
 body[data-collection='product-items'] .localizer {
   display: none;
+}
+
+/* ---- Surfaces ----
+   Payload's own greys give way to the site's: the page ground, the card
+   white and the pale blue rule that separates them. Only the colours the
+   brand actually defines are replaced; the rest of Payload's scale is left
+   alone, because it carries text contrast that is not ours to re-balance. */
+body {
+  --theme-bg: var(--clik-page);
+  --theme-border-color: var(--clik-border);
+}
+
+.template-default__wrap,
+.collection-list,
+.document-fields {
+  background-color: var(--clik-page);
+}
+
+/* Anything Payload draws as a panel: the list table, the field column, the
+   sidebar box on a document. */
+.table,
+.doc-fields__sidebar-fields,
+.collection-list__wrap .list-controls {
+  background-color: var(--clik-surface);
+  border: 1px solid var(--clik-border);
+  border-radius: var(--clik-radius);
+}
+
+/* ---- Fields ----
+   A navy label over a white field on the site's border blue, and the focus
+   ring in orange, which is the one place the accent belongs. */
+.field-label {
+  color: var(--clik-navy);
+  font-weight: 700;
+}
+
+.field-type input:not([type='checkbox']):not([type='radio']),
+.field-type textarea,
+.field-type .rs__control {
+  border-color: var(--clik-border);
+  border-radius: 6px;
+}
+
+.field-type input:focus,
+.field-type textarea:focus,
+.field-type .rs__control--is-focused {
+  border-color: var(--clik-orange);
+  box-shadow: 0 0 0 2px rgba(255, 125, 0, 0.18);
+  outline: none;
+}
+
+.field-description {
+  color: var(--clik-muted);
+}
+
+/* ---- Tables ----
+   The list view reads like the tables on the site: a navy header over pale
+   blue rules. */
+.table thead tr {
+  background-color: var(--clik-navy);
+}
+
+.table thead th,
+.table thead th button {
+  color: #fff;
+  font-weight: 700;
+}
+
+.table tbody td {
+  border-bottom: 1px solid var(--clik-border);
+}
+
+.table tbody tr:hover {
+  background-color: var(--clik-tint);
+}
+
+/* ---- Links ---- */
+.doc-controls a,
+.collection-list a:not(.btn):not(.pill) {
+  color: var(--clik-navy);
+}
+
+.doc-controls a:hover,
+.collection-list a:not(.btn):not(.pill):hover {
+  color: var(--clik-orange);
+}
+
+/* ---- Headings ---- */
+.doc-header__title,
+.collection-list__header h1,
+.list-header h1 {
+  color: var(--clik-navy);
+}
+
+/* ---- Pills ----
+   The badge styling from the website's tokens, so a status here looks like a
+   status there: navy for the settled state, orange outline for the pending
+   one. */
+.pill {
+  border-radius: 999px;
 }
