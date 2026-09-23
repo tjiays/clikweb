@@ -165,29 +165,44 @@ async function findOne<T>(
 /* ---- Newsroom ---- */
 
 /** Articles marked "hide from list" keep their page but stay off the cards. */
-const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale): T => {
-  if (!doc || doc.titleId === undefined) return doc as T
+const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale): T | null => {
+  if (!doc) return null
   const L = locale === 'en' ? 'En' : 'Id'
-  return {
-    ...doc,
-    title: doc[`title${L}`] ?? doc.titleId ?? '',
-    excerpt: doc[`excerpt${L}`] ?? doc.excerptId ?? '',
-    /*
-     * Fall back to Indonesian rather than render an empty page, in the window
-     * before something has been translated. Approval refuses a
-     * half-translated item, so anything published has both.
-     */
-    body: doc[`body${L}`] ?? doc.bodyId ?? null,
-    seo: {
-      title: doc[`seoTitle${L}`] ?? doc.seoTitleId ?? '',
-      description: doc[`seoDescription${L}`] ?? doc.seoDescriptionId ?? '',
-    },
-    // Related articles arrive as whole documents and need the same treatment.
-    ...(Array.isArray(doc.relatedArticles)
-      ? { relatedArticles: doc.relatedArticles.map((a: any) => forLocale(a, locale)) }
-      : {}),
-  } as T
+  const out: Record<string, any> = { ...doc }
+  let paired = false
+
+  /*
+   * Every field kept as a visible pair in the CMS — titleId beside titleEn —
+   * is flattened to the language being served, so the pages read doc.title
+   * and never have to know. A pair is only a pair when both halves exist,
+   * which keeps an ordinary field ending in "Id" from being mistaken for one.
+   *
+   * Indonesian is the fallback: better a page in the wrong language than an
+   * empty one, in the window before something is translated. Approval refuses
+   * a half-translated item, so anything published has both.
+   */
+  for (const key of Object.keys(doc)) {
+    if (!key.endsWith('Id')) continue
+    const base = key.slice(0, -2)
+    if (!base || !(`${base}En` in doc)) continue
+    paired = true
+    out[base] = doc[`${base}${L}`] ?? doc[`${base}Id`] ?? null
+  }
+
+  if (!paired) return doc
+
+  if ('seoTitle' in out || 'seoDescription' in out) {
+    out.seo = { title: out.seoTitle ?? '', description: out.seoDescription ?? '' }
+  }
+
+  // Related articles arrive as whole documents and need the same treatment.
+  if (Array.isArray(doc.relatedArticles)) {
+    out.relatedArticles = doc.relatedArticles.map((a: any) => forLocale(a, locale))
+  }
+
+  return out as T
 }
+
 
 /*
  * Every published article is listed. There used to be a hideFromList flag
@@ -295,10 +310,12 @@ export const getReportBySlug = async (locale: Locale, slug: string) =>
 
 /* ---- Karir ---- */
 export const getOpenJobs = (locale: Locale) =>
-  listPublished<any>('job-openings', { locale, where: { isOpen: { equals: true } } })
+  listPublished<any>('job-openings', { locale, where: { isOpen: { equals: true } } }).then((docs) =>
+    docs.map((doc) => forLocale(doc, locale)),
+  )
 
 export const getJobBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('job-openings', 'slug', slug, locale)
+  findOne<any>('job-openings', 'slug', slug, locale).then((doc) => forLocale(doc, locale))
 
 /* ---- Product ---- */
 export const getProductItems = async (locale: Locale, categorySlug?: string) => {

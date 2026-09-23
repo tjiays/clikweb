@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
-import { localisedText, richText, slugField, sortOrderField } from '@/fields/common'
+import { slugField, sortOrderField } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 import { bothLanguages } from '@/i18n/admin'
 import { jobCategories } from '@/content/careers'
@@ -18,10 +18,31 @@ export const JobOpenings: CollectionConfig = contentCollection({
   // helpers would be most of what is left on it.
   autoTranslate: false,
   languageStatus: false,
-  defaultColumns: ['title', 'category', 'isOpen', 'approvalStatus'],
+  useAsTitle: 'titleId',
+  defaultColumns: ['titleId', 'category', 'isOpen', 'approvalStatus'],
   fields: [
-    localisedText('title', 'Nama posisi', true),
-    slugField(),
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'titleId',
+          type: 'text',
+          label: 'Nama posisi (Bahasa Indonesia)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
+        {
+          name: 'titleEn',
+          type: 'text',
+          label: 'Position (English)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
+      ],
+    },
+    slugField('titleId', false),
     {
       /*
        * Built from jobCategories in src/content/careers.ts, which is also
@@ -35,8 +56,30 @@ export const JobOpenings: CollectionConfig = contentCollection({
       access: lockedForApprover,
       options: jobCategories.map((c) => ({ label: c.name.en, value: c.slug })),
     },
-    richText('responsibilities', 'Key Responsibilities'),
-    richText('minimumQualifications', 'Minimum Qualifications'),
+    {
+      name: 'responsibilitiesId',
+      type: 'richText',
+      label: 'Tanggung jawab (Bahasa Indonesia)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'responsibilitiesEn',
+      type: 'richText',
+      label: 'Key Responsibilities (English)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'minimumQualificationsId',
+      type: 'richText',
+      label: 'Persyaratan (Bahasa Indonesia)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'minimumQualificationsEn',
+      type: 'richText',
+      label: 'Minimum Qualifications (English)',
+      access: lockedForApprover,
+    },
     {
       /*
        * The Lamar button sends applicants here instead of opening a mail

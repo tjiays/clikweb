@@ -405,10 +405,11 @@ export interface Report {
  */
 export interface JobOpening {
   id: number;
-  title: string;
+  titleId: string;
+  titleEn: string;
   slug: string;
   category: 'it' | 'analytics' | 'sales-business-development' | 'operations' | 'finance';
-  responsibilities?: {
+  responsibilitiesId?: {
     root: {
       type: string;
       children: {
@@ -423,7 +424,37 @@ export interface JobOpening {
     };
     [k: string]: unknown;
   } | null;
-  minimumQualifications?: {
+  responsibilitiesEn?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  minimumQualificationsId?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  minimumQualificationsEn?: {
     root: {
       type: string;
       children: {
@@ -812,11 +843,14 @@ export interface ReportsSelect<T extends boolean = true> {
  * via the `definition` "job-openings_select".
  */
 export interface JobOpeningsSelect<T extends boolean = true> {
-  title?: T;
+  titleId?: T;
+  titleEn?: T;
   slug?: T;
   category?: T;
-  responsibilities?: T;
-  minimumQualifications?: T;
+  responsibilitiesId?: T;
+  responsibilitiesEn?: T;
+  minimumQualificationsId?: T;
+  minimumQualificationsEn?: T;
   applyUrl?: T;
   isOpen?: T;
   sortOrder?: T;

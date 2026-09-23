@@ -80,7 +80,19 @@ const assertBothLanguages = async ({
    * rule is about half-finished translation, not about mandating a body.
    */
   // A product's long text is its description; everything else calls it body.
-  const bodyBase = doc && (paired ? 'descriptionId' in doc : 'description' in doc) ? 'description' : 'body'
+  /*
+   * The long text goes by a different name in each collection: news and
+   * reports call it a body, a product a description, a vacancy its
+   * responsibilities. Whichever one is present is the one held to both
+   * languages.
+   */
+  const longTextBase =
+    doc && (paired ? 'descriptionId' in doc : 'description' in doc)
+      ? 'description'
+      : doc && (paired ? 'responsibilitiesId' in doc : 'responsibilities' in doc)
+        ? 'responsibilities'
+        : 'body'
+  const bodyBase = longTextBase
   const hasBody = ['id', 'en'].some((code) => richTextFilled(pick(bodyBase, code)))
 
   for (const [code, name] of Object.entries(LANG)) {
