@@ -82,6 +82,15 @@ export const Users: CollectionConfig = {
     delete: ({ req: { user } }) => isSuperAdmin(user),
   },
   fields: [
+    {
+      // The activation link, for a Super Admin, while an account is pending.
+      name: 'verificationLink',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '@/components/admin/VerificationLink#default' },
+      },
+    },
     { name: 'name', type: 'text', required: true },
     {
       name: 'role',

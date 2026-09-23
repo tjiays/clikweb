@@ -19,6 +19,7 @@ import {
   Media,
 } from './collections'
 import { autoTranslateEndpoint } from './endpoints/autoTranslate'
+import { verificationLinkEndpoint } from './endpoints/verificationLink'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -126,7 +127,7 @@ export default buildConfig({
     },
   }),
 
-  endpoints: [autoTranslateEndpoint],
+  endpoints: [autoTranslateEndpoint, verificationLinkEndpoint],
 
   sharp,
   plugins: [],
