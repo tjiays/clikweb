@@ -13,6 +13,8 @@ import * as migration_20260922_074642_articles_paired_languages from './20260922
 import * as migration_20260923_103843_products_add_paired from './20260923_103843_products_add_paired';
 import * as migration_20260923_104006_products_drop_legacy from './20260923_104006_products_drop_legacy';
 import * as migration_20260923_140000_product_sequences from './20260923_140000_product_sequences';
+import * as migration_20260923_142420_careers_apply_url from './20260923_142420_careers_apply_url';
+import * as migration_20260923_142545_careers_drop_unused from './20260923_142545_careers_drop_unused';
 
 export const migrations = [
   {
@@ -83,11 +85,21 @@ export const migrations = [
   {
     up: migration_20260923_104006_products_drop_legacy.up,
     down: migration_20260923_104006_products_drop_legacy.down,
-    name: '20260923_104006_products_drop_legacy'
+    name: '20260923_104006_products_drop_legacy',
   },
   {
     up: migration_20260923_140000_product_sequences.up,
     down: migration_20260923_140000_product_sequences.down,
-    name: '20260923_140000_product_sequences'
+    name: '20260923_140000_product_sequences',
+  },
+  {
+    up: migration_20260923_142420_careers_apply_url.up,
+    down: migration_20260923_142420_careers_apply_url.down,
+    name: '20260923_142420_careers_apply_url',
+  },
+  {
+    up: migration_20260923_142545_careers_drop_unused.up,
+    down: migration_20260923_142545_careers_drop_unused.down,
+    name: '20260923_142545_careers_drop_unused'
   },
 ];

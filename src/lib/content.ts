@@ -71,9 +71,9 @@ const startOfTomorrowInJakarta = () => {
  * The public conditions for a collection: published, and — where the
  * collection is dated — not still in the future.
  *
- * Job openings carry a postedDate rather than a publishDate, so they are left
- * out: asking for a field they do not have would have hidden every job. An
- * item with no date at all was never scheduled, so it stays visible.
+ * Job openings carry no publish date at all, so they are left out: asking
+ * for a field they do not have would have hidden every job. An item with no
+ * date is not scheduled, so it stays visible.
  */
 export const publicWhere = (collection: string, extra: Record<string, unknown> = {}) => {
   const published = { _status: { equals: 'published' }, ...extra }

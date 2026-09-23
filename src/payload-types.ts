@@ -438,31 +438,14 @@ export interface JobOpening {
     };
     [k: string]: unknown;
   } | null;
-  education?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   /**
-   * The "Lamar" button opens an email to this address.
+   * Where the Apply button goes. Leave empty to use the careers page default.
    */
-  applyEmail?: string | null;
-  emailSubjectFormat?: string | null;
+  applyUrl?: string | null;
   /**
    * Only open positions are listed on the website.
    */
   isOpen?: boolean | null;
-  postedDate?: string | null;
   /**
    * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
@@ -834,11 +817,8 @@ export interface JobOpeningsSelect<T extends boolean = true> {
   category?: T;
   responsibilities?: T;
   minimumQualifications?: T;
-  education?: T;
-  applyEmail?: T;
-  emailSubjectFormat?: T;
+  applyUrl?: T;
   isOpen?: T;
-  postedDate?: T;
   sortOrder?: T;
   isSample?: T;
   approvalStatus?: T;

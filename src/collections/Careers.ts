@@ -13,6 +13,10 @@ export const JobOpenings: CollectionConfig = contentCollection({
   group: 'Karir',
   owners,
   preview: { id: '/karir', en: '/en/careers' },
+  // The sidebar is down to what a job actually needs, so the two language
+  // helpers would be most of what is left on it.
+  autoTranslate: false,
+  languageStatus: false,
   defaultColumns: ['title', 'category', 'isOpen', 'approvalStatus'],
   fields: [
     localisedText('title', 'Nama posisi', true),
@@ -33,18 +37,24 @@ export const JobOpenings: CollectionConfig = contentCollection({
     },
     richText('responsibilities', 'Key Responsibilities'),
     richText('minimumQualifications', 'Minimum Qualifications'),
-    richText('education', 'Education'),
     {
-      name: 'applyEmail',
+      /*
+       * The Lamar button sends applicants here instead of opening a mail
+       * client. One company page rather than a link per role: the roles
+       * listed on JobStreet are not the ones seeded here, so a deep link
+       * per job would point at nothing.
+       */
+      name: 'applyUrl',
       type: 'text',
-      defaultValue: 'talent@cbclik.com',
+      label: 'Tautan lamaran (JobStreet)',
       access: lockedForApprover,
-      admin: { description: 'The "Lamar" button opens an email to this address.' },
+      admin: {
+        description: {
+          en: 'Where the Apply button goes. Leave empty to use the careers page default.',
+          id: 'Tujuan tombol Lamar. Kosongkan untuk memakai tautan bawaan.',
+        },
+      },
     },
-    localisedText(
-      'emailSubjectFormat',
-      'Format subjek email',
-    ),
     {
       name: 'isOpen',
       type: 'checkbox',
@@ -55,12 +65,6 @@ export const JobOpenings: CollectionConfig = contentCollection({
         position: 'sidebar',
         description: 'Only open positions are listed on the website.',
       },
-    },
-    {
-      name: 'postedDate',
-      type: 'date',
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
     },
     sortOrderField,
   ],
