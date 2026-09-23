@@ -123,10 +123,28 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   const previous = originalDoc?.approvalStatus as string | undefined
 
   if (isSuperAdmin(user)) {
+    /*
+     * Rejected is not a state anything can be saved back into. It is the
+     * Approver's verdict on a submission, so the only way in is that
+     * decision — and an item already carrying it has nothing left to reject.
+     *
+     * The form posts back whatever the status field currently shows, so
+     * editing a rejected item and pressing save sent "rejected" straight
+     * back and the item sat there, reporting success and changing nothing.
+     * Saving one is the act of addressing the rejection, so it returns to
+     * review and the reason goes with it.
+     */
+    if (previous === APPROVAL_STATUSES.rejected && next === APPROVAL_STATUSES.rejected) {
+      data.approvalStatus = APPROVAL_STATUSES.inReview
+      data.submittedBy = user.id
+      data.submittedAt = new Date().toISOString()
+      data.rejectionReason = null
+      return data
+    }
+
     // Super Admin is trusted with any status, including approving in the
-    // same save that creates the item. Without a choice they get the field
-    // default, In Review, like everybody else. The one thing they are not
-    // exempt from is publishing something only half translated.
+    // same save that creates the item. The one thing they are not exempt
+    // from is publishing something only half translated.
     if (next === APPROVAL_STATUSES.approved && originalDoc?.id) {
       await assertBothLanguages({
         req: req as never,
@@ -168,7 +186,15 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
    * on their form — so saving is the act of submitting, and anything they
    * save goes to In Review.
    */
-  const target = next ?? APPROVAL_STATUSES.inReview
+  /*
+   * An editor has no status control, but the form still posts the value it
+   * is showing. A rejected item therefore came back as "rejected" and was
+   * refused as an attempt to reject — blocking the one person who was
+   * supposed to fix it. Their save always means the same thing, so anything
+   * that is not a deliberate choice they could make is read as a submission.
+   */
+  const chosen = next === APPROVAL_STATUSES.rejected ? undefined : next
+  const target = chosen ?? APPROVAL_STATUSES.inReview
 
   /*
    * An item in review is still off limits to everyone else, so the approver
