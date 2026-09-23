@@ -493,9 +493,9 @@ export interface ProductItem {
   shortDescriptionId?: string | null;
   shortDescriptionEn?: string | null;
   /**
-   * Pilih Live atau Ready to Sell. Tambahkan NEW bila produk baru.
+   * Pick up to 2. Leave empty for no badge.
    */
-  statuses: ('live' | 'ready_to_sell' | 'new')[];
+  statuses?: ('live' | 'ready_to_sell' | 'new')[] | null;
   descriptionId?: {
     root: {
       type: string;

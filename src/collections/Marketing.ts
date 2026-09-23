@@ -101,11 +101,13 @@ export const ProductItems: CollectionConfig = contentCollection({
        * Named statuses, not status: Payload reserves enum_<table>_status for
        * its own draft/published state, and the two collide outright — the
        * insert fails with "invalid input value for enum ... live".
+       *
+       * One rule only: at most two, which is as many badges as the row has
+       * space to draw. Which two is the editor's business.
        */
       name: 'statuses',
       type: 'select',
       hasMany: true,
-      required: true,
       label: 'Status',
       defaultValue: ['live'],
       access: lockedForApprover,
@@ -115,13 +117,16 @@ export const ProductItems: CollectionConfig = contentCollection({
         { label: 'NEW', value: 'new' },
       ],
       admin: {
-        description: 'Pilih Live atau Ready to Sell. Tambahkan NEW bila produk baru.',
+        description: {
+          en: 'Pick up to 2. Leave empty for no badge.',
+          id: 'Pilih maksimal 2. Kosongkan bila tanpa badge.',
+        },
       },
-      validate: (value: unknown) => {
-        const picked = Array.isArray(value) ? (value as string[]) : []
-        const sellable = picked.filter((v) => v === 'live' || v === 'ready_to_sell')
-        if (sellable.length === 0) return 'Pilih Live atau Ready to Sell.'
-        if (sellable.length > 1) return 'Pilih salah satu: Live atau Ready to Sell, tidak keduanya.'
+      validate: (value: unknown, { req }: { req?: { i18n?: { language?: string } } }) => {
+        const picked = Array.isArray(value) ? value : []
+        if (picked.length > 2) {
+          return req?.i18n?.language === 'en' ? 'Maximum choose 2' : 'Maksimal pilih 2'
+        }
         return true
       },
     },

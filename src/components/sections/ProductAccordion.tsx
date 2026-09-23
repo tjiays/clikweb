@@ -13,8 +13,8 @@ export type ProductRow = {
    * cannot cross the server/client boundary.
    */
   description?: ReactNode
-  status: 'live' | 'ready_to_sell'
-  isNew?: boolean | null
+  /** Whatever the editor picked, up to two. Empty means no badge. */
+  statuses?: string[]
   features?: string[]
   suitableFor?: string[]
   useCases?: string[]
@@ -92,8 +92,9 @@ export function ProductAccordion({
               onClick={() => toggle(row.id)}
             >
               <span className={styles.badges}>
-                <StatusBadge status={row.status} />
-                {row.isNew && <StatusBadge status="new" />}
+                {(row.statuses ?? []).map((s) => (
+                  <StatusBadge key={s} status={s as 'live' | 'ready_to_sell' | 'new'} />
+                ))}
               </span>
 
               <span className={styles.text}>

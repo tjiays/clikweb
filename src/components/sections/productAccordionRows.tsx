@@ -34,9 +34,12 @@ export function toAccordionRows(
       description: pick(product, 'description') ? (
         <RichText data={pick(product, 'description')} />
       ) : null,
-      // One field now holds both badges: the sellable state, and NEW if set.
-      status: status.includes('ready_to_sell') ? 'ready_to_sell' : 'live',
-      isNew: status.includes('new'),
+      /*
+       * Drawn in the order the design reads them: what you can do with the
+       * product, then whether it is new. The editor's own order is not used,
+       * so picking NEW first does not put it in front.
+       */
+      statuses: ['live', 'ready_to_sell', 'new'].filter((s) => status.includes(s)),
       features: labelsOf(pick(product, 'features')),
       suitableFor: labelsOf(pick(product, 'suitableFor')),
       useCases: labelsOf(pick(product, 'useCases')),
