@@ -330,24 +330,32 @@ body {
 }
 
 /* ---- Tables ----
-   The list view reads like the tables on the site: a navy header over pale
-   blue rules. */
+   The header is the site's own: pale blue with navy text, as
+   RichText.module.css sets it. A solid navy bar was my invention and far too
+   heavy for a row of column names — it read as a title rather than a label,
+   and there is a lot of it across a list of twenty-nine products. */
 .table thead tr {
-  background-color: var(--clik-navy);
+  background-color: var(--clik-tint);
 }
 
 .table thead th,
 .table thead th button {
-  color: #fff;
+  color: var(--clik-navy);
   font-weight: 700;
+}
+
+.table thead th {
+  border-bottom: 1px solid var(--clik-border);
 }
 
 .table tbody td {
   border-bottom: 1px solid var(--clik-border);
 }
 
+/* The header now holds the tint, so the hover takes the page ground instead
+   and the two stay distinguishable. */
 .table tbody tr:hover {
-  background-color: var(--clik-tint);
+  background-color: var(--clik-page);
 }
 
 /* ---- Links ---- */
