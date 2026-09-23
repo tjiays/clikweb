@@ -251,3 +251,14 @@ body {
 body[data-role='approver'] .doc-tabs {
   display: none;
 }
+
+/* ---- Language switcher ----
+   News, reports and products keep both languages on the page as visible
+   pairs, so the switcher has nothing to switch there. Payload draws it
+   whenever localization exists anywhere in the project, so it is hidden per
+   collection instead. Job openings and media alt text still need it. */
+body[data-collection='articles'] .localizer,
+body[data-collection='reports'] .localizer,
+body[data-collection='product-items'] .localizer {
+  display: none;
+}

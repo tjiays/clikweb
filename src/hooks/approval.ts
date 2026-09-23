@@ -62,11 +62,12 @@ const assertBothLanguages = async ({
   const missing: string[] = []
 
   /*
-   * Two shapes to read. Most collections keep one localised field, which
-   * comes back as { id, en }. Reports keep a visible pair — titleId and
-   * titleEn — so both languages are on the page at once.
+   * Three shapes by now. News and reports pair a title; a product pairs a
+   * name, because that is what a product has. Anything else still keeps one
+   * localised field, which comes back as { id, en }.
    */
-  const paired = doc && 'titleId' in doc
+  const titleBase = doc && 'titleId' in doc ? 'title' : doc && 'nameId' in doc ? 'name' : null
+  const paired = Boolean(titleBase)
   const pick = (base: string, code: string) =>
     paired
       ? doc[`${base}${code === 'en' ? 'En' : 'Id'}`]
@@ -78,11 +79,13 @@ const assertBothLanguages = async ({
    * insisting on one would have made them impossible to approve again — the
    * rule is about half-finished translation, not about mandating a body.
    */
-  const hasBody = ['id', 'en'].some((code) => richTextFilled(pick('body', code)))
+  // A product's long text is its description; everything else calls it body.
+  const bodyBase = doc && (paired ? 'descriptionId' in doc : 'description' in doc) ? 'description' : 'body'
+  const hasBody = ['id', 'en'].some((code) => richTextFilled(pick(bodyBase, code)))
 
   for (const [code, name] of Object.entries(LANG)) {
-    if (!textFilled(pick('title', code))) missing.push(`judul ${name}`)
-    if (hasBody && !richTextFilled(pick('body', code))) missing.push(`isi ${name}`)
+    if (!textFilled(pick(titleBase ?? 'title', code))) missing.push(`judul ${name}`)
+    if (hasBody && !richTextFilled(pick(bodyBase, code))) missing.push(`isi ${name}`)
   }
 
   if (missing.length) {
@@ -202,6 +205,8 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
     // simply there in the request — no locale reading needed.
     if (data.titleId !== undefined || originalDoc?.titleId !== undefined) {
       hasTitle = filled(data.titleId ?? originalDoc?.titleId)
+    } else if (data.nameId !== undefined || originalDoc?.nameId !== undefined) {
+      hasTitle = filled(data.nameId ?? originalDoc?.nameId)
     } else if (!locale || locale === 'id') {
       hasTitle = filled(data.title ?? originalDoc?.title)
     } else if (originalDoc?.id && req.payload && collection?.slug) {

@@ -10,6 +10,8 @@ import * as migration_20260921_101248_drop_report_year from './20260921_101248_d
 import * as migration_20260921_104918_drop_draft_status from './20260921_104918_drop_draft_status';
 import * as migration_20260922_063014_reports_paired_languages from './20260922_063014_reports_paired_languages';
 import * as migration_20260922_074642_articles_paired_languages from './20260922_074642_articles_paired_languages';
+import * as migration_20260923_103843_products_add_paired from './20260923_103843_products_add_paired';
+import * as migration_20260923_104006_products_drop_legacy from './20260923_104006_products_drop_legacy';
 
 export const migrations = [
   {
@@ -70,6 +72,16 @@ export const migrations = [
   {
     up: migration_20260922_074642_articles_paired_languages.up,
     down: migration_20260922_074642_articles_paired_languages.down,
-    name: '20260922_074642_articles_paired_languages'
+    name: '20260922_074642_articles_paired_languages',
+  },
+  {
+    up: migration_20260923_103843_products_add_paired.up,
+    down: migration_20260923_103843_products_add_paired.down,
+    name: '20260923_103843_products_add_paired',
+  },
+  {
+    up: migration_20260923_104006_products_drop_legacy.up,
+    down: migration_20260923_104006_products_drop_legacy.down,
+    name: '20260923_104006_products_drop_legacy'
   },
 ];

@@ -1,8 +1,7 @@
-import Image from 'next/image'
 import { RichText } from '@/components/ui/RichText'
 import type { Locale } from '@/i18n/config'
 import { productUi } from '@/content/products'
-import { imageAlt, imageUrl, t } from '@/lib/content'
+import { t } from '@/lib/content'
 import type { ProductAccordionLabels, ProductRow } from './ProductAccordion'
 
 type ListItem = { label?: string | null }
@@ -19,21 +18,31 @@ const labelsOf = (items: unknown): string[] =>
  */
 export function toAccordionRows(
   products: any[],
+  locale: Locale,
   duration: (product: any) => number = () => 0.3,
 ): ProductRow[] {
-  return products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    shortDescription: product.shortDescription,
-    description: product.description ? <RichText data={product.description} /> : null,
-    image: productImage(product),
-    status: product.productStatus,
-    isNew: product.isNew,
-    features: labelsOf(product.features),
-    suitableFor: labelsOf(product.suitableFor),
-    useCases: labelsOf(product.useCases),
-    duration: duration(product),
-  }))
+  // Both languages sit on the product now, so the page picks its own.
+  const L = locale === 'en' ? 'En' : 'Id'
+  const pick = (p: any, base: string) => p[`${base}${L}`] ?? p[`${base}Id`]
+
+  return products.map((product) => {
+    const status: string[] = Array.isArray(product.statuses) ? product.statuses : []
+    return {
+      id: product.id,
+      name: pick(product, 'name'),
+      shortDescription: pick(product, 'shortDescription'),
+      description: pick(product, 'description') ? (
+        <RichText data={pick(product, 'description')} />
+      ) : null,
+      // One field now holds both badges: the sellable state, and NEW if set.
+      status: status.includes('ready_to_sell') ? 'ready_to_sell' : 'live',
+      isNew: status.includes('new'),
+      features: labelsOf(pick(product, 'features')),
+      suitableFor: labelsOf(pick(product, 'suitableFor')),
+      useCases: labelsOf(pick(product, 'useCases')),
+      duration: duration(product),
+    }
+  })
 }
 
 export const accordionLabels = (locale: Locale): ProductAccordionLabels => ({
@@ -45,22 +54,3 @@ export const accordionLabels = (locale: Locale): ProductAccordionLabels => ({
   collapse: t(productUi.accordion.collapse, locale),
 })
 
-/**
- * The product's own picture, shown above its description when a row is
- * opened. Rendered here on the server and handed down, because
- * ProductAccordion is a client component and a Payload media object is not
- * something to send across that boundary.
- */
-function productImage(product: { image?: unknown; name?: unknown }) {
-  const url = imageUrl(product.image)
-  if (!url) return null
-  return (
-    <Image
-      src={url}
-      alt={imageAlt(product.image, typeof product.name === 'string' ? product.name : '')}
-      width={1200}
-      height={675}
-      sizes="(max-width: 768px) 100vw, 640px"
-    />
-  )
-}

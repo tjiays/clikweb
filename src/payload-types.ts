@@ -488,17 +488,15 @@ export interface JobOpening {
  */
 export interface ProductItem {
   id: number;
-  name: string;
-  category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
-  shortDescription?: string | null;
+  nameId: string;
+  nameEn: string;
+  shortDescriptionId?: string | null;
+  shortDescriptionEn?: string | null;
   /**
-   * Ratio 16:9; min 1280x720px; max 5MB
+   * Pilih Live atau Ready to Sell. Tambahkan NEW bila produk baru.
    */
-  image?: (number | null) | Media;
-  /**
-   * Toolbar di atas editor: judul, daftar, tautan, perataan, gambar dan tabel.
-   */
-  description?: {
+  statuses: ('live' | 'ready_to_sell' | 'new')[];
+  descriptionId?: {
     root: {
       type: string;
       children: {
@@ -513,26 +511,58 @@ export interface ProductItem {
     };
     [k: string]: unknown;
   } | null;
-  productStatus: 'live' | 'ready_to_sell';
-  isNew?: boolean | null;
-  features?:
+  descriptionEn?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuresId?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
-  suitableFor?:
+  featuresEn?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
-  useCases?:
+  suitableForId?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
+  suitableForEn?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  useCasesId?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  useCasesEn?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   /**
    * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
@@ -827,31 +857,50 @@ export interface JobOpeningsSelect<T extends boolean = true> {
  * via the `definition` "product-items_select".
  */
 export interface ProductItemsSelect<T extends boolean = true> {
-  name?: T;
+  nameId?: T;
+  nameEn?: T;
+  shortDescriptionId?: T;
+  shortDescriptionEn?: T;
+  statuses?: T;
+  descriptionId?: T;
+  descriptionEn?: T;
+  featuresId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  featuresEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  suitableForId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  suitableForEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  useCasesId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  useCasesEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   category?: T;
-  shortDescription?: T;
-  image?: T;
-  description?: T;
-  productStatus?: T;
-  isNew?: T;
-  features?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  suitableFor?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  useCases?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
   sortOrder?: T;
   isSample?: T;
   approvalStatus?: T;

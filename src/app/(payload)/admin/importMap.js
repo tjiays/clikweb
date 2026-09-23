@@ -17,8 +17,9 @@ import { default as default_02dc2ea48120144c5139fa69d9ee430e } from '@/component
 import { default as default_d1b604399efb175d075300c0936dfa7c } from '@/components/admin/LanguageStatus'
 import { default as default_02a6c7f26fc82c947dad6a4035a82bd1 } from '@/components/admin/ApprovalStatusBadge'
 import { default as default_861cf3714da76cec1b335a641a19ddcb } from '@/components/admin/BackToListOnSave'
+import { default as default_75c5b64e28a9a12cad1778c491b84dc9 } from '@/components/admin/MarkCollection'
 import { default as default_7d49ba020347320f1985b4c3026ed00f } from '@/components/admin/ReviewActions'
-import { default as default_31ffc25acaffc3cac161411fda6e6f83 } from '@/components/admin/SaveDraftUnlessApprover'
+import { default as default_de24fc1597532dc6ec82089029c4ffad } from '@/components/admin/NoSaveDraft'
 import { default as default_a9d4b87e0306b3ddfe97926a52a69591 } from '@/components/admin/Nav'
 import { default as default_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { default as default_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
@@ -46,8 +47,9 @@ export const importMap = {
   "@/components/admin/LanguageStatus#default": default_d1b604399efb175d075300c0936dfa7c,
   "@/components/admin/ApprovalStatusBadge#default": default_02a6c7f26fc82c947dad6a4035a82bd1,
   "@/components/admin/BackToListOnSave#default": default_861cf3714da76cec1b335a641a19ddcb,
+  "@/components/admin/MarkCollection#default": default_75c5b64e28a9a12cad1778c491b84dc9,
   "@/components/admin/ReviewActions#default": default_7d49ba020347320f1985b4c3026ed00f,
-  "@/components/admin/SaveDraftUnlessApprover#default": default_31ffc25acaffc3cac161411fda6e6f83,
+  "@/components/admin/NoSaveDraft#default": default_de24fc1597532dc6ec82089029c4ffad,
   "@/components/admin/Nav#default": default_a9d4b87e0306b3ddfe97926a52a69591,
   "@/components/admin/Icon#default": default_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#default": default_a44df17d0fc3dcd873dae43dc3bf66bd,

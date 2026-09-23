@@ -49,12 +49,14 @@ export default function LanguageStatus() {
         if (cancelled || !doc) return
         // Reports keep a visible pair; everything else keeps one localised
         // field, which locale=all returns as { id, en }.
-        const paired = 'titleId' in doc
+        // Products pair a name where news and reports pair a title.
+        const base = 'titleId' in doc ? 'title' : 'nameId' in doc ? 'name' : null
         setTitle(
-          paired
-            ? { id: filled(doc.titleId), en: filled(doc.titleEn) }
+          base
+            ? { id: filled(doc[`${base}Id`]), en: filled(doc[`${base}En`]) }
             : { id: filled(doc.title?.id), en: filled(doc.title?.en) },
         )
+        const paired = Boolean(base)
         if (paired ? 'bodyId' in doc : 'body' in doc) {
           setHasBody(true)
           setBody(

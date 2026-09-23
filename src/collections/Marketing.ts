@@ -2,15 +2,9 @@ import type { CollectionConfig, Field } from 'payload'
 import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
 import {
-  imageField,
-  localisedText,
-  localisedTextarea,
   richText,
   slugField,
   sortOrderField,
-  imageGuidance,
-  imageRule,
-  IMAGE_RULES,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
 import { bothLanguages } from '@/i18n/admin'
@@ -18,15 +12,57 @@ import { bothLanguages } from '@/i18n/admin'
 const owners = MODULE_OWNERS.marketing
 const group = 'Konten Website'
 
-/** A short localised list of labels on a product item. */
+/**
+ * One of the four lists on a product row, in one language.
+ *
+ * These used to be localised arrays behind the language switcher. They are a
+ * visible pair now, like the reports and news: both languages on the page, so
+ * an editor can see that one of them is empty.
+ */
 const productList = (name: string, label: string, itemLabel: string): Field => ({
+  name,
+  type: 'array',
+  label,
+  access: lockedForApprover,
+  labels: { singular: itemLabel, plural: label },
+  admin: { width: '50%' },
+  fields: [{ name: 'label', type: 'text', label: itemLabel, required: true }],
+})
+
+/** The same list in both languages, side by side. */
+const productListPair = (base: string, id: string, en: string, itemId: string, itemEn: string): Field => ({
+  type: 'row',
+  fields: [
+    productList(`${base}Id`, id, itemId),
+    productList(`${base}En`, en, itemEn),
+  ],
+})
+
+/** The old localised list shape, retained for one migration only. */
+const legacyList = (name: string, label: string): Field => ({
   name,
   type: 'array',
   label,
   localized: true,
   access: lockedForApprover,
-  labels: { singular: itemLabel, plural: label },
-  fields: [{ name: 'label', type: 'text', label: itemLabel, required: true }],
+  fields: [{ name: 'label', type: 'text', required: true }],
+})
+
+/** One short field in both languages, side by side. */
+const textPair = (base: string, id: string, en: string, required = false): Field => ({
+  type: 'row',
+  fields: [
+    { name: `${base}Id`, type: 'text', label: id, required, access: lockedForApprover, admin: { width: '50%' } },
+    { name: `${base}En`, type: 'text', label: en, required, access: lockedForApprover, admin: { width: '50%' } },
+  ],
+})
+
+const textareaPair = (base: string, id: string, en: string): Field => ({
+  type: 'row',
+  fields: [
+    { name: `${base}Id`, type: 'textarea', label: id, access: lockedForApprover, admin: { width: '50%' } },
+    { name: `${base}En`, type: 'textarea', label: en, access: lockedForApprover, admin: { width: '50%' } },
+  ],
 })
 
 export const ProductItems: CollectionConfig = contentCollection({
@@ -39,10 +75,65 @@ export const ProductItems: CollectionConfig = contentCollection({
     id: '/layanan-dan-produk/credit-scoring',
     en: '/en/products-and-services/credit-scoring',
   },
-  useAsTitle: 'name',
-  defaultColumns: ['name', 'category', 'productStatus', 'approvalStatus'],
+  useAsTitle: 'nameId',
+  defaultColumns: ['nameId', 'category', 'statuses', 'approvalStatus'],
   fields: [
-    localisedText('name', 'Nama produk', true),
+    textPair('name', 'Nama produk (Bahasa Indonesia)', 'Product name (English)', true),
+    textareaPair(
+      'shortDescription',
+      'Deskripsi singkat (Bahasa Indonesia)',
+      'Short description (English)',
+    ),
+    {
+      /*
+       * One control instead of a status plus a NEW tick. A product is either
+       * Live or Ready to Sell, and may also be NEW, which is two badges at
+       * most — the same two the design draws.
+       */
+      /*
+       * Named statuses, not status: Payload reserves enum_<table>_status for
+       * its own draft/published state, and the two collide outright — the
+       * insert fails with "invalid input value for enum ... live".
+       */
+      name: 'statuses',
+      type: 'select',
+      hasMany: true,
+      required: true,
+      label: 'Status',
+      defaultValue: ['live'],
+      access: lockedForApprover,
+      options: [
+        { label: 'Live', value: 'live' },
+        { label: 'Ready to Sell', value: 'ready_to_sell' },
+        { label: 'NEW', value: 'new' },
+      ],
+      admin: {
+        description: 'Pilih Live atau Ready to Sell. Tambahkan NEW bila produk baru.',
+      },
+      validate: (value: unknown) => {
+        const picked = Array.isArray(value) ? (value as string[]) : []
+        const sellable = picked.filter((v) => v === 'live' || v === 'ready_to_sell')
+        if (sellable.length === 0) return 'Pilih Live atau Ready to Sell.'
+        if (sellable.length > 1) return 'Pilih salah satu: Live atau Ready to Sell, tidak keduanya.'
+        return true
+      },
+    },
+    {
+      name: 'descriptionId',
+      type: 'richText',
+      label: 'Deskripsi (Bahasa Indonesia)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'descriptionEn',
+      type: 'richText',
+      label: 'Description (English)',
+      access: lockedForApprover,
+    },
+    // The three lists, in the order the expanded card draws them.
+    productListPair('features', 'Fitur utama (Bahasa Indonesia)', 'Key features (English)', 'Fitur', 'Feature'),
+    productListPair('suitableFor', 'Cocok untuk (Bahasa Indonesia)', 'Suitable for (English)', 'Segmen', 'Segment'),
+    productListPair('useCases', 'Kegunaan (Bahasa Indonesia)', 'Use cases (English)', 'Kasus', 'Use case'),
     {
       // The five categories are fixed and live in src/content/products.ts.
       name: 'category',
@@ -50,6 +141,7 @@ export const ProductItems: CollectionConfig = contentCollection({
       label: 'Kategori',
       required: true,
       access: lockedForApprover,
+      admin: { position: 'sidebar' },
       options: [
         { label: 'Credit Scoring', value: 'credit-scoring' },
         { label: 'Analytics', value: 'analytics' },
@@ -58,48 +150,6 @@ export const ProductItems: CollectionConfig = contentCollection({
         { label: 'Consulting', value: 'consulting' },
       ],
     },
-    localisedTextarea('shortDescription', 'Deskripsi singkat'),
-    {
-      ...imageField('image', 'Gambar produk'),
-      validate: imageRule(IMAGE_RULES.productImage),
-      admin: {
-        description: imageGuidance(IMAGE_RULES.productImage),
-      },
-    } as Field,
-    {
-      ...richText('description', 'Deskripsi'),
-      admin: {
-        description:
-          'Toolbar di atas editor: judul, daftar, tautan, perataan, gambar dan tabel.',
-      },
-    } as Field,
-    {
-      // Named productStatus, not status: Payload reserves enum_<table>_status
-      // for its own draft/published state and the two would collide.
-      name: 'productStatus',
-      type: 'select',
-      label: 'Status',
-      required: true,
-      defaultValue: 'live',
-      access: lockedForApprover,
-      options: [
-        { label: 'Live', value: 'live' },
-        { label: 'Ready to Sell', value: 'ready_to_sell' },
-      ],
-    },
-    {
-      name: 'isNew',
-      type: 'checkbox',
-      label: 'Tampilkan badge NEW',
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
-    },
-    // The expanded card (Figma 1391:5420): feature chips under "Fitur Utama",
-    // then the "Cocok Untuk" and "Kasus Penggunaan" lists. Each language keeps
-    // its own list, so the whole array is localised.
-    productList('features', 'Fitur utama (chip)', 'Fitur'),
-    productList('suitableFor', 'Cocok untuk', 'Segmen'),
-    productList('useCases', 'Kasus penggunaan', 'Kasus'),
     sortOrderField,
   ],
 })
