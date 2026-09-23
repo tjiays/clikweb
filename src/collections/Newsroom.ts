@@ -45,7 +45,7 @@ export const Articles: CollectionConfig = contentCollection({
       ...imageField('cover', 'Gambar sampul'),
       validate: imageRule(IMAGE_RULES.articleCover),
       admin: {
-        description: imageGuidance(IMAGE_RULES.articleCover, 'Tampil di kartu artikel.'),
+        description: imageGuidance(IMAGE_RULES.articleCover),
       },
     } as Field,
     {
@@ -56,10 +56,7 @@ export const Articles: CollectionConfig = contentCollection({
       access: lockedForApprover,
       validate: imageRule(IMAGE_RULES.articleBanner),
       admin: {
-        description: imageGuidance(
-          IMAGE_RULES.articleBanner,
-          'Opsional. Gambar lebar di atas halaman artikel; kosongkan untuk memakai Gambar sampul.',
-        ),
+        description: imageGuidance(IMAGE_RULES.articleBanner),
       },
     },
     {

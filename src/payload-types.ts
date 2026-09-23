@@ -136,11 +136,11 @@ export interface UserAuthOperations {
 export interface Article {
   id: number;
   /**
-   * Tampil di kartu artikel. Disarankan 1456x832px (perbandingan 7:4, mendatar). Minimal 832px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Ratio 7:4; min 1456x832px; max 5MB
    */
   cover?: (number | null) | Media;
   /**
-   * Opsional. Gambar lebar di atas halaman artikel; kosongkan untuk memakai Gambar sampul. Disarankan 2600x744px (perbandingan 3,5:1, memanjang). Minimal 1300px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Ratio 3.5:1; min 2600x744px; max 5MB
    */
   banner?: (number | null) | Media;
   titleId: string;
@@ -310,7 +310,7 @@ export interface User {
 export interface Report {
   id: number;
   /**
-   * Tampil di kartu laporan, dan sebagai gambar besar di atas halaman Laporan Tahunan. Disarankan 2000x1333px (mendatar). Minimal 1300px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP). Untuk Laporan Perkembangan Usaha yang hanya tampil di kartu, minimal 832px sudah cukup.
+   * Ratio 3:2; min 2000x1333px; max 5MB
    */
   cover?: (number | null) | Media;
   titleId: string;
@@ -381,7 +381,7 @@ export interface Report {
   author?: string | null;
   publishDate?: string | null;
   /**
-   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
   isSample?: boolean | null;
@@ -464,7 +464,7 @@ export interface JobOpening {
   isOpen?: boolean | null;
   postedDate?: string | null;
   /**
-   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
   isSample?: boolean | null;
@@ -492,7 +492,7 @@ export interface ProductItem {
   category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   shortDescription?: string | null;
   /**
-   * Muncul di atas Deskripsi saat baris produk dibuka; kosongkan bila produk ini tidak punya gambar. Disarankan 1280x720px (perbandingan 16:9, mendatar). Minimal 1280px lebar — lebih kecil akan tampak pecah. Maksimal 5MB (JPG, PNG atau WebP).
+   * Ratio 16:9; min 1280x720px; max 5MB
    */
   image?: (number | null) | Media;
   /**
@@ -534,7 +534,7 @@ export interface ProductItem {
       }[]
     | null;
   /**
-   * Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
   isSample?: boolean | null;

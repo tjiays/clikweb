@@ -50,12 +50,13 @@ export const Reports: CollectionConfig = contentCollection({
           : IMAGE_RULES.reportCoverAnnual,
       ),
       admin: {
-        description:
-          imageGuidance(
-            IMAGE_RULES.reportCoverAnnual,
-            'Tampil di kartu laporan, dan sebagai gambar besar di atas halaman Laporan Tahunan.',
-          ) +
-          ` Untuk Laporan Perkembangan Usaha yang hanya tampil di kartu, minimal ${IMAGE_RULES.reportCoverBusiness.minWidth}px sudah cukup.`,
+        /*
+         * Quotes the annual report's target, which is the stricter of the
+         * two; a business development cover only fills a card and the check
+         * lets it through smaller. A label that asks for slightly more than
+         * the rule enforces never surprises anyone with a rejection.
+         */
+        description: imageGuidance(IMAGE_RULES.reportCoverAnnual),
       },
     } as Field,
     {

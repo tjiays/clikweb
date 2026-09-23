@@ -72,7 +72,7 @@ export const sortOrderField: Field = {
   admin: {
     position: 'sidebar',
     description:
-      'Biarkan 0 — yang terbaru otomatis tampil paling atas. Isi angka lebih kecil hanya bila ingin menyematkan laporan ini di atas.',
+      'Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.',
   },
 }
 
@@ -214,8 +214,10 @@ export type ImageRule = {
   ratio: { min: number; max: number }
   /** A real size that works, quoted to the editor. */
   recommended: string
-  /** How to describe the shape, in Indonesian. */
-  shape: string
+  /** The ratio as editors would write it, per language. */
+  label: { en: string; id: string }
+  /** Orientation, named when a picture is the wrong shape. */
+  shape: { en: string; id: string }
 }
 
 export const IMAGE_RULES = {
@@ -224,43 +226,54 @@ export const IMAGE_RULES = {
     minWidth: 832,
     ratio: { min: 1.2, max: 3 },
     recommended: '1456x832px',
-    shape: 'perbandingan 7:4, mendatar',
+    label: { en: '7:4', id: '7:4' },
+    shape: { en: 'landscape', id: 'mendatar' },
   },
   /* Banner: aspect-ratio 1300/372 on the article page, drawn 1300px wide. */
   articleBanner: {
     minWidth: 1300,
     ratio: { min: 2.8, max: 4.2 },
     recommended: '2600x744px',
-    shape: 'perbandingan 3,5:1, memanjang',
+    label: { en: '3.5:1', id: '3,5:1' },
+    shape: { en: 'wide', id: 'memanjang' },
   },
   /* An annual report also fills the 1300px hero above its page. */
   reportCoverAnnual: {
     minWidth: 1300,
     ratio: { min: 1.2, max: 3 },
     recommended: '2000x1333px',
-    shape: 'mendatar',
+    label: { en: '3:2', id: '3:2' },
+    shape: { en: 'landscape', id: 'mendatar' },
   },
   /* A business development report only ever appears on the card. */
   reportCoverBusiness: {
     minWidth: 832,
     ratio: { min: 1.2, max: 3 },
     recommended: '1456x832px',
-    shape: 'perbandingan 7:4, mendatar',
+    label: { en: '7:4', id: '7:4' },
+    shape: { en: 'landscape', id: 'mendatar' },
   },
   /* Product row image, drawn 640px wide. */
   productImage: {
     minWidth: 1280,
     ratio: { min: 1.2, max: 3 },
     recommended: '1280x720px',
-    shape: 'perbandingan 16:9, mendatar',
+    label: { en: '16:9', id: '16:9' },
+    shape: { en: 'landscape', id: 'mendatar' },
   },
 } satisfies Record<string, ImageRule>
 
-/** The note under an image field, written from the rule it is checked against. */
-export const imageGuidance = (rule: ImageRule, intro: string) =>
-  `${intro} Disarankan ${rule.recommended} (${rule.shape}). ` +
-  `Minimal ${rule.minWidth}px lebar — lebih kecil akan tampak pecah. ` +
-  `Maksimal ${MAX_UPLOAD_MB}MB (JPG, PNG atau WebP).`
+/**
+ * The note under an image field: the ratio, the size to aim for, the cap.
+ *
+ * Deliberately terse. The long version explained why a small picture looks
+ * bad, which is a sentence nobody reads twice and which pushed the useful
+ * numbers to the end of the line.
+ */
+export const imageGuidance = (rule: ImageRule) => ({
+  en: `Ratio ${rule.label.en}; min ${rule.recommended}; max ${MAX_UPLOAD_MB}MB`,
+  id: `Rasio ${rule.label.id}; min ${rule.recommended}; maks ${MAX_UPLOAD_MB}MB`,
+})
 
 /**
  * Refuses a picture that is too small, the wrong shape, or over the limit.
@@ -307,20 +320,19 @@ export const imageRule =
     const r = typeof rule === 'function' ? rule(data ?? {}) : rule
 
     if (typeof media?.filesize === 'number' && media.filesize > MAX_UPLOAD_MB * 1024 * 1024) {
-      return `Gambar ini ${(media.filesize / 1024 / 1024).toFixed(1)}MB, melebihi batas ${MAX_UPLOAD_MB}MB. Perkecil lalu unggah lagi.`
+      return `Ukuran ${(media.filesize / 1024 / 1024).toFixed(1)}MB, maksimal ${MAX_UPLOAD_MB}MB.`
     }
 
     const { width, height } = media ?? {}
     if (typeof width === 'number' && typeof height === 'number' && height > 0) {
       const ratio = width / height
       if (ratio < r.ratio.min || ratio > r.ratio.max) {
-        const orientation = ratio < 1 ? 'tegak' : ratio > r.ratio.max ? 'terlalu memanjang' : 'terlalu persegi'
-        return `Gambar ini ${orientation} (${width}x${height}). Tempat ini ${r.shape} — gunakan gambar seperti ${r.recommended}.`
+        return `Ukuran ${width}x${height}px tidak sesuai. Perlu rasio ${r.label.id} (${r.shape.id}), mis. ${r.recommended}.`
       }
     }
 
     if (typeof width === 'number' && width < r.minWidth) {
-      return `Gambar ini hanya ${width}px lebar, minimal ${r.minWidth}px. Yang lebih kecil akan tampak pecah. Disarankan ${r.recommended}.`
+      return `Lebar ${width}px, minimal ${r.minWidth}px. Disarankan ${r.recommended}.`
     }
 
     return true

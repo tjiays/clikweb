@@ -63,10 +63,7 @@ export const ProductItems: CollectionConfig = contentCollection({
       ...imageField('image', 'Gambar produk'),
       validate: imageRule(IMAGE_RULES.productImage),
       admin: {
-        description: imageGuidance(
-          IMAGE_RULES.productImage,
-          'Muncul di atas Deskripsi saat baris produk dibuka; kosongkan bila produk ini tidak punya gambar.',
-        ),
+        description: imageGuidance(IMAGE_RULES.productImage),
       },
     } as Field,
     {

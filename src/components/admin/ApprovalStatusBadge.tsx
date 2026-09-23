@@ -16,8 +16,8 @@ import './ApprovalStatusBadge.scss'
  */
 const LABELS: Record<string, { text: string; tone: string }> = {
   in_review: { text: 'Menunggu peninjauan', tone: 'review' },
-  approved: { text: 'Disetujui — tayang', tone: 'approved' },
-  rejected: { text: 'Ditolak — perlu diperbaiki', tone: 'rejected' },
+  approved: { text: 'Disetujui, tayang', tone: 'approved' },
+  rejected: { text: 'Ditolak, perlu diperbaiki', tone: 'rejected' },
 }
 
 export default function ApprovalStatusBadge() {
