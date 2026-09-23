@@ -28,18 +28,25 @@ const decides = (user: unknown) =>
     String((user as { role?: string } | null | undefined)?.role ?? ''),
   )
 
-export const approvalFields: Field[] = [
-  {
-    // Which language still needs work, since only one is on screen at a time.
-    name: 'languageStatus',
-    type: 'ui',
-    admin: {
-      position: 'sidebar',
-      components: {
-        Field: '@/components/admin/LanguageStatus#default',
-      },
+/**
+ * Which language still needs work.
+ *
+ * Kept where a collection has enough on the page that the other language can
+ * be missed. A product is short — a name, a line, three lists — and both
+ * sides are visible at once, so it only repeated what was already on screen.
+ */
+export const languageStatusField: Field = {
+  name: 'languageStatus',
+  type: 'ui',
+  admin: {
+    position: 'sidebar',
+    components: {
+      Field: '@/components/admin/LanguageStatus#default',
     },
   },
+}
+
+export const approvalFields: Field[] = [
   {
     // What an editor sees instead of the select: the same answer, no control.
     name: 'approvalStatusDisplay',

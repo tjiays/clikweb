@@ -77,6 +77,8 @@ export const ProductItems: CollectionConfig = contentCollection({
    * and reported that it had translated nothing.
    */
   autoTranslate: false,
+  // Both languages are side by side and short; the panel said nothing new.
+  languageStatus: false,
   // Products have no page of their own; they appear in What We Offer.
   previewPath: {
     id: '/layanan-dan-produk/credit-scoring',

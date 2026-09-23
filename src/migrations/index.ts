@@ -12,6 +12,7 @@ import * as migration_20260922_063014_reports_paired_languages from './20260922_
 import * as migration_20260922_074642_articles_paired_languages from './20260922_074642_articles_paired_languages';
 import * as migration_20260923_103843_products_add_paired from './20260923_103843_products_add_paired';
 import * as migration_20260923_104006_products_drop_legacy from './20260923_104006_products_drop_legacy';
+import * as migration_20260923_140000_product_sequences from './20260923_140000_product_sequences';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260923_104006_products_drop_legacy.up,
     down: migration_20260923_104006_products_drop_legacy.down,
     name: '20260923_104006_products_drop_legacy'
+  },
+  {
+    up: migration_20260923_140000_product_sequences.up,
+    down: migration_20260923_140000_product_sequences.down,
+    name: '20260923_140000_product_sequences'
   },
 ];

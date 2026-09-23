@@ -7,7 +7,7 @@ import {
   isApprover,
   type Role,
 } from '@/access'
-import { approvalFields, publishedAtField } from '@/fields/approval'
+import { approvalFields, publishedAtField, languageStatusField } from '@/fields/approval'
 import { enforceApprovalRules, syncPublishState } from '@/hooks/approval'
 import { recordAudit, recordDeletion } from '@/hooks/audit'
 import { previewFor, livePreviewFor } from '@/lib/preview'
@@ -28,6 +28,8 @@ type Options = {
   approval?: boolean
   /** Set false where there is nothing for Auto-translate to work on. */
   autoTranslate?: boolean
+  /** Set false where both languages are short enough to see at a glance. */
+  languageStatus?: boolean
   /**
    * The public path this item lives under, per language. Given one, the
    * admin shows a Preview button that opens the draft on the live site.
@@ -52,6 +54,7 @@ export const contentCollection = ({
   fields,
   approval = true,
   autoTranslate = true,
+  languageStatus = true,
   preview,
   previewPath,
 }: Options): CollectionConfig => ({
@@ -144,6 +147,7 @@ export const contentCollection = ({
         ...fields,
         isSampleField,
         ...(autoTranslate ? [autoTranslateField] : []),
+        ...(languageStatus ? [languageStatusField] : []),
         ...approvalFields,
         publishedAtField,
       ]
