@@ -134,8 +134,15 @@ export default function Nav() {
   const canSee = (slug: string) => {
     if (!slug) return true // the dashboard is always reachable
     if (role === 'super_admin') return true
-    // The Approver reviews every module but owns no settings of their own.
-    if (role === 'approver') return slug !== 'users' && slug !== 'contact-submissions'
+    /*
+     * The Approver reviews content and nothing else. Listed by hand rather
+     * than by exclusion, because the exclusion let the Audit Log through: the
+     * menu offered it while the collection refused to read it, so the link
+     * went to a page that was always empty.
+     */
+    if (role === 'approver') {
+      return ['articles', 'reports', 'product-items', 'job-openings', 'media'].includes(slug)
+    }
     return Boolean(role && (OWNERS[slug] ?? []).includes(role))
   }
 
