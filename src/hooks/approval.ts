@@ -109,6 +109,22 @@ const assertBothLanguages = async ({
   }
 }
 
+
+/*
+ * The admin form posts back whatever the status field is showing, so an
+ * unchanged value tells us nothing about intent. Treating it as a decision
+ * is what left a rejected item rejected however often it was saved, blocked
+ * editors out of anything rejected or approved, and let approved content be
+ * edited while staying live.
+ *
+ * A status only counts as chosen when it differs from what was there.
+ */
+const deliberate = (next: string | undefined, previous: string | undefined) =>
+  next && next !== previous ? next : undefined
+
+/** Settled work. Editing any of it starts the review again. */
+const SETTLED: string[] = [APPROVAL_STATUSES.approved, APPROVAL_STATUSES.rejected]
+
 export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
   data,
   req,
@@ -124,17 +140,13 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
 
   if (isSuperAdmin(user)) {
     /*
-     * Rejected is not a state anything can be saved back into. It is the
-     * Approver's verdict on a submission, so the only way in is that
-     * decision — and an item already carrying it has nothing left to reject.
-     *
-     * The form posts back whatever the status field currently shows, so
-     * editing a rejected item and pressing save sent "rejected" straight
-     * back and the item sat there, reporting success and changing nothing.
-     * Saving one is the act of addressing the rejection, so it returns to
-     * review and the reason goes with it.
+     * Editing settled work sends it back for review, whoever does it, and it
+     * leaves the website until it is approved again. A Super Admin can still
+     * approve in the same breath — that is a changed status, so a deliberate
+     * one — but saving an edit without touching it is an edit, not a
+     * republish.
      */
-    if (previous === APPROVAL_STATUSES.rejected && next === APPROVAL_STATUSES.rejected) {
+    if (SETTLED.includes(String(previous)) && !deliberate(next, previous)) {
       data.approvalStatus = APPROVAL_STATUSES.inReview
       data.submittedBy = user.id
       data.submittedAt = new Date().toISOString()
@@ -142,9 +154,8 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
       return data
     }
 
-    // Super Admin is trusted with any status, including approving in the
-    // same save that creates the item. The one thing they are not exempt
-    // from is publishing something only half translated.
+    // Otherwise they are trusted with the status they chose. The one thing
+    // they are not exempt from is publishing something half translated.
     if (next === APPROVAL_STATUSES.approved && originalDoc?.id) {
       await assertBothLanguages({
         req: req as never,
@@ -187,14 +198,11 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
    * save goes to In Review.
    */
   /*
-   * An editor has no status control, but the form still posts the value it
-   * is showing. A rejected item therefore came back as "rejected" and was
-   * refused as an attempt to reject — blocking the one person who was
-   * supposed to fix it. Their save always means the same thing, so anything
-   * that is not a deliberate choice they could make is read as a submission.
+   * An editor has no status control at all, so anything arriving here is the
+   * form echoing what it was showing. Only a changed value could be a choice,
+   * and the two they must not make are refused below.
    */
-  const chosen = next === APPROVAL_STATUSES.rejected ? undefined : next
-  const target = chosen ?? APPROVAL_STATUSES.inReview
+  const target = deliberate(next, previous) ?? APPROVAL_STATUSES.inReview
 
   /*
    * An item in review is still off limits to everyone else, so the approver

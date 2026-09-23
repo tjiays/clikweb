@@ -24,6 +24,25 @@ decided on yet, and its author can keep editing it until they do.
 
 An editor sees where their work stands as a read-only pill, not a control.
 
+## Editing settled work
+
+Anything approved or rejected goes back to **In Review** the moment it is
+saved, whoever saves it — editor, Approver or Super Admin. An approved page
+therefore leaves the website while its edit is in review, and returns when it
+is approved again.
+
+This is deliberate and differs from the original note in `intent/03-cms.md`,
+which had the live version stay online until a revision was approved. Nothing
+unreviewed reaches a reader; the cost is that correcting a typo takes the
+page down until someone approves it. A Super Admin can do both in one step by
+setting the status to Approved before saving, which counts as a decision
+because the value changes.
+
+The admin form posts back whatever the status field is showing, so an
+unchanged value is not a choice. Reading it as one is what once left a
+rejected item rejected however often it was saved, and refused an editor's
+save outright on anything rejected or approved.
+
 ## Locking
 
 An item in review is locked to everyone except the person who submitted it.
