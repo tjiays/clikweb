@@ -70,6 +70,13 @@ export const ProductItems: CollectionConfig = contentCollection({
   labels: { singular: bothLanguages('products'), plural: bothLanguages('products') },
   group: 'Product',
   owners,
+  /*
+   * No Auto-translate here. It reads the Indonesian side of a title, excerpt
+   * or body and writes the English one; a product has a name, a short
+   * description and three lists instead, so the button found nothing to do
+   * and reported that it had translated nothing.
+   */
+  autoTranslate: false,
   // Products have no page of their own; they appear in What We Offer.
   previewPath: {
     id: '/layanan-dan-produk/credit-scoring',

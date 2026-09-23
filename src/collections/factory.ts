@@ -26,6 +26,8 @@ type Options = {
   fields: Field[]
   /** Set false for reference data that does not need reviewing. */
   approval?: boolean
+  /** Set false where there is nothing for Auto-translate to work on. */
+  autoTranslate?: boolean
   /**
    * The public path this item lives under, per language. Given one, the
    * admin shows a Preview button that opens the draft on the live site.
@@ -49,6 +51,7 @@ export const contentCollection = ({
   defaultColumns,
   fields,
   approval = true,
+  autoTranslate = true,
   preview,
   previewPath,
 }: Options): CollectionConfig => ({
@@ -137,7 +140,13 @@ export const contentCollection = ({
         afterDelete: [recordDeletion],
       },
   fields: approval
-    ? [...fields, isSampleField, autoTranslateField, ...approvalFields, publishedAtField]
+    ? [
+        ...fields,
+        isSampleField,
+        ...(autoTranslate ? [autoTranslateField] : []),
+        ...approvalFields,
+        publishedAtField,
+      ]
     : [...fields, isSampleField],
   timestamps: true,
 })
