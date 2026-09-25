@@ -93,6 +93,15 @@ export const Users: CollectionConfig = {
         components: { Field: '@/components/admin/VerificationLink#default' },
       },
     },
+    {
+      // Payload's own delete hides behind the three dots; this one is visible.
+      name: 'deleteAccount',
+      type: 'ui',
+      admin: {
+        position: 'sidebar',
+        components: { Field: '@/components/admin/DeleteUser#default' },
+      },
+    },
     { name: 'name', type: 'text', required: true },
     {
       name: 'role',
