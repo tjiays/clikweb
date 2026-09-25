@@ -383,3 +383,11 @@ body {
 .pill {
   border-radius: 999px;
 }
+
+/* ---- The user list ----
+   No Columns control here. The columns are name, email, role, whether the
+   account is verified and the delete button; there is nothing worth hiding,
+   and a chooser that can hide the delete button is worse than no chooser. */
+.collection-list--users .list-controls__toggle-columns {
+  display: none;
+}

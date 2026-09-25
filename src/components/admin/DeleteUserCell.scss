@@ -1,0 +1,46 @@
+/* Per-row delete on the user list. */
+.clik-rowdel {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.clik-rowdel__start,
+.clik-rowdel__go,
+.clik-rowdel__cancel {
+  padding: 3px 9px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.clik-rowdel__start {
+  border: 1px solid #8c1d1d;
+  background: none;
+  color: #8c1d1d;
+}
+
+.clik-rowdel__go {
+  border: none;
+  background: #8c1d1d;
+  color: #fff;
+}
+
+.clik-rowdel__cancel {
+  border: 1px solid var(--theme-elevation-200);
+  background: none;
+  color: var(--theme-elevation-700);
+}
+
+.clik-rowdel__self,
+.clik-rowdel__error {
+  color: var(--theme-elevation-500);
+  font-size: 0.72rem;
+}
+
+.clik-rowdel__error {
+  color: #8c1d1d;
+}

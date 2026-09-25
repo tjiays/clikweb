@@ -22,6 +22,7 @@ import { default as default_7d49ba020347320f1985b4c3026ed00f } from '@/component
 import { default as default_de24fc1597532dc6ec82089029c4ffad } from '@/components/admin/NoSaveDraft'
 import { default as default_87ad9327822f895183286c5954e6418f } from '@/components/admin/VerificationLink'
 import { default as default_fb415683ea28281672e1700d17b972b1 } from '@/components/admin/DeleteUser'
+import { default as default_b734a994dc0a8e0e38fc47839bd9b910 } from '@/components/admin/DeleteUserCell'
 import { default as default_a9d4b87e0306b3ddfe97926a52a69591 } from '@/components/admin/Nav'
 import { default as default_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { default as default_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
@@ -54,6 +55,7 @@ export const importMap = {
   "@/components/admin/NoSaveDraft#default": default_de24fc1597532dc6ec82089029c4ffad,
   "@/components/admin/VerificationLink#default": default_87ad9327822f895183286c5954e6418f,
   "@/components/admin/DeleteUser#default": default_fb415683ea28281672e1700d17b972b1,
+  "@/components/admin/DeleteUserCell#default": default_b734a994dc0a8e0e38fc47839bd9b910,
   "@/components/admin/Nav#default": default_a9d4b87e0306b3ddfe97926a52a69591,
   "@/components/admin/Icon#default": default_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#default": default_a44df17d0fc3dcd873dae43dc3bf66bd,

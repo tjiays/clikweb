@@ -55,7 +55,7 @@ export const Users: CollectionConfig = {
   admin: {
     group: 'Pengaturan',
     useAsTitle: 'email',
-    defaultColumns: ['name', 'email', 'role', '_verified'],
+    defaultColumns: ['name', 'email', 'role', '_verified', 'deleteRow'],
   },
   auth: {
     /*
@@ -112,6 +112,19 @@ export const Users: CollectionConfig = {
       // A user must never be able to promote themselves.
       access: { update: ({ req: { user } }) => isSuperAdmin(user) },
       admin: { description: 'A user has exactly one role.' },
+    },
+    {
+      /*
+       * A per-row delete on the list. The cell renders nothing unless the
+       * viewer is a Super Admin, so the column is present but empty for
+       * everyone else. Named in defaultColumns so it is shown by default.
+       */
+      name: 'deleteRow',
+      type: 'ui',
+      label: { en: 'Delete', id: 'Hapus' },
+      admin: {
+        components: { Cell: '@/components/admin/DeleteUserCell#default' },
+      },
     },
   ],
   hooks: {
