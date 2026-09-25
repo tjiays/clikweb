@@ -20,7 +20,8 @@ import * as migration_20260923_145206_careers_add_paired from './20260923_145206
 import * as migration_20260923_145527_careers_drop_localised from './20260923_145527_careers_drop_localised';
 import * as migration_20260923_150000_career_categories from './20260923_150000_career_categories';
 import * as migration_20260923_154839_users_email_verification from './20260923_154839_users_email_verification'
-import * as migration_20260925_130000_enquiry_follow_up_status from './20260925_130000_enquiry_follow_up_status';
+import * as migration_20260925_130000_enquiry_follow_up_status from './20260925_130000_enquiry_follow_up_status'
+import * as migration_20260925_150000_audit_titles from './20260925_150000_audit_titles';
 
 export const migrations = [
   {
@@ -137,5 +138,10 @@ export const migrations = [
     up: migration_20260925_130000_enquiry_follow_up_status.up,
     down: migration_20260925_130000_enquiry_follow_up_status.down,
     name: '20260925_130000_enquiry_follow_up_status'
+  },
+  {
+    up: migration_20260925_150000_audit_titles.up,
+    down: migration_20260925_150000_audit_titles.down,
+    name: '20260925_150000_audit_titles'
   },
 ];
