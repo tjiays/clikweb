@@ -51,8 +51,12 @@ orang yang berwenang sebelum disetujui.
 
 ## Gambar
 
-Semua gambar diunggah lewat **Media Library**. Satu gambar bisa dipakai di
-banyak tempat — tidak perlu mengunggah ulang.
+Gambar diurus langsung di tempat dipakainya: kolom **Gambar sampul** dan
+**Banner** pada News dan Laporan. Dari situ Anda bisa mengunggah file baru,
+memilih gambar yang sudah ada lewat **Pilih dari yang sudah ada**, mengganti
+gambar, atau menyunting alt text-nya. Tidak ada menu Media tersendiri.
+
+Satu gambar bisa dipakai di banyak tempat — tidak perlu mengunggah ulang.
 
 Isi selalu kolom **alt text**: itu yang dibaca pembaca tunanetra dan yang
 muncul kalau gambar gagal dimuat.

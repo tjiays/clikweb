@@ -31,7 +31,6 @@ const CONTENT: Card[] = [
 
 const SETTINGS: Card[] = [
   { label: 'Data Masuk', description: 'Kiriman formulir Hubungi Kami', slug: 'contact-submissions', roles: [ROLES.salesAdmin] },
-  { label: 'Media Library', description: 'Gambar untuk artikel dan laporan', slug: 'media', roles: [ROLES.newsAdmin, ROLES.hrAdmin, ROLES.marketingAdmin] },
   { label: 'Audit Trail', description: 'Riwayat perubahan konten', slug: 'audit-log', roles: [] },
   { label: 'Users', description: 'Pengguna CMS dan perannya', slug: 'users', roles: [] },
 ]

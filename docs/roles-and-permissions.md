@@ -20,7 +20,7 @@ Super Admin manages users.
 | Laporan | Full | — | Edit + submit | — | — | Approve / Reject |
 | CTA Blocks, Page Content | Full | — | — | Edit + submit | — | Approve / Reject |
 | Halaman statis (kebijakan, cara, pengaduan) | Full | — | — | — | — | — |
-| Media Library | Full | Upload | Upload | Upload | — | View |
+| Media Library (no menu; via the image fields) | Full | Upload | Upload | Upload | — | View |
 | Data Masuk (Hubungi Kami) | Full | — | — | — | View, mark followed up | — |
 | Pengaturan Umum | Full | — | — | — | — | — |
 | Users & Roles, Audit Log | Full | — | — | — | — | — |

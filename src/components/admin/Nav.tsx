@@ -28,10 +28,21 @@ type Role =
   | 'sales_admin'
   | 'approver'
 
-/** Who may reach each collection. Mirrors src/access/index.ts. */
+/*
+ * Who may reach each collection. Mirrors src/access/index.ts.
+ *
+ * Media is deliberately absent, for every role including Super Admin. Images
+ * are managed where they are used: the cover and banner fields on news and
+ * reports upload, browse the whole library, swap an image and edit its alt
+ * text without leaving the page. A separate menu listing the same files was a
+ * second place to look after for no extra power.
+ *
+ * The collection itself is untouched and still answers at
+ * /admin/collections/media, which is the way back in if a file ever has to be
+ * deleted — the one job the pickers cannot do.
+ */
 const OWNERS: Record<string, Role[]> = {
   articles: ['news_admin'],
-  media: ['news_admin', 'hr_admin', 'marketing_admin'],
   reports: ['news_admin'],
   'product-items': ['marketing_admin'],
   'job-openings': ['hr_admin'],
@@ -95,12 +106,6 @@ const GROUPS: { title: string; items: Item[] }[] = [
     ],
   },
   {
-    title: 'Media',
-    items: [
-      { slug: 'media', labelKey: 'media', icon: I('M3 5h18v14H3V5zm0 11l5-5 4 4 3-3 6 6M9 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z') },
-    ],
-  },
-  {
     title: 'Pengaturan',
     items: [
       { slug: 'users', labelKey: 'users', icon: I('M16 19v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2M9.5 9a3 3 0 100-6 3 3 0 000 6zM21 19v-2a4 4 0 00-3-3.9') },
@@ -141,7 +146,7 @@ export default function Nav() {
      * went to a page that was always empty.
      */
     if (role === 'approver') {
-      return ['articles', 'reports', 'product-items', 'job-openings', 'media'].includes(slug)
+      return ['articles', 'reports', 'product-items', 'job-openings'].includes(slug)
     }
     return Boolean(role && (OWNERS[slug] ?? []).includes(role))
   }

@@ -6,7 +6,6 @@ Seven collections. Everything else moved into `src/content/` — see
 | Menu group | Collection | Who edits it |
 | --- | --- | --- |
 | Newsroom | Artikel | News Admin |
-| Newsroom | Media Library | Any editor |
 | Report | Laporan | News Admin |
 | Product | Item Produk | Marketing Admin |
 | Karir | Lowongan Pekerjaan | HR Admin |
@@ -140,11 +139,29 @@ document does not try to preview a page that has no address yet.
 
 ## Media Library
 
-Its own menu group, not filed under Newsroom. Articles, reports, products and
-job openings all draw from the same library, so filing it under one of them
-suggested it belonged to that one. Changing where it appears means changing
-both `admin.group` in `src/collections/Media.ts` and the group in
-`src/components/admin/Nav.tsx`, which owns the sidebar markup.
+**Not in the sidebar, for any role including Super Admin.** The collection is
+untouched — it is still where every image is stored, and every cover and
+banner is a pointer into it — but it has no menu of its own.
+
+Images are managed where they are used. The upload field on news and reports
+can upload a new file, browse and search the whole library through "Pilih dari
+yang sudah ada", swap an image, and open the file to edit its alt text in both
+languages. A menu listing the same files was a second place to look after
+without a second thing to do.
+
+The one job the field cannot do is delete a file. That is deliberate and
+rarely wanted: unlinking an image from an article leaves the file in place,
+and version history keeps referring to it — of the 15 files held today, every
+single one is still referenced by a draft or an old version, so nothing is
+safe to delete on the grounds of looking unused.
+
+When a file genuinely has to go, the collection still answers at
+`/admin/collections/media`. Nothing about access changed: upload is any editor,
+delete is Super Admin.
+
+Removing the menu meant four places, all of them display: the `Media` group and
+the approver allow-list in `src/components/admin/Nav.tsx`, the `OWNERS` entry
+beside them, and the dashboard card in `src/components/admin/Dashboard.tsx`.
 
 ## Data Masuk and Audit Trail
 
