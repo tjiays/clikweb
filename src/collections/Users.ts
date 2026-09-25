@@ -1,5 +1,7 @@
+import { APIError } from 'payload'
 import type { CollectionConfig, PayloadRequest } from 'payload'
 import { ROLE_OPTIONS, ROLES, isSuperAdmin } from '@/access'
+import { recordDeletion } from '@/hooks/audit'
 import { bothLanguages } from '@/i18n/admin'
 
 
@@ -103,5 +105,54 @@ export const Users: CollectionConfig = {
       admin: { description: 'A user has exactly one role.' },
     },
   ],
+  hooks: {
+    /*
+     * Deleting a user is permanent and, done to the wrong one, not
+     * recoverable from inside the CMS. Payload asks for confirmation, which
+     * catches a misclick but not a mistake, so the two that actually lock
+     * people out are refused outright.
+     *
+     * Everything a user is referenced by — audit entries, who submitted or
+     * reviewed a document — is SET NULL rather than cascaded, so removing an
+     * account unlinks them and destroys no history. The audit log also keeps
+     * the address as plain text, so who did what survives the account.
+     */
+    beforeDelete: [
+      async ({ req, id }) => {
+        if (String(req.user?.id) === String(id)) {
+          throw new APIError(
+            'Anda tidak bisa menghapus akun Anda sendiri. Minta Super Admin lain melakukannya.',
+            400,
+          )
+        }
+
+        const target = await req.payload.findByID({
+          collection: 'users',
+          id,
+          overrideAccess: true,
+          depth: 0,
+          req,
+        })
+
+        if ((target as { role?: string })?.role !== ROLES.superAdmin) return
+
+        const supers = await req.payload.count({
+          collection: 'users',
+          where: { role: { equals: ROLES.superAdmin } },
+          overrideAccess: true,
+          req,
+        })
+
+        if (supers.totalDocs <= 1) {
+          throw new APIError(
+            'Ini satu-satunya Super Admin. Menghapusnya membuat CMS tidak bisa dikelola lagi. Buat Super Admin lain lebih dulu.',
+            400,
+          )
+        }
+      },
+    ],
+    // A removed account is itself worth recording.
+    afterDelete: [recordDeletion],
+  },
   timestamps: true,
 }
