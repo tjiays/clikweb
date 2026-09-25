@@ -11,7 +11,12 @@ export const AuditLog: CollectionConfig = {
   labels: { singular: bothLanguages('auditLog'), plural: bothLanguages('auditLog') },
   admin: {
     group: 'Data',
-    defaultColumns: ['action', 'collectionSlug', 'user', 'createdAt'],
+    /*
+     * Who and what, not just when. The relationship column alone went blank
+     * the moment an account was deleted, which is the one row you most want
+     * to read, and nothing named the record that was acted on.
+     */
+    defaultColumns: ['action', 'collectionSlug', 'documentTitle', 'actor', 'detail', 'createdAt'],
     useAsTitle: 'action',
   },
   access: {
@@ -21,13 +26,23 @@ export const AuditLog: CollectionConfig = {
     delete: () => false,
   },
   fields: [
-    { name: 'action', type: 'text', required: true, index: true },
-    { name: 'collectionSlug', type: 'text', index: true },
-    { name: 'documentId', type: 'text', index: true },
-    { name: 'documentTitle', type: 'text' },
-    { name: 'user', type: 'relationship', relationTo: 'users' },
-    { name: 'userEmail', type: 'text' },
-    { name: 'detail', type: 'textarea' },
+    { name: 'action', type: 'text', required: true, index: true, label: { en: 'Action', id: 'Aksi' } },
+    { name: 'collectionSlug', type: 'text', index: true, label: { en: 'Menu', id: 'Menu' } },
+    { name: 'documentId', type: 'text', index: true, label: { en: 'Item ID', id: 'ID Item' } },
+    { name: 'documentTitle', type: 'text', label: { en: 'Item', id: 'Item' } },
+    { name: 'user', type: 'relationship', relationTo: 'users', label: { en: 'Account', id: 'Akun' } },
+    { name: 'userEmail', type: 'text', label: { en: 'Email', id: 'Email' } },
+    { name: 'detail', type: 'textarea', label: { en: 'Detail', id: 'Detail' } },
+    {
+      /*
+       * Reads the stored address rather than the link, so the name survives
+       * the account being deleted. See AuditActorCell.
+       */
+      name: 'actor',
+      type: 'ui',
+      label: { en: 'By', id: 'Oleh' },
+      admin: { components: { Cell: '@/components/admin/AuditActorCell#default' } },
+    },
   ],
   timestamps: true,
 }

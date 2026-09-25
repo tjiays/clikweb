@@ -117,14 +117,18 @@ export const recordAudit: CollectionAfterChangeHook = async ({
         user: req.user?.id,
         userEmail: req.user?.email,
         /*
-         * A rejection's reason is the point of the entry, so it wins. An
-         * anonymous create is the public contact form: worth saying, because
-         * an empty user column otherwise looks like a bug.
+         * A rejection's reason is the point of the entry, so it wins. A
+         * submission arriving with nobody signed in came from the website
+         * form, which is worth saying — but only for enquiries: an anonymous
+         * create anywhere else is a seed script, and the actor column already
+         * calls that Sistem.
          */
         detail:
           action === 'reject'
             ? String(doc?.rejectionReason ?? '')
-            : operation === 'create' && !req.user
+            : operation === 'create' &&
+                !req.user &&
+                collection.slug === 'contact-submissions'
               ? 'Dikirim dari formulir publik'
               : summary,
       },

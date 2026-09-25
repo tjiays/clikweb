@@ -20,6 +20,7 @@ import { default as default_861cf3714da76cec1b335a641a19ddcb } from '@/component
 import { default as default_75c5b64e28a9a12cad1778c491b84dc9 } from '@/components/admin/MarkCollection'
 import { default as default_7d49ba020347320f1985b4c3026ed00f } from '@/components/admin/ReviewActions'
 import { default as default_de24fc1597532dc6ec82089029c4ffad } from '@/components/admin/NoSaveDraft'
+import { default as default_4550e1b2c2aeb8a3e9406b31c5886e1b } from '@/components/admin/AuditActorCell'
 import { default as default_87ad9327822f895183286c5954e6418f } from '@/components/admin/VerificationLink'
 import { default as default_fb415683ea28281672e1700d17b972b1 } from '@/components/admin/DeleteUser'
 import { default as default_b734a994dc0a8e0e38fc47839bd9b910 } from '@/components/admin/DeleteUserCell'
@@ -53,6 +54,7 @@ export const importMap = {
   "@/components/admin/MarkCollection#default": default_75c5b64e28a9a12cad1778c491b84dc9,
   "@/components/admin/ReviewActions#default": default_7d49ba020347320f1985b4c3026ed00f,
   "@/components/admin/NoSaveDraft#default": default_de24fc1597532dc6ec82089029c4ffad,
+  "@/components/admin/AuditActorCell#default": default_4550e1b2c2aeb8a3e9406b31c5886e1b,
   "@/components/admin/VerificationLink#default": default_87ad9327822f895183286c5954e6418f,
   "@/components/admin/DeleteUser#default": default_fb415683ea28281672e1700d17b972b1,
   "@/components/admin/DeleteUserCell#default": default_b734a994dc0a8e0e38fc47839bd9b910,
