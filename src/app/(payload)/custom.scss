@@ -384,10 +384,11 @@ body {
   border-radius: 999px;
 }
 
-/* ---- The user list ----
-   No Columns control here. The columns are name, email, role, whether the
-   account is verified and the delete button; there is nothing worth hiding,
-   and a chooser that can hide the delete button is worse than no chooser. */
-.collection-list--users .list-controls__toggle-columns {
+/* ---- Every list ----
+   No Columns control anywhere. Each collection already declares the columns
+   worth showing in its defaultColumns, and the chooser only lets someone hide
+   one — including the delete button on the user list. The choice is remembered
+   per person, so a column switched off once stays off and looks like a bug. */
+.list-controls__toggle-columns {
   display: none;
 }
