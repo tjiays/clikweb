@@ -2,7 +2,14 @@ import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from 'paylo
 import { APPROVAL_STATUSES } from '@/fields/approval'
 
 const titleOf = (doc: Record<string, unknown>): string => {
-  const candidate = doc?.title ?? doc?.name ?? doc?.id
+  /*
+   * Whatever names the record to a person reading the log. Reports and news
+   * carry a title, jobs and products a name, a user their name, an enquiry
+   * the sender's address, an upload its filename. Falling through to the id
+   * is better than an empty column.
+   */
+  const candidate =
+    doc?.title ?? doc?.titleId ?? doc?.name ?? doc?.nameId ?? doc?.email ?? doc?.filename ?? doc?.id
   if (candidate && typeof candidate === 'object') {
     // Localised fields arrive as { id: '...', en: '...' }
     const values = Object.values(candidate as Record<string, unknown>)
@@ -11,7 +18,68 @@ const titleOf = (doc: Record<string, unknown>): string => {
   return String(candidate ?? '')
 }
 
-/** Records approvals, rejections, submissions and publishes. */
+/*
+ * Never written to the log. Secrets for the obvious reason; the auth
+ * bookkeeping and the timestamps because Payload rewrites them on its own and
+ * they would report a change nobody made.
+ */
+const NEVER_LOG = new Set([
+  'password',
+  'hash',
+  'salt',
+  '_verificationToken',
+  'resetPasswordToken',
+  'resetPasswordExpiration',
+  'loginAttempts',
+  'lockUntil',
+  'updatedAt',
+  'createdAt',
+  'sizes',
+])
+
+const same = (a: unknown, b: unknown) => {
+  try {
+    return JSON.stringify(a) === JSON.stringify(b)
+  } catch {
+    return a === b
+  }
+}
+
+/**
+ * What actually changed, in words, without ever printing a value that might be
+ * a secret. A status move is worth spelling out because it is the whole point
+ * of the record; everything else is named but not quoted.
+ *
+ * Returns undefined when nothing worth logging changed — which is how a save
+ * that only touched Payload's own bookkeeping stays out of the log.
+ */
+const describeChange = (
+  doc: Record<string, unknown>,
+  previousDoc: Record<string, unknown> | undefined,
+): string | undefined => {
+  if (!previousDoc || Object.keys(previousDoc).length === 0) return undefined
+
+  const changed = Object.keys(doc).filter(
+    (key) => !NEVER_LOG.has(key) && !same(doc[key], previousDoc[key]),
+  )
+  if (changed.length === 0) return undefined
+
+  const isStatus = (key: string) => /status$/i.test(key)
+  const moves = changed
+    .filter(isStatus)
+    .map((key) => `${key}: ${String(previousDoc[key] ?? '-')} -> ${String(doc[key] ?? '-')}`)
+  const rest = changed.filter((key) => !isStatus(key))
+
+  return [...moves, rest.length ? `changed: ${rest.join(', ')}` : '']
+    .filter(Boolean)
+    .join('; ')
+}
+
+/**
+ * Records every create and update: approvals, rejections and submissions by
+ * their own name, everything else as a plain create or update with a note of
+ * which fields moved.
+ */
 export const recordAudit: CollectionAfterChangeHook = async ({
   doc,
   previousDoc,
@@ -30,6 +98,15 @@ export const recordAudit: CollectionAfterChangeHook = async ({
       else if (after === APPROVAL_STATUSES.rejected) action = 'reject'
     }
 
+    const summary = describeChange(doc, previousDoc)
+
+    /*
+     * A save that changed nothing a person did is not an activity. Payload
+     * rewrites login counters and timestamps by itself, and logging those
+     * would bury the real entries under one row per sign-in.
+     */
+    if (action === 'update' && !summary) return doc
+
     await req.payload.create({
       collection: 'audit-log',
       data: {
@@ -39,8 +116,17 @@ export const recordAudit: CollectionAfterChangeHook = async ({
         documentTitle: titleOf(doc),
         user: req.user?.id,
         userEmail: req.user?.email,
+        /*
+         * A rejection's reason is the point of the entry, so it wins. An
+         * anonymous create is the public contact form: worth saying, because
+         * an empty user column otherwise looks like a bug.
+         */
         detail:
-          action === 'reject' ? String(doc?.rejectionReason ?? '') : undefined,
+          action === 'reject'
+            ? String(doc?.rejectionReason ?? '')
+            : operation === 'create' && !req.user
+              ? 'Dikirim dari formulir publik'
+              : summary,
       },
       overrideAccess: true,
     })

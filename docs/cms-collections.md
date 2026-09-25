@@ -78,7 +78,7 @@ Every content collection carries:
 - **Approval workflow** — Draft → In Review → Approved, rejection needs a reason
 - **Preview** — see the item as it will look, before approving
 - **Revision history** — 25 versions, restorable
-- **Audit logging** — every submit, approve, reject and delete
+- **Audit logging** — every create, update, submit, approve, reject and delete
 
 ## The rich text editor
 
@@ -149,7 +149,29 @@ both `admin.group` in `src/collections/Media.ts` and the group in
 ## Data Masuk and Audit Trail
 
 Both read-only. Contact submissions can never be edited or deleted by anyone;
-only the "followed up" flag changes. The audit trail is written by hooks.
+only the follow-up status changes, between **Baru** and **Ditindaklanjuti**.
+The audit trail is written by hooks.
+
+### What the audit trail covers
+
+Every collection a person can change, for every create, update and delete:
+news, reports, jobs, products, enquiries, media and user accounts. Only
+Payload's own bookkeeping tables are excluded — preferences, document locks,
+migrations and the key/value store — along with the audit log itself, which
+nothing may write to twice.
+
+Three things shape an entry:
+
+- **The action** is `create`, `update` or `delete`, except where the approval
+  workflow gives it a better name: `submit`, `approve` or `reject`.
+- **The detail** names the fields that moved, and spells out a status change in
+  full (`followUpStatus: new -> follow_up`). It never prints a value, so a
+  password or a verification token cannot reach the log. A rejection shows its
+  reason instead, and a submission from the public contact form says so, since
+  it has no signed-in user to name.
+- **A save that changed nothing is not recorded.** Payload rewrites login
+  counters and timestamps on its own; logging those would bury the real
+  entries under one row per sign-in.
 
 ## Preview
 

@@ -1,7 +1,7 @@
 import { APIError } from 'payload'
 import type { CollectionConfig, PayloadRequest } from 'payload'
 import { ROLE_OPTIONS, ROLES, isSuperAdmin } from '@/access'
-import { recordDeletion } from '@/hooks/audit'
+import { recordAudit, recordDeletion } from '@/hooks/audit'
 import { bothLanguages } from '@/i18n/admin'
 
 
@@ -128,6 +128,8 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
+    // Creating a user, changing a role, verifying an address: all recorded.
+    afterChange: [recordAudit],
     /*
      * Deleting a user is permanent and, done to the wrong one, not
      * recoverable from inside the CMS. Payload asks for confirmation, which

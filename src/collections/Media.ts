@@ -8,6 +8,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 import { MAX_UPLOAD_MB } from '@/fields/common'
 import { bothLanguages } from '@/i18n/admin'
+import { recordAudit, recordDeletion } from '@/hooks/audit'
 
 /** Matches config.upload.limits.fileSize in src/payload.config.ts. */
 const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
@@ -51,6 +52,8 @@ export const Media: CollectionConfig = {
         }
       },
     ],
+    afterChange: [recordAudit],
+    afterDelete: [recordDeletion],
   },
   fields: [
     {

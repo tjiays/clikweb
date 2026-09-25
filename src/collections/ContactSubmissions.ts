@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isSalesAdmin, isSuperAdmin } from '@/access'
 import { bothLanguages } from '@/i18n/admin'
+import { recordAudit } from '@/hooks/audit'
 
 /** Where an enquiry stands with sales. Nobody has touched it, or somebody has. */
 export const FOLLOW_UP_STATUSES = { new: 'new', followUp: 'follow_up' } as const
@@ -147,6 +148,12 @@ export const ContactSubmissions: CollectionConfig = {
     },
   ],
   hooks: {
+    /*
+     * Both halves of an enquiry's life are recorded: the visitor's submission,
+     * which has no logged-in user, and every follow-up status move afterwards.
+     * There is no delete hook because nobody can delete one.
+     */
+    afterChange: [recordAudit],
     beforeChange: [
       /*
        * The stamp follows the status rather than being set once. Moving an
