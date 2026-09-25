@@ -1,361 +1,231 @@
 /*
- * CMS dashboard.
- *
- * CLIK navy and orange on a light ground. Panels are white with a hairline
- * border; orange is reserved for the thing that wants a decision, so colour
- * carries meaning rather than decorating. Chart hues come from a palette that
- * was run through the validator, not chosen by eye.
+ * The CMS landing page. Uses the CLIK tokens declared in custom.scss so the
+ * dashboard matches the rest of the admin rather than looking like a second
+ * product bolted on.
  */
+.cdash {
+  --cd-navy: #0e2e5c;
+  --cd-orange: #ea7b1f;
+  --cd-surface: var(--clik-surface, #fff);
+  --cd-border: var(--clik-border, #dbe4f0);
+  --cd-muted: var(--clik-muted, #697077);
+  --cd-radius: var(--clik-radius, 10px);
+  --cd-tint: var(--clik-tint, #f1faff);
 
-.clik-dash {
-  --dash-navy: #003a79;
-  --dash-orange: #ff7d00;
-  --dash-ink: #16233a;
-  --dash-muted: #6b7a90;
-  --dash-line: #e4eaf2;
-  --dash-surface: #ffffff;
-  --dash-ground: #f6f8fb;
-  --dash-radius: 14px;
+  padding: 1.5rem 2rem 3rem;
+  max-width: 1200px;
+}
 
-  padding: 2rem 2.25rem 4rem;
-  max-width: 1240px;
-  background: var(--dash-ground);
-  min-height: 100%;
+.cdash__head { margin-bottom: 1.5rem; }
 
-  h1, h2 { color: var(--dash-navy); }
+.cdash__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cd-navy);
+}
 
-  &__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.75rem;
+.cdash__sub {
+  margin: 0.25rem 0 0;
+  color: var(--cd-muted);
+  font-size: 0.875rem;
+}
 
-    h1 {
-      margin: 0 0 0.3rem;
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.015em;
-    }
+.cdash__notice {
+  margin: 0 0 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--cd-border);
+  border-left: 3px solid var(--cd-orange);
+  border-radius: var(--cd-radius);
+  background: var(--cd-surface);
+  color: var(--cd-muted);
+  font-size: 0.875rem;
 
-    p {
-      margin: 0;
-      font-size: 0.875rem;
-      color: var(--dash-muted);
-    }
-  }
-
-  /* The one coloured element: something is waiting for a decision. */
-  &__alert {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
-    background: var(--dash-orange);
-    color: #fff;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: filter 150ms ease;
-
-    &:hover { filter: brightness(1.06); text-decoration: none; color: #fff; }
-  }
-
-  &__alertDot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #fff;
-  }
-
-  &__links { margin-top: 1.25rem; }
-
-  &__linksTitle {
-    margin: 0 0 0.75rem;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--dash-muted);
-  }
-
-  &__linkGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 0.75rem;
-  }
-
-  &__empty {
-    padding: 2rem;
-    background: var(--dash-surface);
-    border: 1px solid var(--dash-line);
-    border-radius: var(--dash-radius);
-    color: var(--dash-muted);
+  code {
+    background: var(--cd-tint);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
   }
 }
 
-/* ---- Stat tiles ---- */
-.clik-tiles {
+.cdash__notice--calm { border-left-color: var(--cd-border); }
+
+/* ---- the four figures ---- */
+.cdash__tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
-.clik-tile {
-  position: relative;
+.cdash__tile {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 1.25rem 1.35rem 1.35rem;
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-line);
-  border-radius: var(--dash-radius);
-  text-decoration: none;
-  transition: transform 150ms ease, box-shadow 150ms ease;
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 22px rgba(0, 58, 121, 0.09);
-    text-decoration: none;
-  }
-
-  &__value {
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1.1;
-    font-variant-numeric: tabular-nums;
-    color: var(--dash-navy);
-  }
-
-  &__label {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--dash-ink);
-  }
-
-  &__hint {
-    font-size: 0.75rem;
-    color: var(--dash-muted);
-  }
-
-  &__flag {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    background: #fff1e2;
-    color: #a34f00;
-    font-size: 0.6875rem;
-    font-weight: 700;
-  }
+  padding: 1.1rem 1.25rem;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  border-radius: var(--cd-radius);
 }
 
-/* ---- Panels ---- */
-.clik-split {
+.cdash__tileValue {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--cd-navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.cdash__tileLabel { font-size: 0.8125rem; color: var(--cd-muted); }
+
+.cdash__trend {
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cdash__trend--up { color: #1a7f4b; }
+.cdash__trend--down { color: #b3341f; }
+
+/* ---- panels ---- */
+.cdash__panel {
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--cd-surface);
+  border: 1px solid var(--cd-border);
+  border-radius: var(--cd-radius);
+  margin-bottom: 1.5rem;
+}
+
+.cdash__panelTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cd-navy);
+}
+
+.cdash__panelNote {
+  margin: 0.25rem 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--cd-muted);
+}
+
+/* ---- web vitals ---- */
+.cdash__vitals {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
 }
 
-.clik-panel {
-  padding: 1.35rem 1.5rem 1.5rem;
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-line);
-  border-radius: var(--dash-radius);
-  margin-bottom: 1rem;
-
-  &__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.1rem;
-
-    h2 {
-      margin: 0;
-      font-size: 0.9375rem;
-      font-weight: 800;
-    }
-  }
-
-  &__sub {
-    font-size: 0.75rem;
-    color: var(--dash-muted);
-  }
-
-  &__link {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--dash-orange);
-    text-decoration: none;
-
-    &:hover { text-decoration: underline; }
-  }
+.cdash__vital {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--cd-border);
+  border-radius: 8px;
+  background: #fcfdff;
 }
 
-/* ---- Charts ---- */
-.clik-chart {
-  width: 100%;
-  height: auto;
-  overflow: visible;
-
-  &__grid {
-    stroke: var(--dash-line);
-    stroke-width: 1;
-  }
-
-  &__bar {
-    fill: var(--dash-navy);
-    transition: fill 150ms ease;
-  }
-
-  &__bar:hover { fill: var(--dash-orange); }
-
-  &__tick {
-    font-size: 10px;
-    fill: var(--dash-muted);
-  }
-
-  /* Several chart hues sit under 3:1 on white, so values are always drawn. */
-  &__value {
-    font-size: 10px;
-    font-weight: 700;
-    fill: var(--dash-ink);
-  }
+.cdash__vitalTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
-.clik-bars {
+.cdash__vitalLabel {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--cd-navy);
+  letter-spacing: 0.02em;
+}
+
+.cdash__vitalValue {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--cd-navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.cdash__vitalHint { font-size: 0.75rem; color: var(--cd-muted); }
+
+/*
+ * The rating is never colour alone: each badge carries its own word, so it
+ * survives a colourblind reader and a black-and-white print.
+ */
+.cdash__badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.cdash__badge--good { background: #e3f4ea; color: #1a6b41; }
+.cdash__badge--fair { background: #fdf0dd; color: #8a5210; }
+.cdash__badge--poor { background: #fae4e0; color: #93291a; }
+.cdash__badge--none { background: #eef1f5; color: var(--cd-muted); }
+
+/* ---- lists ---- */
+.cdash__split {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .cdash__split { grid-template-columns: 1fr; }
+  .cdash { padding: 1.25rem 1rem 2.5rem; }
+}
+
+.cdash__list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  gap: 0.7rem;
-
-  &__row {
-    display: grid;
-    grid-template-columns: 1fr 84px 26px;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  &__label {
-    font-size: 0.78125rem;
-    color: var(--dash-ink);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__track {
-    height: 8px;
-    border-radius: 999px;
-    background: var(--dash-ground);
-    overflow: hidden;
-  }
-
-  &__fill {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
-  }
-
-  &__value {
-    font-size: 0.78125rem;
-    font-weight: 700;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    color: var(--dash-ink);
-  }
-}
-
-/* ---- Activity table ---- */
-.clik-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-
-  th {
-    text-align: left;
-    padding: 0 0 0.6rem;
-    font-size: 0.6875rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--dash-muted);
-    border-bottom: 1px solid var(--dash-line);
-  }
-
-  td {
-    padding: 0.65rem 0.75rem 0.65rem 0;
-    border-bottom: 1px solid var(--dash-line);
-    color: var(--dash-ink);
-  }
-
-  tr:last-child td { border-bottom: none; }
-
-  &__action {
-    display: inline-block;
-    padding: 0.15rem 0.5rem;
-    border-radius: 6px;
-    background: var(--dash-ground);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--dash-navy);
-  }
-
-  &__title {
-    max-width: 320px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__when {
-    color: var(--dash-muted);
-    white-space: nowrap;
-  }
-}
-
-/* ---- Shortcut links ---- */
-.clik-link {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
-  padding: 0.9rem 1rem;
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-line);
-  border-radius: 10px;
-  text-decoration: none;
-  transition: border-color 150ms ease, transform 150ms ease;
-
-  &:hover {
-    border-color: var(--dash-navy);
-    transform: translateY(-1px);
-    text-decoration: none;
-  }
-
-  &__label {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    color: var(--dash-navy);
-  }
-
-  &__description {
-    font-size: 0.71875rem;
-    color: var(--dash-muted);
-  }
+  gap: 0.5rem;
 }
 
-@media (max-width: 1000px) {
-  .clik-split { grid-template-columns: 1fr; }
+.cdash__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
 }
 
-@media (max-width: 768px) {
-  .clik-dash { padding: 1.25rem 1rem 3rem; }
-  .clik-table__title { max-width: 140px; }
+.cdash__row:has(.cdash__bar) { grid-template-columns: minmax(0, 1fr) 90px auto; }
+
+.cdash__rowLabel {
+  color: var(--cd-navy);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cdash__rowValue {
+  font-weight: 600;
+  color: var(--cd-navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.cdash__bar {
+  height: 6px;
+  border-radius: 999px;
+  background: #eef1f5;
+  overflow: hidden;
+}
+
+.cdash__barFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--cd-navy);
+}
+
+.cdash__empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--cd-muted);
 }

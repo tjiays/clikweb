@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { BackToTop } from '@/components/ui/BackToTop'
 import { RefreshOnSave } from '@/components/ui/RefreshOnSave'
+import { Analytics } from '@/components/layout/Analytics'
 import { getDictionary } from '@/i18n'
 import { isLocale, locales } from '@/i18n/config'
 import '@/styles/globals.css'
@@ -78,6 +79,8 @@ export default async function LocaleLayout({
         <Footer locale={locale} dict={dict} />
         <BackToTop label={dict.common.backToTop} />
         {isDraft ? <RefreshOnSave /> : null}
+        {/* A preview is an editor checking their own work, not a visitor. */}
+        <Analytics disabled={isDraft} />
       </body>
     </html>
   )
