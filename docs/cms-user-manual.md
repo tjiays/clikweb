@@ -70,8 +70,10 @@ lowongan yang dicentang *Lowongan masih dibuka* yang tampil di website.
 Layanan, Testimoni, Timeline Pencapaian, Partner Logo, CTA Blocks, dan Page
 Content.
 
-**Tim Sales (Sales Admin)** — Data Masuk dari formulir Hubungi Kami. Centang
-*Sudah ditindaklanjuti* setelah Anda menghubungi pengirimnya.
+**Tim Sales (Sales Admin)** — Data Masuk dari formulir Hubungi Kami. Setiap
+kiriman masuk berstatus **Baru**. Ubah menjadi **Ditindaklanjuti** setelah Anda
+menghubungi pengirimnya; nama Anda dan waktunya tercatat otomatis. Mengembalikan
+status ke Baru akan menghapus catatan itu.
 
 ## Untuk Approver
 

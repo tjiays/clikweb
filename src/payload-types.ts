@@ -638,7 +638,7 @@ export interface ContactSubmission {
   ipAddress?: string | null;
   userAgent?: string | null;
   consentTextVersion?: string | null;
-  followedUp?: boolean | null;
+  followUpStatus: 'new' | 'follow_up';
   followedUpBy?: (number | null) | User;
   followedUpAt?: string | null;
   updatedAt: string;
@@ -951,7 +951,7 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   ipAddress?: T;
   userAgent?: T;
   consentTextVersion?: T;
-  followedUp?: T;
+  followUpStatus?: T;
   followedUpBy?: T;
   followedUpAt?: T;
   updatedAt?: T;

@@ -2,6 +2,9 @@ import type { CollectionConfig } from 'payload'
 import { isSalesAdmin, isSuperAdmin } from '@/access'
 import { bothLanguages } from '@/i18n/admin'
 
+/** Where an enquiry stands with sales. Nobody has touched it, or somebody has. */
+export const FOLLOW_UP_STATUSES = { new: 'new', followUp: 'follow_up' } as const
+
 /**
  * Contact form submissions (intent/04). Stored permanently and never deleted
  * (confirmed decision 19). Viewed by Sales Admin and Super Admin.
@@ -14,7 +17,7 @@ export const ContactSubmissions: CollectionConfig = {
   admin: {
     group: 'Data',
     useAsTitle: 'email',
-    defaultColumns: ['email', 'companyName', 'interestedIn', 'followedUp', 'createdAt'],
+    defaultColumns: ['email', 'companyName', 'interestedIn', 'followUpStatus', 'createdAt'],
   },
   access: {
     // The public contact form creates these.
@@ -109,9 +112,24 @@ export const ContactSubmissions: CollectionConfig = {
 
     // --- The only fields Sales Admin may change (open item O2) ---
     {
-      name: 'followedUp',
-      type: 'checkbox',
-      label: 'Sudah ditindaklanjuti',
+      /*
+       * Where the enquiry stands with sales. Two states, because there are
+       * only two things anyone needs to know: nobody has touched this yet,
+       * or somebody has. It replaced a "sudah ditindaklanjuti" checkbox,
+       * which said the same thing but read as a task rather than a state.
+       *
+       * Not named `status`: Payload reserves enum_<table>_status for the
+       * draft/published column it manages itself.
+       */
+      name: 'followUpStatus',
+      type: 'select',
+      required: true,
+      defaultValue: FOLLOW_UP_STATUSES.new,
+      label: { en: 'Status', id: 'Status' },
+      options: [
+        { label: { en: 'New', id: 'Baru' }, value: FOLLOW_UP_STATUSES.new },
+        { label: { en: 'Follow Up', id: 'Ditindaklanjuti' }, value: FOLLOW_UP_STATUSES.followUp },
+      ],
       admin: { position: 'sidebar' },
     },
     {
@@ -130,10 +148,23 @@ export const ContactSubmissions: CollectionConfig = {
   ],
   hooks: {
     beforeChange: [
+      /*
+       * The stamp follows the status rather than being set once. Moving an
+       * enquiry back to New clears it, so "followed up by" never names
+       * someone for work the record no longer claims happened.
+       */
       ({ data, req, originalDoc }) => {
-        if (data?.followedUp && !originalDoc?.followedUp) {
+        if (!data) return data
+        const next = data.followUpStatus
+        const previous = originalDoc?.followUpStatus
+        if (next === previous) return data
+
+        if (next === FOLLOW_UP_STATUSES.followUp) {
           data.followedUpBy = req.user?.id
           data.followedUpAt = new Date().toISOString()
+        } else {
+          data.followedUpBy = null
+          data.followedUpAt = null
         }
         return data
       },

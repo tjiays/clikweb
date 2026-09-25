@@ -80,7 +80,10 @@ CONTACT_FORM_RECIPIENT=sales@cbclik.com
 
 **Sales Admin** and **Super Admin**, under Pengaturan → Data Masuk.
 
-Sales Admin can read submissions and tick "Sudah ditindaklanjuti". They cannot
+Sales Admin can read submissions and move one between the two follow-up states,
+**New** (Baru) and **Follow Up** (Ditindaklanjuti). Moving it to Follow Up stamps
+who did it and when; moving it back to New clears that stamp, so the record never
+names someone for work it no longer claims happened. They cannot
 edit the content of a submission and cannot delete one — nobody can, including
 Super Admin. These are permanent records (confirmed decision 19), which is
 verified: an attempt to edit the message leaves it unchanged, and a delete
