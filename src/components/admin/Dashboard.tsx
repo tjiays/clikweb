@@ -25,13 +25,54 @@ const duration = (sec: number) => {
   return r ? `${m} mnt ${r} dtk` : `${m} mnt`
 }
 
-/** CLS is a ratio, not a duration, so it is the one metric without a unit. */
-const VITALS: { key: 'lcp' | 'inp' | 'cls' | 'fcp' | 'ttfb'; label: string; hint: string; format: (v: number) => string }[] = [
-  { key: 'lcp', label: 'LCP', hint: 'Konten utama muncul', format: ms },
-  { key: 'inp', label: 'INP', hint: 'Respons saat diklik', format: ms },
-  { key: 'cls', label: 'CLS', hint: 'Pergeseran tata letak', format: (v) => v.toFixed(3) },
-  { key: 'fcp', label: 'FCP', hint: 'Tampilan pertama', format: ms },
-  { key: 'ttfb', label: 'TTFB', hint: 'Respons server', format: ms },
+/*
+ * Each card leads with what the number means in plain words; the acronym is
+ * kept small for anyone who wants to look it up. The target is the boundary
+ * of "Baik" in rate(), stated so the badge beside it makes sense.
+ * CLS is a ratio, not a duration, so it is the one metric without a unit.
+ */
+type VitalKey = 'lcp' | 'inp' | 'cls' | 'fcp' | 'ttfb'
+const VITALS: { key: VitalKey; code: string; title: string; about: string; target: string; format: (v: number) => string }[] = [
+  {
+    key: 'lcp',
+    code: 'LCP',
+    title: 'Konten utama tampil',
+    about: 'Lama sampai isi utama halaman terlihat.',
+    target: 'Baik: maks. 2,5 dtk',
+    format: ms,
+  },
+  {
+    key: 'inp',
+    code: 'INP',
+    title: 'Respons saat diklik',
+    about: 'Jeda antara klik atau ketuk dan halaman bereaksi.',
+    target: 'Baik: maks. 200 ms',
+    format: ms,
+  },
+  {
+    key: 'cls',
+    code: 'CLS',
+    title: 'Stabilitas tampilan',
+    about: 'Seberapa banyak isi halaman bergeser saat dimuat. Makin kecil makin baik.',
+    target: 'Baik: maks. 0,1',
+    format: (v) => v.toFixed(3),
+  },
+  {
+    key: 'fcp',
+    code: 'FCP',
+    title: 'Tampilan pertama',
+    about: 'Lama sampai sesuatu pertama kali muncul di layar.',
+    target: 'Baik: maks. 1,8 dtk',
+    format: ms,
+  },
+  {
+    key: 'ttfb',
+    code: 'TTFB',
+    title: 'Respons server',
+    about: 'Lama server mulai mengirim halaman ke browser.',
+    target: 'Baik: maks. 800 ms',
+    format: ms,
+  },
 ]
 
 const RATING_LABEL: Record<Rating, string> = {
@@ -96,22 +137,22 @@ export default async function Dashboard(_props: AdminViewServerProps) {
 
       <section className="cdash__panel">
         <h2 className="cdash__panelTitle">Kecepatan halaman</h2>
-        <p className="cdash__panelNote">
-          Diukur dari browser pengunjung sungguhan, pada persentil ke-75.
-          {a.vitalsCount ? ` ${nf.format(a.vitalsCount)} pengukuran.` : ''}
-        </p>
         <div className="cdash__vitals">
-          {VITALS.map(({ key, label, hint, format }) => {
+          {VITALS.map(({ key, code, title, about, target, format }) => {
             const p75 = a.vitals?.[key]?.p75 ?? 0
             const r = rate(key, p75)
             return (
               <div key={key} className="cdash__vital">
                 <div className="cdash__vitalTop">
-                  <span className="cdash__vitalLabel">{label}</span>
+                  <span className="cdash__vitalLabel">{title}</span>
+                  <span className="cdash__vitalCode">{code}</span>
+                </div>
+                <div className="cdash__vitalMid">
+                  <span className="cdash__vitalValue">{r === 'none' ? '—' : format(p75)}</span>
                   <span className={`cdash__badge cdash__badge--${r}`}>{RATING_LABEL[r]}</span>
                 </div>
-                <span className="cdash__vitalValue">{r === 'none' ? '—' : format(p75)}</span>
-                <span className="cdash__vitalHint">{hint}</span>
+                <span className="cdash__vitalHint">{about}</span>
+                <span className="cdash__vitalTarget">{target}</span>
               </div>
             )
           })}

@@ -128,16 +128,45 @@
 
 .cdash__vitalTop {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.5rem;
 }
 
+.cdash__panelTitle + .cdash__vitals { margin-top: 1rem; }
+
 .cdash__vitalLabel {
   font-weight: 700;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
+  line-height: 1.3;
   color: var(--cd-navy);
-  letter-spacing: 0.02em;
+}
+
+/* The acronym, for looking it up — never the thing you have to read first. */
+.cdash__vitalCode {
+  flex-shrink: 0;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--cd-muted);
+  border: 1px solid var(--cd-border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+}
+
+.cdash__vitalMid {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cdash__vitalTarget {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--cd-muted);
 }
 
 .cdash__vitalValue {
@@ -147,7 +176,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.cdash__vitalHint { font-size: 0.75rem; color: var(--cd-muted); }
+.cdash__vitalHint { font-size: 0.75rem; line-height: 1.4; color: var(--cd-muted); }
 
 /*
  * The rating is never colour alone: each badge carries its own word, so it
