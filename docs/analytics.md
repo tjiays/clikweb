@@ -15,6 +15,7 @@ visitors to Google" is a sentence nobody wants to defend to a client or to OJK.
 | Public route | `/analytics` on port 8080, proxied by nginx |
 | Admin login | `/opt/umami/ADMIN-CREDENTIALS.txt` (chmod 600) |
 | API key | `/opt/umami/API-KEY.txt` (chmod 600), also in the site's `.env` |
+| Read-only DB role | `umami_reader`, `SELECT` on `website_event` only; in the site's `.env` as `UMAMI_DATABASE_URL` |
 
 Umami runs with `BASE_PATH=/analytics`, so it owns that prefix and nginx
 rewrites nothing on the way through.
@@ -52,6 +53,31 @@ Endpoints used, all `GET` under `/api/websites/{id}`:
 | `performance/stats` | p50/p75/p95 for each Core Web Vital |
 | `breakdown?fields=["path"]` | top pages |
 | `breakdown?fields=["referrer"]` | where visitors came from |
+
+### Per-page columns, and why two of them bypass the API
+
+The "Halaman teratas" table shows views, visitors, average time on page,
+bounce rate and load time for each page.
+
+Views, visitors and load time (LCP p75, from `performance/metrics`) come from
+the API. **Time on page and bounce do not**, because the API's versions measure
+something else under those names:
+
+- `breakdown` per-page `totaltime` is the gap between the first and last view
+  of the *same page* inside one visit. A page opened once reads zero.
+- `breakdown` per-page `bounces` counts "viewed once in this visit", not
+  "left the site from here".
+
+So `readPages()` in `umami.ts` works them out from `website_event` with the
+usual definitions — time until the visitor opened their next page (the last
+page of a visit is excluded, gaps capped at 30 minutes), and bounce as a visit
+that started on the page and opened nothing else. It reads through a Postgres
+role, `umami_reader`, that may `SELECT` `website_event` and nothing else, in
+read-only transactions. Its connection string is `UMAMI_DATABASE_URL`.
+
+If that connection fails the table still renders from the API, with the two
+columns shown as "—" rather than filled with the misleading API figures.
+Tested by revoking the role's login.
 
 Authentication is `Authorization: Bearer <api key>`. The `x-umami-api-key`
 header does **not** work on the analytics routes — it authenticates but does

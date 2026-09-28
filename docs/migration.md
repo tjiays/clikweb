@@ -184,6 +184,19 @@ Because the database is restored, the **website ID stays the same**, so
 `NEXT_PUBLIC_UMAMI_WEBSITE_ID` and `UMAMI_API_KEY` in `.env` keep working
 unchanged. `UMAMI_BASE_URL` stays `http://127.0.0.1:3100/analytics`.
 
+Recreate the read-only role the dashboard uses for time on page, then update
+`UMAMI_DATABASE_URL` with its new password:
+
+```
+CREATE ROLE umami_reader LOGIN PASSWORD '<new password>';
+GRANT CONNECT ON DATABASE umami TO umami_reader;
+GRANT USAGE ON SCHEMA public TO umami_reader;
+GRANT SELECT ON public.website_event TO umami_reader;
+ALTER ROLE umami_reader SET default_transaction_read_only = on;
+```
+
+Skip it and the dashboard still works; the time and bounce columns show "—".
+
 Note that `pnpm` needs the shim at `/opt/umami/bin/pnpm`; the system one is a
 broken corepack version. `docs/analytics.md` explains why.
 

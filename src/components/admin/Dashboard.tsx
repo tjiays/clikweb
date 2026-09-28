@@ -16,6 +16,15 @@ const nf = new Intl.NumberFormat('id-ID')
 
 const ms = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(2)}s` : `${Math.round(v)}ms`)
 
+/** Seconds as a reader would say them: "8 dtk", "9 mnt 58 dtk". */
+const duration = (sec: number) => {
+  const s = Math.round(sec)
+  if (s < 60) return `${s} dtk`
+  const m = Math.floor(s / 60)
+  const r = s % 60
+  return r ? `${m} mnt ${r} dtk` : `${m} mnt`
+}
+
 /** CLS is a ratio, not a duration, so it is the one metric without a unit. */
 const VITALS: { key: 'lcp' | 'inp' | 'cls' | 'fcp' | 'ttfb'; label: string; hint: string; format: (v: number) => string }[] = [
   { key: 'lcp', label: 'LCP', hint: 'Konten utama muncul', format: ms },
@@ -44,7 +53,6 @@ export default async function Dashboard(_props: AdminViewServerProps) {
 
   const bounceRate = a.stats.visits ? Math.round((a.stats.bounces / a.stats.visits) * 100) : 0
   const avgVisit = a.stats.visits ? Math.round(a.stats.totaltime / a.stats.visits) : 0
-  const maxViews = a.topPages[0]?.views ?? 0
 
   const tiles = [
     { label: 'Pengunjung', value: nf.format(a.stats.visitors), t: trend(a.stats.visitors, a.previous.visitors) },
@@ -110,45 +118,94 @@ export default async function Dashboard(_props: AdminViewServerProps) {
         </div>
       </section>
 
-      <div className="cdash__split">
-        <section className="cdash__panel">
-          <h2 className="cdash__panelTitle">Halaman teratas</h2>
-          {a.topPages.length ? (
-            <ul className="cdash__list">
-              {a.topPages.map((p) => (
-                <li key={p.path} className="cdash__row">
-                  <span className="cdash__rowLabel" title={p.path}>{p.path}</span>
-                  <span className="cdash__bar" aria-hidden="true">
-                    <span
-                      className="cdash__barFill"
-                      style={{ width: `${maxViews ? Math.max(4, (p.views / maxViews) * 100) : 0}%` }}
-                    />
-                  </span>
-                  <span className="cdash__rowValue">{nf.format(p.views)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="cdash__empty">Belum ada kunjungan tercatat.</p>
-          )}
-        </section>
+      <section className="cdash__panel">
+        <h2 className="cdash__panelTitle">Halaman teratas</h2>
+        {a.topPages.length ? (
+          <>
+            <div className="cdash__tableWrap">
+              <table className="cdash__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Halaman</th>
+                    <th scope="col" className="num">Tampilan</th>
+                    <th scope="col" className="num">Pengunjung</th>
+                    <th scope="col" className="num">Rata-rata waktu</th>
+                    <th scope="col" className="num">Bounce</th>
+                    <th scope="col" className="num">Waktu loading</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {a.topPages.map((p) => {
+                    const r = rate('lcp', p.lcp)
+                    return (
+                      <tr key={p.path}>
+                        <th scope="row" className="cdash__path" title={p.path}>{p.path}</th>
+                        <td className="num">{nf.format(p.views)}</td>
+                        <td className="num">{nf.format(p.visitors)}</td>
+                        <td
+                          className="num"
+                          title={
+                            p.avgSeconds == null
+                              ? 'Selalu menjadi halaman terakhir kunjungan, jadi belum bisa diukur'
+                              : `Dari ${nf.format(p.timedViews)} tampilan yang terukur`
+                          }
+                        >
+                          {p.avgSeconds == null ? '—' : duration(p.avgSeconds)}
+                        </td>
+                        <td
+                          className="num"
+                          title={
+                            p.entrances
+                              ? `${nf.format(p.bounces)} dari ${nf.format(p.entrances)} kunjungan yang masuk lewat halaman ini`
+                              : 'Belum ada kunjungan yang masuk lewat halaman ini'
+                          }
+                        >
+                          {p.entrances ? `${Math.round((p.bounces / p.entrances) * 100)}%` : '—'}
+                        </td>
+                        <td className="num">
+                          {p.lcp == null ? (
+                            '—'
+                          ) : (
+                            <span className="cdash__load">
+                              {ms(p.lcp)}
+                              <span className={`cdash__badge cdash__badge--${r}`}>{RATING_LABEL[r]}</span>
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="cdash__foot">
+              <strong>Rata-rata waktu</strong>: lama pengunjung di halaman sampai membuka halaman
+              berikutnya; halaman terakhir sebuah kunjungan tidak bisa diukur.{' '}
+              <strong>Bounce</strong>: kunjungan yang masuk lewat halaman ini lalu pergi tanpa
+              membuka halaman lain. <strong>Waktu loading</strong>: sampai konten utama tampil
+              (LCP, persentil ke-75).
+            </p>
+          </>
+        ) : (
+          <p className="cdash__empty">Belum ada kunjungan tercatat.</p>
+        )}
+      </section>
 
-        <section className="cdash__panel">
-          <h2 className="cdash__panelTitle">Sumber kunjungan</h2>
-          {a.referrers.length ? (
-            <ul className="cdash__list">
-              {a.referrers.map((r) => (
-                <li key={r.referrer} className="cdash__row">
-                  <span className="cdash__rowLabel">{r.referrer}</span>
-                  <span className="cdash__rowValue">{nf.format(r.views)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="cdash__empty">Belum ada sumber tercatat.</p>
-          )}
-        </section>
-      </div>
+      <section className="cdash__panel">
+        <h2 className="cdash__panelTitle">Sumber kunjungan</h2>
+        {a.referrers.length ? (
+          <ul className="cdash__list">
+            {a.referrers.map((r) => (
+              <li key={r.referrer} className="cdash__row">
+                <span className="cdash__rowLabel">{r.referrer}</span>
+                <span className="cdash__rowValue">{nf.format(r.views)}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="cdash__empty">Belum ada sumber tercatat.</p>
+        )}
+      </section>
 
       {a.ok && !a.hasData ? (
         <p className="cdash__notice cdash__notice--calm">
