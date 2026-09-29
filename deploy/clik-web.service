@@ -1,0 +1,23 @@
+# systemd unit for production. Copy to /etc/systemd/system/clik-web.service.
+# It runs whatever `current` points at, which deploy/release.sh switches.
+[Unit]
+Description=CLIK website and CMS (Next.js + Payload)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/clik/current
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start
+Restart=always
+RestartSec=5
+User=clik
+Group=clik
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

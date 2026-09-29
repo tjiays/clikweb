@@ -73,6 +73,12 @@ passwords.
 
 ### On the new server
 
+**Use the release layout** in `docs/cutover-runbook.md` ("Set up the release
+layout"): the app lives in `/srv/clik`, configuration and uploads in
+`/srv/clik/shared`, and `deploy/release.sh` builds each release in its own
+folder. The numbered steps below describe what that setup does; where they say
+"the project root", read `/srv/clik/shared` for `.env` and `media`.
+
 1. **Install** Node 22, PostgreSQL, nginx.
 2. **Create the database and its user**, then restore:
    ```

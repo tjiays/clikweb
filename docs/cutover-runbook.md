@@ -24,6 +24,30 @@ afternoon: if something needs fixing you want people available.
       `/srv/clik`, and change the `alias` to match) or let `www-data` traverse
       the path. Check: `sudo -u www-data test -r <path>/public/media/<file> && echo ok`
 
+## Set up the release layout (once, on the production server)
+
+Production runs from `/srv/clik`, which also settles the image-permission item
+above, since nginx can read `/srv`.
+
+```bash
+sudo useradd --system --home /srv/clik --shell /usr/sbin/nologin clik
+sudo mkdir -p /srv/clik/releases /srv/clik/shared/media /var/cache/nginx/clik
+sudo git clone git@github.com:tjiays/clikweb.git /srv/clik/repo
+sudo install -m 600 -o clik /path/to/production.env /srv/clik/shared/.env
+sudo tar -xzf media-….tar.gz -C /srv/clik/shared          # uploaded files
+sudo chown -R clik: /srv/clik
+sudo chown www-data: /var/cache/nginx/clik
+sudo cp /srv/clik/repo/deploy/clik-web.service /etc/systemd/system/
+sudo systemctl daemon-reload && sudo systemctl enable clik-web
+cd /srv/clik/repo && sudo ./deploy/release.sh             # first release
+```
+
+- [ ] Nightly backups: copy `/etc/cron.d/clik-backup` from staging and change
+      the command to
+      `ENV_FILE=/srv/clik/shared/.env MEDIA_DIR=/srv/clik/shared/media /srv/clik/repo/deploy/backup.sh`
+- [ ] `sudo ./deploy/backup.sh` by hand once; confirm `/var/backups/clik` is
+      `drwx------`
+
 ## Content migration
 
 The redirect map assumes the old articles and reports keep their slugs. Either
@@ -63,6 +87,8 @@ the Newsroom index instead of the specific article.
 - [ ] `https://cbclik.com/` answers **200**, not a redirect. (The generated map
       once sent `/` to `/`, an endless loop on the homepage; the generator now
       skips any rule that points at itself.)
+- [ ] A public page answers with `X-Cache-Status: MISS` then `HIT`, and with
+      a CMS login `BYPASS`
 - [ ] Log in to `/admin` and check the `payload-token` cookie is marked
       **Secure**. It follows `SITE_URL`, so this also proves `SITE_URL` is the
       https address.
@@ -91,5 +117,4 @@ cutover, not after.
       `max-age=86400` to `max-age=31536000` — in all three places it appears in
       `deploy/nginx-production.conf`. It starts at one day because a broken
       certificate with a one-year HSTS locks visitors out for a year.
-- [ ] Schedule `deploy/backup.sh` in cron
 - [ ] Watch Search Console for crawl errors for a fortnight
