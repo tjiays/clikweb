@@ -1,83 +1,125 @@
 # CMS collections
 
-Seven collections. Everything else moved into `src/content/` — see
-[editing content](./editing-content.md).
+Seven collections, plus the store that holds uploaded images. Everything else
+on the website lives in `src/content/` — see [editing content](./editing-content.md).
 
-| Menu group | Collection | Who edits it |
+| Menu (ID / EN) | Collection | Who edits it |
 | --- | --- | --- |
-| Newsroom | Artikel | News Admin |
-| Report | Laporan | News Admin |
-| Product | Item Produk | Marketing Admin |
-| Karir | Lowongan Pekerjaan | HR Admin |
-| Data | Data Masuk | Sales Admin (read-only) |
-| Data | Audit Trail | Super Admin (read-only) |
-| Pengaturan | Users | Super Admin |
+| Berita / News | `articles` | News Admin |
+| Laporan / Reports | `reports` | News Admin |
+| Produk / Products | `product-items` | Marketing Admin |
+| Karir / Careers | `job-openings` | HR Admin |
+| Data Masuk / Enquiries | `contact-submissions` | Sales Admin (follow-up status only) |
+| Log Audit / Audit Log | `audit-log` | Nobody — written by the system, read by Super Admin |
+| Pengguna / Users | `users` | Super Admin |
+| — (no menu) | `media` | Through the image fields on news and reports |
 
-## Artikel
+The four content collections share one pattern: **both languages side by side
+on a single page** (`titleId` beside `titleEn`, and so on), the approval
+workflow in the sidebar, and a slug made from the Indonesian title that is
+hidden from the form. Every visible field below is shown in the order it
+appears.
 
-| Field | Notes |
-| --- | --- |
-| Judul | Bilingual, required |
-| Slug | Bilingual; fills itself from the title |
-| Ringkasan | Bilingual. Shown on cards, not on the article itself. |
-| Isi artikel | Bilingual rich text — headings, lists, links, images, tables. Optional. |
-| Gambar sampul | From the media library |
-| Gambar banner | Optional 1300x372 image on the article page; falls back to the cover |
-| Penulis | Plain text byline |
-| Tanggal publikasi | Required. Sets the order; newest first, then the later time. |
-| Featured News | Puts it in the Newsroom sidebar |
-| Posisi di Featured News | Numbers, one per place in the sidebar list; an article may hold several |
-| Sembunyikan dari daftar | Keeps it off the Newsroom cards, Home and the related list; the page stays |
-| Anda mungkin juga tertarik dengan | Up to 3 related articles, in order; empty = newest |
-| SEO | Bilingual title and description |
-
-## Laporan
+## Berita (`articles`)
 
 | Field | Notes |
 | --- | --- |
-| Type | Laporan Tahunan or Laporan Perkembangan Usaha |
-| Judul, Slug, Ringkasan | Bilingual |
-| Tahun | Required |
-| Gambar sampul | Annual reports use one; the business report has none in the design |
-| Isi laporan | Bilingual rich text, including financial tables |
-| Tanggal publikasi, Urutan | Optional |
+| Gambar sampul | Card image. Recommended 1140×650px (7:4). Refused under 832px wide or outside ratio 1.2–3. |
+| Gambar banner (halaman detail) | Optional. Recommended 1300×372px (3.5:1). Refused under 1300px wide or outside ratio 2.8–4.2. Falls back to the cover. |
+| Judul / Title | Required in both languages |
+| Ringkasan / Summary | Shown on cards, not on the article page |
+| Isi artikel / Article body | Rich text. Optional, but if one language has it the other must too before approval. |
+| Anda mungkin juga tertarik dengan | Up to 3 related articles, in order; empty = the newest |
+| SEO title and description | Both languages |
+| Penulis *(sidebar)* | Filled with the editor's name; editable |
+| Tanggal publikasi *(sidebar)* | Required, filled with today, date only. Sets the order, newest first. A future date keeps the article off the site until 00:00 WIB that day. |
+| Auto-translate, language status *(sidebar)* | See [auto-translate](./auto-translate-and-glossary.md) |
 
-## Item Produk
+Every image field refuses files over **5 MB**, and states its recommended size on the form. Images already attached before a rule existed are not re-checked.
+
+Still in the schema but hidden and unread: `isFeatured`, `featuredPositions`,
+`hideFromList`. They hold the old hand-ordering of Featured News, kept so the
+change can be walked back. Featured News is now simply the newest eight.
+
+## Laporan (`reports`)
 
 | Field | Notes |
 | --- | --- |
-| Nama produk | Bilingual |
-| Kategori | One of the five fixed categories |
-| Deskripsi singkat | Bilingual. The line under the name in What We Offer. |
-| Deskripsi | Bilingual rich text. Shown when the row is expanded. |
-| Status | Live or Ready to Sell |
-| NEW badge | Checkbox |
-| Use cases | Repeating rows: segment and how it is used |
-| Urutan | Lower numbers first |
+| Gambar sampul | Annual report: recommended 2000×1333px (3:2), refused under 1300px wide. Business development report: recommended 1200×800px (3:2), refused under 832px wide. |
+| Judul / Title | Required in both languages |
+| Ringkasan / Summary | One or two sentences on the report card |
+| Isi laporan / Report body | Rich text with tables. Required in both languages. |
+| Jenis laporan *(sidebar)* | Laporan Tahunan or Laporan Perkembangan Usaha |
+| Penulis *(sidebar)* | Filled with the editor's name |
+| Tanggal publikasi *(sidebar)* | Optional, date only. Same future-date rule as news. |
+| Urutan *(sidebar)* | 0 = automatic, newest first; a lower number pins it higher |
+
+`financialTables` is still in the schema, hidden. The figures it held were
+moved into the report body's tables and checked against the originals.
+
+## Produk (`product-items`)
+
+| Field | Notes |
+| --- | --- |
+| Nama produk / Product name | Required in both languages |
+| Deskripsi singkat / Short description | The line under the name in What We Offer |
+| Status | Any of **Live**, **Ready to Sell**, **NEW** — at most two, or none. More than two is refused with "Maksimal pilih 2". |
+| Deskripsi / Description | Rich text, shown when the row is expanded |
+| Fitur utama / Key features | Repeating list |
+| Cocok untuk / Suitable for | Repeating list |
+| Kegunaan / Use cases | Repeating list |
+| Kategori *(sidebar)* | One of the five fixed categories |
+| Urutan *(sidebar)* | As above |
 
 The five categories live in `src/content/products.ts`. Adding a category is a
-code change; adding a product is not.
+code change; adding a product is not. Products have **no auto-translate**.
 
-## Lowongan Pekerjaan
+## Karir (`job-openings`)
 
 | Field | Notes |
 | --- | --- |
-| Nama posisi, Slug | Bilingual title |
-| Kategori | One of three fixed categories |
-| Responsibilities, Qualifications, Education | Bilingual rich text |
-| Apply email | Defaults to talent@cbclik.com |
-| Format subjek email | Shown under "Please mention on Subject E-mail" |
-| Lowongan masih dibuka | **Only checked vacancies appear on the site** |
+| Nama posisi / Position | Required in both languages |
+| Kategori | IT, Analytics, Sales / Business Development, Operations, Finance — from `src/content/careers.ts` |
+| Tanggung jawab / Key Responsibilities | Rich text |
+| Persyaratan / Minimum Qualifications | Rich text |
+| Tautan lamaran (JobStreet) | Where Lamar goes. Empty = CLIK's JobStreet company page. |
+| Lowongan masih dibuka *(sidebar)* | **Only open vacancies appear on the site** |
+| Urutan *(sidebar)* | As above |
 
-## Shared behaviour
+Removed on 23 September: Education, the apply email, the email subject format,
+and the posted date. Karir has **no auto-translate**.
 
-Every content collection carries:
+## Behaviour every content collection shares
 
-- **Bilingual fields** — Indonesian and English, with an Auto-translate button
-- **Approval workflow** — Draft → In Review → Approved, rejection needs a reason
-- **Preview** — see the item as it will look, before approving
-- **Revision history** — 25 versions, restorable
-- **Audit logging** — every create, update, submit, approve, reject and delete
+- **Approval workflow** — In Review, Approved, Rejected. Saving submits.
+  Details in [approval workflow](./approval-workflow.md).
+- **Back to the list after saving**, so the editor sees their item in context.
+- **Preview and Live Preview** — see below.
+- **Revision history** — up to 25 versions, restorable.
+- **Audit logging** — every create, update, delete, submit, approval and rejection.
+- **No "Columns" chooser** on any list. Each collection's `defaultColumns` decides
+  what a list shows; the chooser could only hide a column, and Payload
+  remembered that per person, which read as a bug.
+
+## Pengguna (`users`)
+
+Name, email, password and role, all required at creation. Email verification
+is on: a new account cannot log in until its owner clicks the link in the
+verification email. While mail is caught by Mailpit, Super Admin sees the link
+on the user's page (`src/components/admin/VerificationLink.tsx`). Accounts that
+existed before verification was switched on were marked verified by the
+migration, so nobody was locked out.
+
+Super Admin deletes a user from the list (a two-step **Hapus** button on each
+row) or from the user's page. Deleting your own account, or the last Super
+Admin, is refused. References to a deleted user are set to empty rather than
+deleted with it, and the audit log keeps their email as text.
+
+## Dashboard
+
+The CMS opens on website analytics, not content counts. See
+[analytics](./analytics.md) for where the numbers come from, including why time
+on page and bounce are computed here rather than taken from Umami.
 
 ## The rich text editor
 

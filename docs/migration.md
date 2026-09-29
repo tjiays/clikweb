@@ -197,6 +197,17 @@ ALTER ROLE umami_reader SET default_transaction_read_only = on;
 
 Skip it and the dashboard still works; the time and bounce columns show "—".
 
+**Set the Umami role to UTC before its first start** on the new server:
+
+```
+ALTER ROLE umami SET timezone TO 'UTC';
+```
+
+Umami sends event times without a timezone, so if PostgreSQL runs on Jakarta
+time (as this server does) every stored time lands 7 hours early. If the
+database you restore was written with that fault, correct it at the same time;
+`docs/analytics.md` describes it.
+
 Note that `pnpm` needs the shim at `/opt/umami/bin/pnpm`; the system one is a
 broken corepack version. `docs/analytics.md` explains why.
 

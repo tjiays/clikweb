@@ -5,48 +5,63 @@ Super Admin manages users.
 
 | Role | Type | Scope |
 | --- | --- | --- |
-| Super Admin | Full access | Everything. Changes publish directly, with no approval. |
-| HR Admin | Editor | Karir |
-| News Admin | Editor | Newsroom and Laporan |
-| Marketing Admin | Editor | Sales Admin | Viewer | Contact form submissions only |
-| Approver | Reviewer | Sees every submitted change across all modules. Can only approve or reject. |
+| Super Admin | Full access | Everything. Can approve in the same save that creates or edits an item. |
+| HR Admin | Editor | Karir (job vacancies) |
+| News Admin | Editor | Berita (news) and Laporan (reports) |
+| Marketing Admin | Editor | Produk (product items) |
+| Sales Admin | Viewer | Data Masuk (contact enquiries) |
+| Approver | Reviewer | Every item in review, across all four content modules. Approves or rejects; cannot edit. |
 
 ## What each role can reach
 
 | Module | Super Admin | HR | News | Marketing | Sales | Approver |
 | --- | --- | --- | --- | --- | --- | --- |
-| Karir (lowongan, kategori, konten halaman) | Full | Edit + submit | — | — | — | Approve / Reject |
-| Newsroom (artikel, author, outlet, liputan) | Full | — | Edit + submit | — | — | Approve / Reject |
-| Laporan | Full | — | Edit + submit | — | — | Approve / Reject |
-| CTA Blocks, Page Content | Full | — | — | Edit + submit | — | Approve / Reject |
-| Halaman statis (kebijakan, cara, pengaduan) | Full | — | — | — | — | — |
-| Media Library (no menu; via the image fields) | Full | Upload | Upload | Upload | — | View |
-| Data Masuk (Hubungi Kami) | Full | — | — | — | View, mark followed up | — |
-| Pengaturan Umum | Full | — | — | — | — | — |
-| Users & Roles, Audit Log | Full | — | — | — | — | — |
+| Dashboard (website analytics) | View | View | View | View | View | View |
+| Berita / News | Full | — | Create, edit, delete | — | — | Approve / Reject |
+| Laporan / Reports | Full | — | Create, edit, delete | — | — | Approve / Reject |
+| Produk / Products | Full | — | — | Create, edit, delete | — | Approve / Reject |
+| Karir / Careers | Full | Create, edit, delete | — | — | — | Approve / Reject |
+| Images (via the image fields; no menu) | Upload, delete | Upload | Upload | Upload | — | View |
+| Data Masuk / Enquiries | View, follow-up status | — | — | — | View, follow-up status | — |
+| Log Audit / Audit Log | View | — | — | — | — | — |
+| Pengguna / Users | Full | — | — | — | — | — |
 
-Policy and how-to pages are Super Admin only, per open item **O7**, until the
-product owner says who else should edit them.
+Everything else on the website — page copy, logos, testimonials, policy pages,
+contact details — is in code, not the CMS, and is changed by a developer.
+
+**Creates and edits go through approval; deletes do not.** An editor deletes
+their own module's items directly, and the deletion lands in the audit log.
+The original intent had deletion wait for approval; that was never built.
 
 ## How it is enforced
 
-Access rules live in `src/access/`, not in the admin interface, because the
-REST and GraphQL APIs reach the same data. A rule that only hid a menu item
-would not be a rule.
+Access rules live in `src/access/` and on each collection, not in the admin
+interface, because the REST and GraphQL APIs reach the same data. A rule that
+only hid a menu item would not be a rule. The sidebar
+(`src/components/admin/Nav.tsx`) mirrors these rules so nobody is shown a menu
+that leads to an empty or refused page.
 
-Three guarantees worth stating plainly:
+Guarantees worth stating plainly:
 
-- **The Approver cannot edit content.** Every content field carries field-level
-  access that refuses writes from the Approver. They may set only the decision
-  and its reason.
-- **A user cannot change their own role.** The `role` field refuses writes from
-  anyone but Super Admin, so an editor cannot promote themselves through the API.
-- **Contact submissions cannot be edited or deleted.** Every field is read-only
-  after creation except the "followed up" flag, and deletion is refused for
-  everyone including Super Admin, because these are permanent records
-  (confirmed decision 19).
+- **The Approver cannot edit content.** Every content field refuses writes from
+  the Approver. They can only record a decision and its reason.
+- **An editor cannot approve their own work**, through the form or the API.
+- **A user cannot change their own role.** Only Super Admin may write `role`.
+- **Contact enquiries cannot be edited or deleted**, by anyone including Super
+  Admin. Only the follow-up status changes.
+- **Nobody can delete their own account, and the last Super Admin cannot be
+  deleted.**
 
 ## Adding a user
 
-Super Admin opens **Pengaturan → Users & Roles → Create**, sets a name, email
-and role, and the new user sets their own password through the login screen.
+Super Admin opens **Pengguna → Create new** and fills in name, email, password
+and role. The account stays inactive until its owner clicks the verification
+link emailed to them. While outgoing mail is caught by Mailpit (staging), the
+link reaches no inbox; Super Admin can read it on the user's page and pass it
+on.
+
+## Removing a user
+
+On the **Pengguna** list, Super Admin presses **Hapus** on the row, then
+confirms. The same button is on the user's own page. The account's audit
+entries keep the person's email, so the history survives the account.

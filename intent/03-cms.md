@@ -79,8 +79,8 @@ Rules:
 Every content model carries: `approvalStatus`, `rejectionReason`, who submitted and reviewed it and when, `publishedAt`, a hidden `isSample` flag, and timestamps.
 
 ### Berita (News Admin) — `articles`
-- Gambar sampul (cover, 7:4, min 1140×650px)
-- Gambar banner for the article page (3.5:1, min 1300×372px; falls back to the cover)
+- Gambar sampul (cover; recommended 1140×650px, 7:4)
+- Gambar banner for the article page (recommended 1300×372px, 3.5:1; falls back to the cover)
 - Judul, Ringkasan, Isi artikel — each in Indonesian and English. Title required in both.
 - Anda mungkin juga tertarik dengan — up to 3 related articles; empty means the newest
 - SEO title and description, both languages
@@ -168,7 +168,7 @@ Every create, update and delete on news, reports, products, vacancies, enquiries
 
 Images are managed where they are used: the cover and banner fields on news and reports can upload a new file, pick an existing one from the whole library, swap it, and edit its alt text in both languages. There is no Media menu for any role. The only thing the fields cannot do is delete a file; Super Admin can do that at `/admin/collections/media`.
 
-Each image field states its required ratio, minimum size and the 5 MB limit, and refuses files that break them.
+Each image field states its recommended size and the 5 MB limit. It refuses files over 5 MB, narrower than the slot's minimum width, or outside its ratio range.
 
 ## 11. Seed data
 

@@ -63,7 +63,10 @@ and a sixth submission from one network within the hour is refused.
 | Reaches real people | **No** | Yes |
 
 Staging deliberately captures mail rather than sending it, so testing the form
-never disturbs a real inbox.
+never disturbs a real inbox. **No SMTP credentials exist yet**, so today no
+enquiry email reaches anyone; the enquiry itself is always saved. The agreed
+production shape (relay everything except cbclik.com) is in
+[operations](./operations.md#outgoing-email).
 
 Moving to production is a change of environment variables, not of code:
 
@@ -78,7 +81,7 @@ CONTACT_FORM_RECIPIENT=sales@cbclik.com
 
 ## Who sees submissions
 
-**Sales Admin** and **Super Admin**, under Pengaturan → Data Masuk.
+**Sales Admin** and **Super Admin**, under **Data Masuk** (Enquiries).
 
 Sales Admin can read submissions and move one between the two follow-up states,
 **New** (Baru) and **Follow Up** (Ditindaklanjuti). Moving it to Follow Up stamps
@@ -89,8 +92,15 @@ Super Admin. These are permanent records (confirmed decision 19), which is
 verified: an attempt to edit the message leaves it unchanged, and a delete
 returns 403.
 
-## Still to decide
+## Map
 
-The map embed URL is a site setting and is currently blank, so the Contact page
-shows a marked TODO instead of a broken frame. Set it under Pengaturan →
-Pengaturan Umum.
+The Contact page embeds a Google Maps view of Menara Dea Tower 2, Mega
+Kuningan. It needs no API key. The URL lives in `src/content/site.ts`
+(`mapEmbedUrl`) and is listed in [external links](./external-links.md) for
+verification.
+
+## Every submission is audited
+
+Each new enquiry writes an audit entry marked "Dikirim dari formulir publik",
+since there is no signed-in user to name, and every follow-up status change is
+recorded with the person who made it.

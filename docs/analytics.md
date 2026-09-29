@@ -102,6 +102,30 @@ Upgrading: `git -C /opt/umami/src fetch --tags`, check out the new tag, then
 pnpm 12.3.4, because it looks for `bin/pnpm.cjs` where that version ships
 `bin/pnpm.mjs`.
 
+## Known issues
+
+**Stored times are 7 hours early.** This server's PostgreSQL runs on
+`Asia/Jakarta` (changed from UTC on 3 July), and Umami sends event times
+without a timezone, so PostgreSQL reads UTC times as Jakarta times. Found on
+28 September: the website entry created at about 16:50 WIB is stored as 09:50.
+
+- **Unaffected:** time on page, visit length, counts and page speed — they are
+  differences or tallies, and both ends shift equally.
+- **Affected:** anything by hour or by day in Umami's own screens. A visit at
+  06:00 WIB appears at 23:00 the previous day.
+
+Fix, not yet applied: `ALTER ROLE umami SET timezone TO 'UTC';`, restart
+`umami`, then add 7 hours to the timestamps already stored. It changes stored
+data, so it waits for the product owner's go-ahead.
+
+**Time on page counts idle tabs.** It is the time until the visitor opens their
+next page, so a tab left open reads as reading time. One such view dominated a
+page's average on staging (15.8 minutes, the same article reopened). Measuring
+only the time a tab is visible, as Google Analytics does, would need a small
+addition to the tracker; not built.
+
+**Staging and production share one website ID** unless split before launch.
+
 ## Not covered
 
 - **Speed before launch.** Real-user vitals need real users. Catching a slow

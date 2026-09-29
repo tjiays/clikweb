@@ -49,61 +49,86 @@ An item in review is locked to everyone except the person who submitted it.
 The Approver is not reading a moving target, and an author is not locked out
 of their own half-written piece by their first save.
 
----
+## What the editor sees
 
-## Original notes
+One orange button, **Publikasikan perubahan**. Pressing it saves and submits:
+the item lands on In Review and the editor is taken back to the list. There is
+no separate Save Draft button, and no status control — the status shows as a
+read-only label.
 
-Every content change by an HR, News or Marketing Admin goes through review.
-Super Admin changes publish directly. Rejection always requires a reason.
+## What the Approver sees
 
-```mermaid
-stateDiagram-v2
-  [*] --> Draft
-  Draft --> InReview: editor submits
-  InReview --> Approved: approver approves
-  InReview --> Rejected: approver rejects<br/>reason required
-  Rejected --> Draft: editor edits
-  Approved --> Draft: editor starts a new revision
-```
+No form. The Approver opens an item in review, reads both languages — they sit
+side by side on the same page — and presses one of two buttons:
 
-## The rules
+- **Setujui & tayangkan** — approves; the item goes live (subject to its
+  publish date, below).
+- **Tolak** — opens **Alasan penolakan**. The rejection cannot be sent without
+  a reason, and the editor sees it on the item.
 
-- **An already-published item stays online while its replacement is reviewed.**
-  Editing a published item creates a new draft revision; the live version is
-  untouched until the revision is approved.
-- **An item in review is locked.** Its editor cannot change it until the
-  Approver has decided, so the Approver never reviews a moving target.
-- **Rejection requires a reason**, and the editor sees it on the item.
-- **Delete and unpublish are requests too.** The item stays live until approved.
-- **Revision history is kept** — up to 25 versions per item, with who changed
-  what and when.
+On an item already decided, the buttons are replaced by a note: "Sudah disetujui
+dan tayang di website" or "Sudah ditolak. Menunggu penulis memperbaiki dan
+mengirim ulang."
+
+To find waiting work, filter any list by **Approval Status = In Review**. There
+are no notifications (open item O3).
+
+## Both languages before approval
+
+An item cannot be approved with a language missing. The title is required in
+both; a body or description that exists in one language must exist in the
+other. The refusal names what is missing. An Indonesian title is required
+before an item can even be saved, because without it the item shows as a blank
+row in every list.
+
+## Publish date
+
+Approval makes an item eligible; the **publish date** decides when readers see
+it. News and reports dated in the future stay off the site — lists, their own
+page, related articles, sitemap — until 00:00 WIB on that day. An item with no
+date is visible on approval. Preview is exempt, so next week's article can be
+checked before it is approved.
 
 ## Where it is enforced
 
 In `src/hooks/approval.ts`, as a database-level hook rather than in the
-interface, because the REST and GraphQL APIs reach the same data. The hook
-refuses, with a readable message:
+interface, because the REST and GraphQL APIs reach the same data. It refuses,
+with a readable message:
 
-- an editor trying to approve their own work
-- an approver trying to edit content instead of deciding on it
-- a decision on an item that was never submitted
-- a rejection with no reason
-- any change to an item currently in review
+| Situation | Message |
+| --- | --- |
+| An editor tries to approve or reject | Only the Approver can approve or reject. Submit it for review instead. |
+| The Approver tries to edit content | The Approver can only approve or reject an item. |
+| A decision on something never submitted | Only an item that has been submitted for review can be decided on. |
+| A rejection with no reason | A rejection must include a reason. |
+| Someone else edits an item in review | This item is locked while it is in review. |
+| Approval with a language missing | Belum bisa disetujui — … |
+
+The form always posts back whatever the status field shows, so the hook treats
+a status as a decision only when it **changes**. Reading an unchanged value as
+a choice is what once left a rejected item rejected however often it was saved.
 
 ## Seeing it before approving
 
-Open the item and press **Preview**. It opens on the real site, exactly as a
-visitor will see it, while still unapproved. Nothing is published by previewing.
-
-## For the Approver
-
-Filter any list by **Approval Status = In Review** to see what is waiting. Open
-an item, read it in both languages using the locale switcher, then set Approval
-Status to Approved or Rejected and save. A rejection needs the reason field
-filled in; the editor sees it when they reopen the item.
+**Preview** opens the item on the real site, exactly as a visitor will see it,
+while it is still unapproved. **Live Preview** shows the same page beside the
+form and refreshes on save. Nothing is published by previewing. The route
+checks both a secret and a signed-in CMS session, so a draft cannot be read by
+guessing its URL.
 
 ## What is recorded
 
-Every submission, approval, rejection, publish and deletion is written to the
-**Audit Log** under Pengaturan, with the user, the item and the reason. The log
-is readable by Super Admin and cannot be edited or deleted by anyone.
+Every submission, approval, rejection, create, update and delete is written to
+the **Log Audit** (menu group Data), with the item, the person and — for a
+rejection — the reason. Only Super Admin can read it, and nobody can edit or
+delete an entry. See [CMS collections](./cms-collections.md#what-the-audit-trail-covers).
+
+## History
+
+The workflow began as **Draft → In Review → Published**, with the live version
+staying online while an edit was reviewed, and deletion as a request. During
+the build the product owner asked for saving to submit, and Draft became a
+state nothing could reach or leave, so it was removed (21 September). Editing
+settled work now takes the page down until it is re-approved (23 September).
+Deletion-by-request was never built. The reasoning is in commits `09a2b7e`,
+`27e6c9b` and `714ecd8`.
