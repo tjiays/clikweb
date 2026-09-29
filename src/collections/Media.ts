@@ -93,7 +93,13 @@ export const Media: CollectionConfig = {
   ],
   upload: {
     staticDir: path.resolve(dirname, '../../public/media'),
-    mimeTypes: ['image/*', 'application/pdf'],
+    /*
+     * Raster images and PDF only. `image/*` also admitted SVG, which is a
+     * document that can carry script: opened directly from our own domain it
+     * would run as the site. Nothing in the library was SVG, and the site's
+     * own vector icons live in public/images, not here.
+     */
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'application/pdf'],
     imageSizes: [
       { name: 'thumbnail', width: 400, height: 300, position: 'centre' },
       { name: 'card', width: 768, height: 512, position: 'centre' },

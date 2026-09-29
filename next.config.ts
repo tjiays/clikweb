@@ -50,6 +50,26 @@ const nextConfig: NextConfig = {
       { pathname: '/images/**' },
     ],
   },
+  /*
+   * Uploaded files are served under a sandboxing Content-Security-Policy and
+   * nosniff. Shown in a page as <img> they render as usual; opened directly,
+   * the browser runs no script in them and treats them as their stated type
+   * only. A second layer behind the upload allow-list in Media.ts, so a file
+   * that ever got past it still could not act as the site.
+   */
+  async headers() {
+    const uploadHeaders = [
+      {
+        key: 'Content-Security-Policy',
+        value: "default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; sandbox",
+      },
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+    ]
+    return [
+      { source: '/api/media/file/:path*', headers: uploadHeaders },
+      { source: '/media/:path*', headers: uploadHeaders },
+    ]
+  },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       '.cjs': ['.cts', '.cjs'],

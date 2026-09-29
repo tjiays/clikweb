@@ -37,6 +37,14 @@ appears.
 
 Every image field refuses files over **5 MB**, and states its recommended size on the form. Images already attached before a rule existed are not re-checked.
 
+**Accepted file types: JPEG, PNG, WebP, GIF, AVIF and PDF.** SVG is refused:
+it is a document that can carry script, and opened directly from the site's
+own address it would run as the site. Every uploaded file is also served with
+`Content-Security-Policy: … sandbox` and `nosniff` (`next.config.ts`, and the
+`/media/` block in the production nginx config), so a file that ever got past
+the upload check still could not run anything when opened directly. Pages
+showing the image as `<img>` are unaffected.
+
 **Only a Super Admin can replace the file behind an existing image.** Images sit outside the approval workflow, so a replaced file went straight onto every live page showing it. Editors upload a new image and choose it in their item — which is reviewed like any edit — and can still correct alt text.
 
 Still in the schema but hidden and unread: `isFeatured`, `featuredPositions`,
