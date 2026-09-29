@@ -16,6 +16,13 @@ afternoon: if something needs fixing you want people available.
 - [ ] A backup of the **old** WordPress site and its database, kept by whoever hosts it
 - [ ] Access confirmed to the DNS records for cbclik.com
 - [ ] TLS certificate obtained for cbclik.com and www.cbclik.com
+- [ ] **nginx can read the uploaded images.** The production config serves
+      `/media/` straight from `public/media` as the `www-data` user. On the
+      current server that folder sits under `/home/dnugroho`, which is `750`,
+      so nginx gets *Permission denied* and every uploaded image is a 403.
+      Either install the app outside a private home folder (for example
+      `/srv/clik`, and change the `alias` to match) or let `www-data` traverse
+      the path. Check: `sudo -u www-data test -r <path>/public/media/<file> && echo ok`
 
 ## Content migration
 
@@ -41,6 +48,8 @@ the Newsroom index instead of the specific article.
    sudo ln -sf /etc/nginx/sites-available/clik /etc/nginx/sites-enabled/clik
    sudo nginx -t && sudo systemctl reload nginx
    ```
+   `nginx -t` must pass. The config sets `map_hash_bucket_size 256`, without
+   which the redirect map cannot be built and the test fails outright.
 4. Point DNS at the new server.
 5. Watch until the new site answers on the real domain.
 
@@ -51,6 +60,15 @@ the Newsroom index instead of the specific article.
 - [ ] `https://cbclik.com/sitemap.xml` lists cbclik.com URLs, not staging ones
 - [ ] Spot-check ten old URLs from the redirect map — each should 301, not 404
 - [ ] `https://www.cbclik.com/` redirects to the apex
+- [ ] `https://cbclik.com/` answers **200**, not a redirect. (The generated map
+      once sent `/` to `/`, an endless loop on the homepage; the generator now
+      skips any rule that points at itself.)
+- [ ] Log in to `/admin` and check the `payload-token` cookie is marked
+      **Secure**. It follows `SITE_URL`, so this also proves `SITE_URL` is the
+      https address.
+- [ ] Response headers on a page, an image and a script all carry
+      `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`
+      and `Referrer-Policy`
 - [ ] Submit the contact form once and confirm it reaches the sales inbox
 - [ ] Submit sitemap.xml in Google Search Console
 
@@ -69,8 +87,9 @@ cutover, not after.
 ## Afterwards
 
 - [ ] Raise the DNS TTL back to its normal value once settled
-- [ ] Turn on `Strict-Transport-Security` in the nginx config (it is commented
-      out; enable it only once the certificate is confirmed working, as it is
-      hard to undo)
+- [ ] After a week of confirmed HTTPS, raise `Strict-Transport-Security` from
+      `max-age=86400` to `max-age=31536000` — in all three places it appears in
+      `deploy/nginx-production.conf`. It starts at one day because a broken
+      certificate with a one-year HSTS locks visitors out for a year.
 - [ ] Schedule `deploy/backup.sh` in cron
 - [ ] Watch Search Console for crawl errors for a fortnight

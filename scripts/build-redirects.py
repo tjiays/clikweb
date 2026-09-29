@@ -142,9 +142,16 @@ def write_nginx(rows, path='deploy/redirects.map'):
         for old, (dest, note) in rows.items():
             if not dest:
                 continue
+            key = old.rstrip("/") or "/"
+            # A path sent to itself can only loop: nginx answers the new
+            # request with the same 301, for ever. The old root is exactly that
+            # — '/' to '/' — and it put the production homepage into an
+            # endless redirect. It needs no rule; the new site serves it.
+            if key == dest:
+                continue
             comment = f'  # {note}' if note else ''
             # Match with and without the trailing slash.
-            f.write(f'{old.rstrip("/") or "/"} {dest};{comment}\n')
+            f.write(f'{key} {dest};{comment}\n')
     return path
 
 
