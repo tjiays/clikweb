@@ -21,8 +21,14 @@ export const ContactSubmissions: CollectionConfig = {
     defaultColumns: ['email', 'companyName', 'interestedIn', 'followUpStatus', 'createdAt'],
   },
   access: {
-    // The public contact form creates these.
-    create: () => true,
+    /*
+     * Nobody creates these through the API — not visitors, not staff. The
+     * form's own route (src/app/api/contact/route.ts) writes them with access
+     * overridden, after validating and rate limiting. Leaving create open let
+     * anyone post straight to /api/contact-submissions or GraphQL and skip
+     * every one of those checks.
+     */
+    create: () => false,
     read: ({ req: { user } }) => isSuperAdmin(user) || isSalesAdmin(user),
     // Only the "followed up" flags may be changed; see field access below.
     update: ({ req: { user } }) => isSuperAdmin(user) || isSalesAdmin(user),

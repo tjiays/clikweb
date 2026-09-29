@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { checkRateLimit, clientIp, normalisePhone } from '@/lib/rateLimit'
+import { checkRateLimit, clientIp, normalisePhone, oneAtATime } from '@/lib/rateLimit'
 import {
   validateContactForm,
   CONSENT_VERSION,
@@ -35,16 +35,6 @@ export async function POST(request: Request) {
   }
 
   const ip = clientIp(request.headers)
-  const limit = await checkRateLimit(payload, {
-    email: body.email,
-    phone: body.phone,
-    ip,
-  })
-
-  if (!limit.allowed) {
-    // Nothing is stored and nothing is sent when a limit is hit.
-    return Response.json({ error: 'rate_limited', reason: limit.reason }, { status: 429 })
-  }
 
   const submission = {
     firstName: body.firstName.trim(),
@@ -65,17 +55,40 @@ export async function POST(request: Request) {
     consentTextVersion: CONSENT_VERSION,
   }
 
-  let created
-  try {
-    created = await payload.create({
-      collection: 'contact-submissions',
-      data: submission as never,
-      overrideAccess: true,
+  /*
+   * The limit check and the insert run as one step, one submission at a
+   * time. Checked separately, requests arriving together all saw the same
+   * count and all got through. Only this stretch waits; the email below does
+   * not.
+   */
+  const outcome = await oneAtATime(async () => {
+    const limit = await checkRateLimit(payload, {
+      email: body.email,
+      phone: body.phone,
+      ip,
     })
-  } catch (error) {
-    payload.logger.error({ err: error }, 'Could not save contact submission')
+    if (!limit.allowed) return { limited: limit.reason } as const
+    try {
+      const doc = await payload.create({
+        collection: 'contact-submissions',
+        data: submission as never,
+        overrideAccess: true,
+      })
+      return { created: doc } as const
+    } catch (error) {
+      payload.logger.error({ err: error }, 'Could not save contact submission')
+      return { failed: true } as const
+    }
+  })
+
+  if ('limited' in outcome) {
+    // Nothing is stored and nothing is sent when a limit is hit.
+    return Response.json({ error: 'rate_limited', reason: outcome.limited }, { status: 429 })
+  }
+  if ('failed' in outcome) {
     return Response.json({ error: 'save_failed' }, { status: 500 })
   }
+  const created = outcome.created
 
   // The submission is safe by this point. An email failure must not lose it.
   try {

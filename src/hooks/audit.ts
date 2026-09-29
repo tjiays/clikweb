@@ -133,10 +133,21 @@ export const recordAudit: CollectionAfterChangeHook = async ({
               : summary,
       },
       overrideAccess: true,
+      /*
+       * Passing req puts this insert in the same transaction, on the same
+       * connection, as the change it records. Without it each save held one
+       * pooled connection and waited for a second; ten saves at once took the
+       * whole pool and every request on the site waited for ever. It also
+       * means an entry exists only if its change was actually committed.
+       */
+      req,
     })
   } catch (error) {
-    // An audit failure must never block the editor's actual change.
+    // Inside the save's transaction, a failed insert fails the save with it:
+    // an unrecorded change is worse than a refused one. Rethrown so Payload
+    // rolls both back rather than committing a half-aborted transaction.
     req.payload.logger.error({ err: error }, 'Failed to write audit log entry')
+    throw error
   }
   return doc
 }
@@ -154,9 +165,18 @@ export const recordDeletion: CollectionAfterDeleteHook = async ({ doc, req, coll
         userEmail: req.user?.email,
       },
       overrideAccess: true,
+      /*
+       * Passing req puts this insert in the same transaction, on the same
+       * connection, as the change it records. Without it each save held one
+       * pooled connection and waited for a second; ten saves at once took the
+       * whole pool and every request on the site waited for ever. It also
+       * means an entry exists only if its change was actually committed.
+       */
+      req,
     })
   } catch (error) {
     req.payload.logger.error({ err: error }, 'Failed to write audit log entry')
+    throw error
   }
   return doc
 }

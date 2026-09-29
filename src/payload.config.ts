@@ -66,6 +66,18 @@ export default buildConfig({
     fallback: true,
   },
 
+  /*
+   * Document locking is off for every collection. Before a save, Payload's
+   * lock check reads the locked-documents table *outside* the save's
+   * transaction (payload.db.find without req, still so in 3.90.2), so it
+   * needs a second pooled connection while the save holds its first. Twenty
+   * saves at once took all ten connections, each waiting for an eleventh, and
+   * every request on the site — the public pages too — hung until a restart.
+   *
+   * What goes is the "someone else is editing this" notice. The approval
+   * workflow already locks an item in review to everyone but its author,
+   * which is the conflict that matters here.
+   */
   collections: [
     // Newsroom
     Articles,
@@ -82,7 +94,7 @@ export default buildConfig({
     Users,
     // Shared — needed for article, report and product images
     Media,
-  ],
+  ].map((collection) => ({ ...collection, lockDocuments: false as const })),
   // One editor everywhere: fixed toolbar, headings, alignment, lists,
   // links, inline images and tables. See src/fields/editor.ts.
   editor: contentEditor,
@@ -103,6 +115,13 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      /*
+       * A query that cannot get a connection within 10 seconds fails instead
+       * of waiting for ever. If anything again holds a connection while
+       * asking for another, one request errors and releases what it held;
+       * without this, the whole site stopped answering and stayed stopped.
+       */
+      connectionTimeoutMillis: 10_000,
     },
     // Schema changes go through committed migrations, never an implicit dev
     // push. A stray push leaves a "dev" marker that makes `payload migrate`

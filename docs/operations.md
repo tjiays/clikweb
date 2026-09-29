@@ -122,6 +122,28 @@ Deliberate, and recorded rather than forgotten:
   and Umami sends times without a zone. Durations and counts are right; hourly
   and daily charts are not. Fix pending — see [analytics](./analytics.md).
 
+## Database connections
+
+The app holds at most 10 PostgreSQL connections. Two rules keep that from
+becoming a site-wide freeze, both learned from reproducing one on 29 September
+(20 simultaneous saves: 19 never answered, and the public pages stopped
+responding until a restart):
+
+- **Anything a hook writes passes `req`**, so it runs in the save's own
+  transaction on the save's own connection. The audit log does; a hook that
+  called `payload.create` without `req` asked for a second connection while
+  holding the first.
+- **Payload's document locking is off**, because its lock check does exactly
+  that inside Payload, and still did in 3.90.2. With it off, 60 simultaneous
+  saves finish in about two seconds.
+
+As a backstop, a query that cannot get a connection within 10 seconds fails
+(`connectionTimeoutMillis` in `payload.config.ts`) rather than waiting for ever,
+so one request errors instead of the whole site hanging.
+
+The `payload_locked_documents` tables are still in the database, unused. The
+next `migrate:create` will offer to drop them, which is correct.
+
 ## Analytics
 
 Umami runs beside the site; its screens are at `/analytics` and its login is in

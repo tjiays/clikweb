@@ -97,6 +97,11 @@ and the posted date. Karir has **no auto-translate**.
 - **Preview and Live Preview** — see below.
 - **Revision history** — up to 25 versions, restorable.
 - **Audit logging** — every create, update, delete, submit, approval and rejection.
+- **No document locking.** Payload's "someone else is editing this" notice is
+  off for every collection. Its lock check runs a query outside the save's
+  transaction, and twenty saves at once used to freeze the whole site (see
+  [operations](./operations.md#database-connections)). The approval workflow's
+  own lock on items in review still applies.
 - **No "Columns" chooser** on any list. Each collection's `defaultColumns` decides
   what a list shows; the chooser could only hide a column, and Payload
   remembered that per person, which read as a bug.

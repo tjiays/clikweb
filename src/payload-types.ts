@@ -76,7 +76,6 @@ export interface Config {
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -91,7 +90,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
@@ -679,53 +677,6 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents".
- */
-export interface PayloadLockedDocument {
-  id: number;
-  document?:
-    | ({
-        relationTo: 'articles';
-        value: number | Article;
-      } | null)
-    | ({
-        relationTo: 'reports';
-        value: number | Report;
-      } | null)
-    | ({
-        relationTo: 'job-openings';
-        value: number | JobOpening;
-      } | null)
-    | ({
-        relationTo: 'product-items';
-        value: number | ProductItem;
-      } | null)
-    | ({
-        relationTo: 'contact-submissions';
-        value: number | ContactSubmission;
-      } | null)
-    | ({
-        relationTo: 'audit-log';
-        value: number | AuditLog;
-      } | null)
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null);
-  globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
@@ -1058,17 +1009,6 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents_select".
- */
-export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T;
-  globalSlug?: T;
-  user?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

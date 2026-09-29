@@ -47,6 +47,23 @@ There is no CAPTCHA (confirmed decision 18).
 Counts are taken from the submissions already stored, so clearing cookies or
 using a private window does not reset them.
 
+Three things make the limits hold, each added on 29 September after it was
+shown to be bypassable:
+
+- **Only the form can create a submission.** The collection refuses creates
+  through `/api/contact-submissions` and GraphQL for everyone; the form's route
+  writes with access overridden, after validating and checking the limits.
+  Before, anyone could post straight to the API and skip every check.
+- **The address is the one nginx saw.** `clientIp` reads `X-Real-IP`, which
+  nginx overwrites with the connecting address. It used to read the first
+  `X-Forwarded-For` entry, which the visitor writes, so one machine could claim
+  a new address per submission — 7 of 7 got past a limit of 5.
+- **Check and save happen one at a time.** Eight submissions sent at the same
+  instant all counted zero and all saved — 8 against a limit of 3. The check
+  and insert now run in a queue (`oneAtATime` in `src/lib/rateLimit.ts`), a few
+  milliseconds each; the email is sent outside it. The queue is in-process,
+  which holds while the site runs as one Node process.
+
 Phone numbers are normalised before comparison, so `0812…`, `+62812…` and
 `62812…` all count as the same number.
 
