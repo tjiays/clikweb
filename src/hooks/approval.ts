@@ -41,22 +41,39 @@ const assertBothLanguages = async ({
   req,
   collectionSlug,
   id,
+  incoming,
 }: {
   req: { payload?: any; locale?: string }
   collectionSlug: string
   id: unknown
+  /** The fields arriving in this save, laid over what is stored. */
+  incoming?: Record<string, unknown>
 }) => {
-  if (!req.payload || !id) return
+  if (!req.payload) return
 
-  const doc = await req.payload.findByID({
-    collection: collectionSlug,
-    id,
-    locale: 'all',
-    depth: 0,
-    draft: true,
-    overrideAccess: true,
-    req,
-  })
+  /*
+   * Judge what the item will be after this save, not what it was before it.
+   * Reading only the stored copy refused a Super Admin who filled in the
+   * English and approved in the same save, passed one who emptied it while
+   * approving, and — with no stored copy at all on create — let an item be
+   * created Approved with a language missing, straight onto the website.
+   *
+   * The four content collections keep both languages as plain paired fields,
+   * so the incoming values lay over the stored ones field for field.
+   */
+  const stored = id
+    ? await req.payload.findByID({
+        collection: collectionSlug,
+        id,
+        locale: 'all',
+        depth: 0,
+        draft: true,
+        overrideAccess: true,
+        req,
+      })
+    : null
+  const doc = { ...(stored ?? {}), ...(incoming ?? {}) }
+  if (!stored && !incoming) return
 
   const LANG = { id: 'Bahasa Indonesia', en: 'English' } as const
   const missing: string[] = []
@@ -154,13 +171,24 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
       return data
     }
 
-    // Otherwise they are trusted with the status they chose. The one thing
-    // they are not exempt from is publishing something half translated.
-    if (next === APPROVAL_STATUSES.approved && originalDoc?.id) {
+    /*
+     * Otherwise they are trusted with the status they chose, under the same
+     * two rules as the Approver: nothing half translated goes live — checked
+     * on create as well, which used to skip it — and a rejection says why.
+     */
+    if (
+      next === APPROVAL_STATUSES.rejected &&
+      deliberate(next, previous) &&
+      !String(data.rejectionReason || '').trim()
+    ) {
+      throw new APIError('A rejection must include a reason.', 400)
+    }
+    if (next === APPROVAL_STATUSES.approved) {
       await assertBothLanguages({
         req: req as never,
         collectionSlug: String(collection?.slug ?? ''),
-        id: originalDoc.id,
+        id: originalDoc?.id,
+        incoming: data,
       })
     }
     return data
@@ -185,6 +213,7 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
         req: req as never,
         collectionSlug: String(collection?.slug ?? ''),
         id: originalDoc?.id,
+        incoming: data,
       })
     }
     data.reviewedBy = user.id

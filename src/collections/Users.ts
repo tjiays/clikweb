@@ -63,6 +63,17 @@ export const Users: CollectionConfig = {
      * theirs. Payload holds the flag and refuses the login itself, so there
      * is no window where an unverified account can reach the CMS.
      */
+    /*
+     * Secure once the site is served over HTTPS, so the login cookie never
+     * travels unencrypted — including on the first plain-http request that
+     * nginx is about to redirect. Staging is plain http, where a Secure cookie
+     * would never be sent back and nobody could log in, so it follows
+     * SITE_URL rather than being hard-coded. Read when the server starts.
+     */
+    cookies: {
+      secure: (process.env.SITE_URL ?? '').startsWith('https://'),
+      sameSite: 'Lax',
+    },
     verify: {
       generateEmailSubject: ({ user }: { user: { name?: string } }) =>
         `Aktifkan akun CMS CLIK Anda${user?.name ? `, ${user.name}` : ''}`,
@@ -128,6 +139,38 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
+    /*
+     * The same rule the delete guard keeps, applied to the role: nothing may
+     * leave the CMS without a Super Admin. Deleting the last one was refused,
+     * but changing their role was not — one save, and nobody could manage
+     * users again short of editing the database.
+     */
+    beforeChange: [
+      async ({ req, data, originalDoc, operation }) => {
+        if (operation !== 'update' || !data) return data
+        if ((originalDoc as { role?: string })?.role !== ROLES.superAdmin) return data
+        if (!data.role || data.role === ROLES.superAdmin) return data
+
+        const others = await req.payload.count({
+          collection: 'users',
+          where: {
+            and: [
+              { role: { equals: ROLES.superAdmin } },
+              { id: { not_equals: (originalDoc as { id: unknown }).id } },
+            ],
+          } as never,
+          overrideAccess: true,
+          req,
+        })
+        if (others.totalDocs === 0) {
+          throw new APIError(
+            'Ini satu-satunya Super Admin. Mengubah perannya membuat CMS tidak bisa dikelola lagi. Jadikan pengguna lain Super Admin lebih dulu.',
+            400,
+          )
+        }
+        return data
+      },
+    ],
     // Creating a user, changing a role, verifying an address: all recorded.
     afterChange: [recordAudit],
     /*

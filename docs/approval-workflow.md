@@ -75,7 +75,13 @@ are no notifications (open item O3).
 
 ## Both languages before approval
 
-An item cannot be approved with a language missing. The title is required in
+An item cannot be approved with a language missing — by the Approver or by
+Super Admin, when creating as well as when editing. The check looks at what
+the item **will be after the save**: stored content with this save's changes
+laid over it. (Until 29 September it read only the stored copy, so a Super
+Admin could create an item as Approved with English missing and it went
+live, or was refused after filling in the English in the same save.) A
+Super Admin's rejection needs a reason, the same as the Approver's. The title is required in
 both; a body or description that exists in one language must exist in the
 other. The refusal names what is missing. An Indonesian title is required
 before an item can even be saved, because without it the item shows as a blank

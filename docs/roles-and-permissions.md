@@ -49,8 +49,9 @@ Guarantees worth stating plainly:
 - **A user cannot change their own role.** Only Super Admin may write `role`.
 - **Contact enquiries cannot be edited or deleted**, by anyone including Super
   Admin. Only the follow-up status changes.
-- **Nobody can delete their own account, and the last Super Admin cannot be
-  deleted.**
+- **The CMS can never be left without a Super Admin.** Nobody can delete their
+  own account, and the last Super Admin can be neither deleted nor given
+  another role. (Changing the role was possible until 29 September.)
 
 ## Adding a user
 
