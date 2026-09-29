@@ -1,4 +1,4 @@
-import type { CollectionConfig, Field, StaticLabel } from 'payload'
+import type { CollectionConfig, Field, StaticLabel, Where } from 'payload'
 import {
   moduleEditor,
   moduleEditorOrApprover,
@@ -10,6 +10,7 @@ import {
 import { approvalFields, publishedAtField, languageStatusField } from '@/fields/approval'
 import { enforceApprovalRules, syncPublishState } from '@/hooks/approval'
 import { recordAudit, recordDeletion } from '@/hooks/audit'
+import { publicWhere } from '@/lib/schedule'
 import { previewFor, livePreviewFor } from '@/lib/preview'
 import { autoTranslateField } from '@/fields/autoTranslate'
 import { isSampleField } from '@/fields/common'
@@ -96,24 +97,31 @@ export const contentCollection = ({
       ? {
           preview: (_doc: unknown, { locale }: { locale?: string }) => {
             const lang = locale === 'en' ? 'en' : 'id'
-            const params = new URLSearchParams({
-              path: previewPath[lang],
-              collection: slug,
-              slug: 'section',
-              previewSecret: process.env.PAYLOAD_SECRET || '',
-            })
+            const params = new URLSearchParams({ path: previewPath[lang], collection: slug })
             return `/preview?${params.toString()}`
           },
         }
       : {}),
   },
   access: {
-    // The public website reads published documents; everyone else must sign in.
+    /*
+     * Anyone not signed in — a website visitor, or anyone calling /api or
+     * GraphQL directly — gets exactly what the website shows: published, and
+     * not held back by a future publish date. Checking only "published" here
+     * once let an approved report dated next month be read through the API
+     * while the website correctly hid it.
+     */
     read: ({ req: { user } }) => {
-      if (!user) return { _status: { equals: 'published' } }
+      if (!user) return publicWhere(slug) as Where
       if (isSuperAdmin(user) || isApprover(user)) return true
       return moduleReader(...owners)({ req: { user } } as never)
     },
+    /*
+     * Old versions and unapproved drafts: the module's own team, the
+     * Approver and Super Admin. Left unset, Payload lets any signed-in user
+     * read every version, so an HR Admin could read news drafts.
+     */
+    readVersions: moduleReader(...owners),
     create: moduleEditor(...owners),
     update: moduleEditorOrApprover(...owners),
     delete: moduleEditor(...owners),

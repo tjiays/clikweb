@@ -1,5 +1,38 @@
 import type { Endpoint, PayloadRequest } from 'payload'
 import { translateFields, TranslationNotConfigured } from '@/lib/translate'
+import { isSuperAdmin, MODULE_OWNERS, type Role } from '@/access'
+
+/*
+ * Only these collections have the button, and only their own editors (and
+ * Super Admin) may press it. The check comes before anything is read: the
+ * endpoint used to accept any collection from any signed-in user and read it
+ * with access switched off, so a Sales Admin could have sent an enquirer's
+ * personal details, or a user record, to the translation service.
+ */
+const TRANSLATABLE: Record<string, readonly Role[]> = {
+  articles: MODULE_OWNERS.newsroom,
+  reports: MODULE_OWNERS.laporan,
+}
+
+/*
+ * Each call is billed and sends text off the server, so a person gets a
+ * fixed number per hour. Kept in memory: the site runs as one process, and a
+ * restart forgiving the count is harmless.
+ */
+const CALLS_PER_HOUR = 30
+const recentCalls = new Map<string, number[]>()
+
+const overLimit = (userId: string): boolean => {
+  const hourAgo = Date.now() - 60 * 60 * 1000
+  const calls = (recentCalls.get(userId) ?? []).filter((t) => t > hourAgo)
+  if (calls.length >= CALLS_PER_HOUR) {
+    recentCalls.set(userId, calls)
+    return true
+  }
+  calls.push(Date.now())
+  recentCalls.set(userId, calls)
+  return false
+}
 
 /** Fields that are never translated, even though they hold strings. */
 const SKIP_KEYS = new Set([
@@ -94,10 +127,30 @@ export const autoTranslateEndpoint: Endpoint = {
     }
 
     const { collection, id, global } = body
-    if (!global && (!collection || !id)) {
+    // There are no globals any more; refusing them closes a path that read
+    // with access switched off.
+    if (global || !collection || !id) {
+      return Response.json({ error: 'Provide a collection and id.' }, { status: 400 })
+    }
+
+    const owners = TRANSLATABLE[collection]
+    if (!owners) {
       return Response.json(
-        { error: 'Provide either a collection and id, or a global.' },
+        { error: 'Auto-translate is only available on news and reports.' },
         { status: 400 },
+      )
+    }
+    const role = (req.user as { role?: Role }).role
+    if (!isSuperAdmin(req.user) && !(role && owners.includes(role))) {
+      return Response.json(
+        { error: 'Only the editors of this module can translate it.' },
+        { status: 403 },
+      )
+    }
+    if (overLimit(String(req.user.id))) {
+      return Response.json(
+        { error: `Batas ${CALLS_PER_HOUR} terjemahan per jam tercapai. Coba lagi nanti.` },
+        { status: 429 },
       )
     }
 
@@ -109,6 +162,8 @@ export const autoTranslateEndpoint: Endpoint = {
             id: id as string,
             locale: 'id',
             depth: 0,
+            overrideAccess: false,
+            user: req.user,
           })
 
       const existing = global
@@ -124,6 +179,8 @@ export const autoTranslateEndpoint: Endpoint = {
             locale: 'en',
             fallbackLocale: 'none' as never,
             depth: 0,
+            overrideAccess: false,
+            user: req.user,
           })
 
       /*

@@ -14,12 +14,9 @@ export const previewFor =
     if (!slug) return null
     const lang = locale === 'en' ? 'en' : 'id'
     const path = `${base[lang]}/${slug}`
-    const params = new URLSearchParams({
-      path,
-      collection: String(doc?._collection ?? ''),
-      slug,
-      previewSecret: process.env.PAYLOAD_SECRET || '',
-    })
+    // No secret in the link: the preview route checks the signed-in session
+    // instead. See src/app/(frontend)/preview/route.ts.
+    const params = new URLSearchParams({ path, collection: String(doc?._collection ?? '') })
     return `/preview?${params.toString()}`
   }
 
@@ -43,8 +40,6 @@ export const livePreviewFor = (base: { id: string; en: string }) => ({
     const params = new URLSearchParams({
       path: `${base[lang]}/${slug}`,
       collection: String(data?._collection ?? ''),
-      slug,
-      previewSecret: process.env.PAYLOAD_SECRET || '',
     })
     return `/preview?${params.toString()}`
   },

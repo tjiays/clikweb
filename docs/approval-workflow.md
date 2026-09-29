@@ -113,8 +113,9 @@ a choice is what once left a rejected item rejected however often it was saved.
 **Preview** opens the item on the real site, exactly as a visitor will see it,
 while it is still unapproved. **Live Preview** shows the same page beside the
 form and refreshes on save. Nothing is published by previewing. The route
-checks both a secret and a signed-in CMS session, so a draft cannot be read by
-guessing its URL.
+checks the signed-in session and whether that person may read unapproved work
+in the module, so a draft cannot be read by guessing its URL, and a Sales or HR
+Admin cannot open a report that is still in review.
 
 ## What is recorded
 

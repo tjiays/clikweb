@@ -241,10 +241,24 @@ visitor will see it, **before it is approved**.
 Product items have no page of their own — they appear inside Credit Scoring —
 so their preview opens that page.
 
-Preview is restricted: the link carries a secret, and the route also checks
-the reader is a signed-in CMS user. An anonymous visitor following a preview
-URL gets a 403, and a draft never appears in a public list, on its own URL, or
-in sitemap.xml.
+Preview is restricted by the signed-in session, not by anything in the link.
+The route (`src/app/(frontend)/preview/route.ts`) turns on draft mode only for
+someone allowed to read unapproved work in that collection: the module's own
+editors, the Approver and Super Admin. Anyone else gets a 403, and paths that
+would lead off the site (`//…`) are refused.
 
-This is verified, not assumed: an unapproved draft returns 404 publicly and
-renders in full under preview.
+The link used to carry `PAYLOAD_SECRET`, the key that signs every login, which
+put it in every editor's page source, browser history and the server's access
+log. It was removed and the secret rotated on 29 September.
+
+Verified, not assumed: an approved report dated a month ahead returns 404 on
+the site and 0 results from REST and GraphQL, while its own editor sees it in
+full under preview; HR and Sales Admin are refused preview of reports.
+
+## Publish date and the API
+
+The publish-date rule lives in one place, `src/lib/schedule.ts`, and is used by
+both the website's queries and the collections' public read rule. So REST and
+GraphQL obey the same embargo as the website. Before 29 September the API
+checked only "published", and an embargoed report could be read in full at
+`/api/reports` while the website hid it.
