@@ -11,6 +11,7 @@ These files describe **what to build** for the new CLIK (PT CRIF Lembaga Informa
 | `02-website-pages.md` | Sitemap, routes, and a section-by-section spec of every page |
 | `03-cms.md` | Roles, permissions, approval workflow, content models, admin modules, dashboard |
 | `04-integrations-and-links.md` | Contact form, email, rate limiting, careers, translation, analytics, external links |
+| `05-redesign.md` | What stays, changes or goes in the redesign — filled in before any code changes |
 
 ## Source of truth
 
