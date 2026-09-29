@@ -10,14 +10,20 @@
 .cnav {
   --cnav-navy: #003a79;
   --cnav-orange: #ff7d00;
+  /* One gap between any two links, wherever they fall. Used by both the
+     menu and each group, so a group boundary spaces exactly like an
+     ordinary neighbour. */
+  --cnav-gap: 0.25rem;
 
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
   height: 100%;
   padding: 1.5rem 1rem 1.25rem;
   background: var(--cnav-navy);
-  overflow-y: auto;
+  /* The panel itself never scrolls: the logo stays at the top and Akun and
+     Keluar stay at the bottom, whatever the screen height. Only the menu
+     between them scrolls, and only when it has to. */
+  overflow: hidden;
 
   &__brand {
     display: block;
@@ -30,20 +36,32 @@
     }
   }
 
+  /* The menu. flex:1 takes the space left between the logo and the footer;
+     min-height:0 is what actually lets it shrink and scroll inside a flex
+     column — without it the box grows to fit its content and pushes the
+     footer off the screen, which is what used to happen on a laptop. */
+  &__scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--cnav-gap);
+    /* Room for the last link so it does not sit flush against the rule. */
+    padding-bottom: var(--cnav-gap);
+  }
+
+  /*
+   * A group is now only a wrapper. With the headings gone it says nothing to
+   * the eye, so it must not space differently either: two links inside one
+   * group sat 2px apart while two across a boundary sat 18px, which read as
+   * uneven rather than as grouping.
+   */
   &__group {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    margin-bottom: 1.125rem;
-  }
-
-  &__groupTitle {
-    margin: 0 0 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
+    gap: var(--cnav-gap);
+    margin-bottom: 0;
   }
 
   /* Every item, Dashboard included, is this element at this indentation. */
@@ -97,11 +115,14 @@
   }
 
   &__foot {
-    margin-top: auto;
+    /* No margin-top:auto any more — it is the last flex child of a panel
+       whose middle section already takes the slack. */
+    flex-shrink: 0;
     padding-top: 1rem;
+    margin-top: var(--cnav-gap);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: var(--cnav-gap);
   }
 }

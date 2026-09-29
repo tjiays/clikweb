@@ -138,7 +138,7 @@ export async function BusinessSolutionPage({ locale }: { locale: Locale }) {
                     <p className={styles.offerSubtitle}>{t(category.offerSubtitle, locale)}</p>
                   )}
                   <ProductAccordion
-                    rows={toAccordionRows(products)}
+                    rows={toAccordionRows(products, locale)}
                     labels={labels}
                     gap={10}
                     openFirst

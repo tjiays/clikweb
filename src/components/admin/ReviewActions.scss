@@ -1,0 +1,46 @@
+/* The Approver's decision controls, in place of Save draft / Publish. */
+.clik-review {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+
+  .btn {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+.clik-review__label {
+  color: var(--theme-elevation-600);
+  font-size: 0.8rem;
+}
+
+.clik-review__reason {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--theme-elevation-200);
+  border-radius: 4px;
+  background: var(--theme-input-bg);
+  color: var(--theme-elevation-800);
+  font-family: inherit;
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.clik-review__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+/* Shown in place of the buttons once the decision has been made. */
+.clik-review__settled {
+  margin: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: 4px;
+  background: var(--theme-elevation-50);
+  color: var(--theme-elevation-700);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}

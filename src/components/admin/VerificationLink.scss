@@ -1,0 +1,66 @@
+/* Activation link for an account still waiting on its email. */
+.clik-verify {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--clik-border);
+  border-radius: 6px;
+  background: var(--clik-tint);
+}
+
+.clik-verify__heading {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--clik-navy);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.clik-verify__note {
+  margin: 0 0 8px;
+  color: var(--theme-elevation-700);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.clik-verify__link {
+  display: block;
+  margin-bottom: 8px;
+  padding: 6px;
+  border-radius: 4px;
+  background: #fff;
+  color: var(--theme-elevation-800);
+  font-size: 0.68rem;
+  word-break: break-all;
+}
+
+.clik-verify__copy {
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: var(--clik-orange);
+  color: #fff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Already done: a quiet line, not a panel demanding attention. */
+.clik-verify--done {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--theme-elevation-600);
+  font-size: 0.78rem;
+}
+
+.clik-verify__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--clik-navy);
+}

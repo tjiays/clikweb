@@ -215,7 +215,6 @@ export async function HomePage({ locale }: { locale: Locale }) {
                 imageUrl={imageUrl(article.cover)}
                 imageAlt={imageAlt(article.cover)}
                 readMoreLabel={dict.common.readMore}
-                shareLabel={locale === 'en' ? 'Share' : 'Bagikan'}
               />
             ))}
           </div>

@@ -47,6 +47,23 @@ There is no CAPTCHA (confirmed decision 18).
 Counts are taken from the submissions already stored, so clearing cookies or
 using a private window does not reset them.
 
+Three things make the limits hold, each added on 29 September after it was
+shown to be bypassable:
+
+- **Only the form can create a submission.** The collection refuses creates
+  through `/api/contact-submissions` and GraphQL for everyone; the form's route
+  writes with access overridden, after validating and checking the limits.
+  Before, anyone could post straight to the API and skip every check.
+- **The address is the one nginx saw.** `clientIp` reads `X-Real-IP`, which
+  nginx overwrites with the connecting address. It used to read the first
+  `X-Forwarded-For` entry, which the visitor writes, so one machine could claim
+  a new address per submission — 7 of 7 got past a limit of 5.
+- **Check and save happen one at a time.** Eight submissions sent at the same
+  instant all counted zero and all saved — 8 against a limit of 3. The check
+  and insert now run in a queue (`oneAtATime` in `src/lib/rateLimit.ts`), a few
+  milliseconds each; the email is sent outside it. The queue is in-process,
+  which holds while the site runs as one Node process.
+
 Phone numbers are normalised before comparison, so `0812…`, `+62812…` and
 `62812…` all count as the same number.
 
@@ -63,7 +80,10 @@ and a sixth submission from one network within the hour is refused.
 | Reaches real people | **No** | Yes |
 
 Staging deliberately captures mail rather than sending it, so testing the form
-never disturbs a real inbox.
+never disturbs a real inbox. **No SMTP credentials exist yet**, so today no
+enquiry email reaches anyone; the enquiry itself is always saved. The agreed
+production shape (relay everything except cbclik.com) is in
+[operations](./operations.md#outgoing-email).
 
 Moving to production is a change of environment variables, not of code:
 
@@ -78,16 +98,26 @@ CONTACT_FORM_RECIPIENT=sales@cbclik.com
 
 ## Who sees submissions
 
-**Sales Admin** and **Super Admin**, under Pengaturan → Data Masuk.
+**Sales Admin** and **Super Admin**, under **Data Masuk** (Enquiries).
 
-Sales Admin can read submissions and tick "Sudah ditindaklanjuti". They cannot
+Sales Admin can read submissions and move one between the two follow-up states,
+**New** (Baru) and **Follow Up** (Ditindaklanjuti). Moving it to Follow Up stamps
+who did it and when; moving it back to New clears that stamp, so the record never
+names someone for work it no longer claims happened. They cannot
 edit the content of a submission and cannot delete one — nobody can, including
 Super Admin. These are permanent records (confirmed decision 19), which is
 verified: an attempt to edit the message leaves it unchanged, and a delete
 returns 403.
 
-## Still to decide
+## Map
 
-The map embed URL is a site setting and is currently blank, so the Contact page
-shows a marked TODO instead of a broken frame. Set it under Pengaturan →
-Pengaturan Umum.
+The Contact page embeds a Google Maps view of Menara Dea Tower 2, Mega
+Kuningan. It needs no API key. The URL lives in `src/content/site.ts`
+(`mapEmbedUrl`) and is listed in [external links](./external-links.md) for
+verification.
+
+## Every submission is audited
+
+Each new enquiry writes an audit entry marked "Dikirim dari formulir publik",
+since there is no signed-in user to name, and every follow-up status change is
+recorded with the person who made it.

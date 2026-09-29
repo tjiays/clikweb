@@ -268,3 +268,56 @@
     width: 58%;
   }
 }
+
+/* ---- Financial tables written in the editor ----
+   Once a report's figures live in the body rich text rather than in the old
+   financialTables field, they render through RichText. These rules give them
+   the same look the separate block had (Figma images 91/92): a plain ruled
+   grid at 13px, no tinted header band, and the label column carrying its
+   width from the editor's own colgroup. */
+.annualProse :global(table),
+.ruledProse :global(table) {
+  max-width: 996px;
+  table-layout: fixed;
+  background: var(--color-bg-surface);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.annualProse :global(th),
+.annualProse :global(td),
+.ruledProse :global(th),
+.ruledProse :global(td) {
+  height: 35px;
+  padding: 8px 9px;
+  border: 1px solid #e3e3e3;
+  color: var(--color-text-body);
+  font-weight: var(--fw-regular);
+  text-align: left;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+/* The label cell stays a row header for screen readers, but must not wear the
+   tinted, navy, bold treatment the generic prose tables use. */
+.annualProse :global(th),
+.ruledProse :global(th) {
+  background: var(--color-bg-surface);
+}
+
+/* A cell's emphasis comes from the editor marking the text bold, not from the
+   cell being a header, so <strong> has to survive the rule above. */
+.annualProse :global(th strong),
+.annualProse :global(td strong),
+.ruledProse :global(th strong),
+.ruledProse :global(td strong) {
+  font-weight: var(--fw-bold);
+}
+
+/* Paragraphs inside cells carry no block spacing. */
+.annualProse :global(td p),
+.annualProse :global(th p),
+.ruledProse :global(td p),
+.ruledProse :global(th p) {
+  margin: 0;
+}

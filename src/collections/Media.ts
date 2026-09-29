@@ -1,25 +1,75 @@
 import type { CollectionConfig } from 'payload'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { APIError } from 'payload'
 import { isSuperAdmin, isApprover, isSalesAdmin } from '@/access'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
+
+import { MAX_UPLOAD_MB } from '@/fields/common'
+import { bothLanguages } from '@/i18n/admin'
+import { recordAudit, recordDeletion } from '@/hooks/audit'
+
+/** Matches config.upload.limits.fileSize in src/payload.config.ts. */
+const MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
 /**
  * Shared media library. Editors upload and reuse; the Approver may look but
  * not change; Sales Admin has no reason to be here (intent/03-cms.md §2).
  *
+ * It sits in its own menu group rather than under Newsroom: articles,
+ * reports, products and job openings all draw from the same library, and
+ * filing it under one of them suggested it belonged to that one.
+ *
  * Files live on disk, not in the database, and are backed up separately.
  */
 export const Media: CollectionConfig = {
   slug: 'media',
-  labels: { singular: 'Media', plural: 'Media Library' },
-  admin: { group: 'Newsroom', useAsTitle: 'filename' },
+  labels: { singular: bothLanguages('media'), plural: bothLanguages('media') },
+  admin: { group: 'Media', useAsTitle: 'filename' },
   access: {
     read: () => true,
     create: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),
     update: ({ req: { user } }) => Boolean(user) && !isApprover(user) && !isSalesAdmin(user),
     delete: ({ req: { user } }) => isSuperAdmin(user),
+  },
+  hooks: {
+    beforeValidate: [
+      /*
+       * Replacing the file behind an existing image is Super Admin only.
+       * Images sit outside the approval workflow, so a replaced file went
+       * straight onto every live page that shows it — an approved annual
+       * report's cover could change with no Approver involved. Editors still
+       * upload new images and choose them in an item, which is reviewed like
+       * any other edit, and can still correct alt text.
+       */
+      ({ req, operation }) => {
+        if (operation === 'update' && req?.file && !isSuperAdmin(req.user)) {
+          throw new APIError(
+            'Hanya Super Admin yang bisa mengganti file gambar yang sudah ada. Unggah gambar baru, lalu pilih di item Anda.',
+            403,
+          )
+        }
+      },
+      ({ req }) => {
+        /*
+         * The parser already refuses anything over the limit, but its message is
+         * generic. Catching it here names the actual size, which is the
+         * difference between an editor resizing the file and an editor
+         * filing a bug.
+         */
+        const size = req?.file?.size
+        if (typeof size === 'number' && size > MAX_UPLOAD_BYTES) {
+          const mb = (size / 1024 / 1024).toFixed(1)
+          throw new APIError(
+            `Gambar ini berukuran ${mb}MB, melebihi batas ${MAX_UPLOAD_MB}MB. Perkecil ukurannya lalu unggah lagi.`,
+            413,
+          )
+        }
+      },
+    ],
+    afterChange: [recordAudit],
+    afterDelete: [recordDeletion],
   },
   fields: [
     {
@@ -33,19 +83,23 @@ export const Media: CollectionConfig = {
       },
     },
     {
+      // Hidden like the one on content collections; the seed scripts use it.
       name: 'isSample',
       type: 'checkbox',
       label: 'Sample content',
       defaultValue: false,
-      admin: {
-        position: 'sidebar',
-        description: 'Placeholder from the design. Replace before launch.',
-      },
+      admin: { position: 'sidebar', hidden: true },
     },
   ],
   upload: {
     staticDir: path.resolve(dirname, '../../public/media'),
-    mimeTypes: ['image/*', 'application/pdf'],
+    /*
+     * Raster images and PDF only. `image/*` also admitted SVG, which is a
+     * document that can carry script: opened directly from our own domain it
+     * would run as the site. Nothing in the library was SVG, and the site's
+     * own vector icons live in public/images, not here.
+     */
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'application/pdf'],
     imageSizes: [
       { name: 'thumbnail', width: 400, height: 300, position: 'centre' },
       { name: 'card', width: 768, height: 512, position: 'centre' },

@@ -1,6 +1,8 @@
 # 02 — Website Pages
 
-All pages: header (light, except Home) → breadcrumb → page content → footer. Every text below is **seed content from Figma** (Indonesian); English versions are AI-translated. "CMS:" marks content that must come from the CMS (models in `03-cms.md`).
+All pages: header (light, except Home) → breadcrumb → page content → footer. Every text below is **seed content from Figma** (Indonesian); English versions are AI-translated. "CMS:" marks content that comes from the CMS (models in `03-cms.md`); "Code:" marks content kept in `src/content/` and changed by a developer.
+
+**Revised 28 September 2026.** The page layouts below are unchanged, but most page content moved from the CMS into code, share buttons were removed, and Lamar now goes to JobStreet. Only **news, reports, product items and job vacancies** come from the CMS.
 
 ## 1. Sitemap and routes
 
@@ -42,7 +44,7 @@ Also required: 404 page and a success/thank-you state for the contact form (not 
 - Credit Scoring: "Hubungi Kami" → Contact; cross-link card → Business Solution.
 - Newsroom: article "Read More" → Detail Berita; media logo → Liputan Media for that outlet.
 - Laporan: "Read More" → report detail.
-- Karir: "Lihat Detail" → Detail Lowongan; "Lamar" → email (see `04`).
+- Karir: "Lihat Detail" → Detail Lowongan; "Lamar" → CLIK's JobStreet page, new tab (see `04` §2).
 
 ---
 
@@ -50,14 +52,14 @@ Also required: 404 page and a success/thank-you state for the contact form (not 
 
 ### 2.1 Home — `156:1049`
 
-1. **Hero slider** (full-width, ~860px tall, dark header overlaid). CMS: hero slides. Seed title "Leading Indonesia's Intelligence Credit Bureau", subtitle "Data, Insights, and Recommendation". Curved bottom edge. Auto-advancing, 3 slides.
+1. **Hero slider** (full-width, ~860px tall, dark header overlaid). Code: `src/content/home.ts`. Seed title "Leading Indonesia's Intelligence Credit Bureau", subtitle "Data, Insights, and Recommendation". Curved bottom edge. Auto-advancing, 3 slides.
 2. **Tentang Kami snippet** — title "Tentang Kami", paragraph "PT CLIK (CRIF Indonesia) adalah biro kredit swasta berizin OJK…", orange button "Pelajari selengkapnya" → About Us. Light blue card.
 3. **Trust bar** — shield icon "TERDAFTAR & DIAWASI OLEH OJK • Bagian dari jaringan CRIF Global", OJK logo + license number.
-4. **Stats** — 3 cards: "37 Negara jaringan CRIF", "10.500+ Lembaga keuangan", "1jt+ Konsumen tercakup". CMS: homepage stats (Marketing Admin).
-5. **Solusi Lengkap untuk Setiap Kebutuhan Bisnis Anda** — intro text; carousel of solution cards (Credit Scoring, Analytics, Decisioning, …) with icon, short text, "Lihat Selengkapnya". CMS: product categories.
-6. **Apa Kata Mitra Kami** — subtitle "Kepercayaan lebih dari 2.688 lembaga…"; testimonial carousel. CMS: testimonials.
-7. **Berita Terbaru Kami** — subtitle; 3 latest articles; orange button "LIHAT SELENGKAPNYA" → Newsroom. CMS: articles.
-8. **Closing CTA banner** — "Siap Mengoptimalkan Keputusan Kredit Bisnis Anda?", button "Hubungi Kami" → Contact. CMS: CTA block.
+4. **Stats** — 3 cards: "37 Negara jaringan CRIF", "10.500+ Lembaga keuangan", "1jt+ Konsumen tercakup". Code: `src/content/home.ts`.
+5. **Solusi Lengkap untuk Setiap Kebutuhan Bisnis Anda** — intro text; carousel of solution cards (Credit Scoring, Analytics, Decisioning, …) with icon, short text, "Lihat Selengkapnya". Code: `src/content/products.ts`.
+6. **Apa Kata Mitra Kami** — subtitle "Kepercayaan lebih dari 2.688 lembaga…"; testimonial carousel. Code: `src/content/testimonials.ts`.
+7. **Berita Terbaru Kami** — subtitle; 3 latest articles; orange button "LIHAT SELENGKAPNYA" → Newsroom. CMS: news, newest first.
+8. **Closing CTA banner** — "Siap Mengoptimalkan Keputusan Kredit Bisnis Anda?", button "Hubungi Kami" → Contact. Code: `src/content/cta.ts`.
 9. Footer.
 
 ### 2.2 Tentang CLIK (About Us) — `333:2672`
@@ -66,10 +68,10 @@ Breadcrumb: Home > Tentang Kami.
 1. Title "Tentang CLIK", image, intro paragraph "PT CRIF Lembaga Informasi Keuangan (CLIK) adalah Biro Kredit Swasta…".
 2. Highlight: "2,688 Financing and non financing institutions", lead "Mendorong Keputusan Kredit yang Lebih Cerdas…", paragraph.
 3. **Visi** (image + text) and **Misi** (image + text).
-4. **Kenali CLIK Lebih Dekat** — video placeholder (600px tall). CMS: video URL (embed) or file.
-5. **Pencapaian Perusahaan Kami** — horizontal timeline 2019–2025 with items per year. CMS: milestones.
+4. **Kenali CLIK Lebih Dekat** — video placeholder (600px tall). Code: `src/content/about.ts` — video URL not yet supplied (TODO).
+5. **Pencapaian Perusahaan Kami** — horizontal timeline 2019–2025 with items per year. Code: `src/content/about.ts`.
 6. Report teaser (2022 business development text) with "Pelajari selengkapnya" → Laporan Perkembangan Usaha detail.
-7. **Member CLIK** logo strip. CMS: partner logos.
+7. **Member CLIK** logo strip. Code: `src/content/partners.ts`.
 8. **Tentang CRIF** — image + long text + "Pelajari selengkapnya" (external CRIF link, see `04`).
 9. Closing CTA: "Siap Membangun Ekosistem Kredit yang Lebih Kuat Bersama Kami?" + "Hubungi Kami".
 10. Footer.
@@ -88,13 +90,13 @@ Breadcrumb + title. Sections separated by orange bars: Tujuan, Ruang Lingkup, Ko
 
 ### 2.6 Kebijakan Privasi — `955:5948`
 
-Breadcrumb (fix label) + title "Kebijakan Privasi". Long legal text "Pemberitahuan Privasi — Terakhir Diperbarui: 14/08/2026 …". Show "last updated" date from CMS. See O7.
+Breadcrumb (fix label) + title "Kebijakan Privasi". Long legal text "Pemberitahuan Privasi — Terakhir Diperbarui: 14/08/2026 …". Show the "last updated" date. Code: `src/content/policies.ts` (O7 decided: developer-edited).
 
 ### 2.7 Layanan dan Produk — `427:2795`
 
 Breadcrumb: Home > Layanan dan Produk.
 1. Title, image, lead "CLIK menghadirkan ekosistem solusi berbasis data…", paragraph.
-2. **Layanan Kami** — solution cards (Credit Scoring, Analytics, …) with "Lihat Selengkapnya". CMS: product categories.
+2. **Layanan Kami** — solution cards (Credit Scoring, Analytics, …) with "Lihat Selengkapnya". Code: `src/content/products.ts`.
 3. **Data list** (two columns): Data Identifikasi dan Rincian Kontak, Obligasi, Data Perusahaan…, Surat Kredit, Rincian Pinjaman & Pembayaran Aktif, Data Jaminan, Rincian Kartu Kredit…, Informasi Penjamin.
 4. **Apa itu skor kredit?** — image + two paragraphs + "Pelajari selengkapnya" → Credit Scoring.
 5. **Ingin Mengecek atau Melaporkan Data Kredit Anda?** — two cards: "Cek Laporan Kredit Anda" → how-to page; "Penyelesaian Pengaduan" → complaint page; each with "Pelajari Caranya →".
@@ -108,7 +110,7 @@ Breadcrumb: Home > Layanan dan Produk > Business Solution.
 3. For Analytics, Decisioning, Business Intelligence, Consulting: **Keunggulan Utama** (advantage cards) + **product cards** with status badges (e.g. Scoremart — Live; Credit Policy / Simple Decision; Dashboard; POC / Trial & Retro Analysis — Ready to Sell).
 4. Closing: "Wujudkan keputusan bisnis yang lebih presisi…" + "Hubungi Kami".
 5. Footer.
-CMS: product categories + product items. Full product list seed (from Figma text node `1331:4307`):
+Categories — Code: `src/content/products.ts`. Product items — CMS. Full product list seed (from Figma text node `1331:4307`):
 - Business Intelligence: Dashboard (Live), General Dashboard (Ready to Sell), Credit Card Static Report (Ready to Sell), Credit Card Interactive Report (Ready to Sell), Portfolio Alert (Live)
 - Credit Scoring: Full Report, Slim Report, Soft Pull Report, Compliance Report, Unified Report (all Live), Aggregated Variable Calculation (AVC) (Ready to Sell), Fintech Bureau (FDC) (Ready to Sell, NEW), Generic CB Score (CBG) (Live), CLIK SKAI Score (Live, NEW), CLIK Spectrum Score (CSS) (Live, NEW), Fintech CB Score (Live), Application Score (Live), Score Factor (Live)
 - Analytics: Scoremart (Live, NEW), Portfolio Risk Insight (PRI / InsightCollect) (Live), Custom Industry Reports (Live)
@@ -129,7 +131,7 @@ Breadcrumb: Home > Layanan dan Produk > Credit Scoring.
 
 ### 2.10 Cara mendapat laporan kredit — `418:2433`
 
-Breadcrumb: Home > Layanan dan Produk > [title]. Intro (visit the office), note on individual checks, two columns **Individual** (KTP / Passport, request form) and **Badan Usaha** (NPWP, legal documents, request form). "Formulir Permintaan Data" should link to a downloadable form (file from CMS or TODO).
+Breadcrumb: Home > Layanan dan Produk > [title]. Intro (visit the office), note on individual checks, two columns **Individual** (KTP / Passport, request form) and **Badan Usaha** (NPWP, legal documents, request form). "Formulir Permintaan Data" should link to a downloadable form — file not yet supplied (TODO in `src/content/policies.ts`).
 
 ### 2.11 Penyelesaian Pengaduan — `418:2844`
 
@@ -138,14 +140,14 @@ Breadcrumb + title. Long-form text on how debtors submit complaints. See O7.
 ### 2.12 Newsroom — `305:1082` / `1661:8648`
 
 Breadcrumb: Home > Newsroom. Title "Newsroom".
-1. **Media logo strip** (scrolling). CMS: media outlets.
-2. Left sidebar: **Featured News** (list of article title links with orange bullets; CMS flag `featured`) and **Daftar Media** (grid of outlet logos → Liputan Media).
+1. **Media logo strip** (scrolling). Code: `src/content/newsroom.ts`.
+2. Left sidebar: **Featured News** (list of article title links with orange bullets; **revised:** the newest eight articles, no manual flag) and **Daftar Media** (grid of outlet logos → Liputan Media).
 3. Right: article cards grid (2 columns on desktop, 6 per page), newest first.
 4. Pagination.
 
 ### 2.13 Detail Berita — `556:2721`
 
-Breadcrumb: Home > Newsroom > [title]. Cover image, title (38/800), date, "Share:" icons (X, Facebook, WhatsApp, LinkedIn — share current URL), divider, rich-text body, **Anda mungkin juga tertarik dengan** (3 related/latest articles).
+Breadcrumb: Home > Newsroom > [title]. Cover image, title (38/800), date, divider (**revised:** no share icons), rich-text body, **Anda mungkin juga tertarik dengan** (3 related/latest articles).
 
 ### 2.14 Liputan Media — `827:5603`
 
@@ -156,7 +158,7 @@ Breadcrumb: Home > Newsroom. Title "Newsroom", then the outlet name (e.g. "Kumpa
 Breadcrumb: Home > Hubungi Kami. Title.
 1. Left: intro text; contact form (fields in `04`). Right: "Visit Us:" address, "E-mail Us: info@cbclik.com", "Call Us: (+62) 21 8060 4228", company name, embedded map (Menara Dea Tower 2, Jakarta).
 2. **DATA PRIVACY** — consent text, mandatory consent checkbox, marketing preference checkboxes, "Submit" button.
-3. Footer. Contact details come from CMS site settings.
+3. Footer. Contact details — Code: `src/content/site.ts`.
 
 ### 2.16 Karir — `415:2692`
 
@@ -166,8 +168,8 @@ Breadcrumb: Home > Hubungi Kami. Title.
 4. **Benefits** — Asuransi Kesehatan, Pengembangan Skill, Jenjang Karir, Jam Kerja Fleksibel.
 5. **Proses Rekrutmen** — 5 steps: Screening CV, Interview HR, Interview User, Pengecekan Credit Score, Penawaran.
 6. Footer.
-CMS: all sections (Karir page content + job openings), managed by HR Admin.
+Job openings — CMS, managed by HR Admin. All other sections — Code: `src/content/careers.ts`.
 
 ### 2.17 Detail Lowongan — `571:3858`
 
-Breadcrumb: Home > Karir > Detail pekerjaan. Title "Detail pekerjaan". Job title, category, "Lamar" button, "bagikan" (share). Sections separated by orange bars: Key Responsibilities, Minimum Qualifications, Education. Footer note "Email to: talent@cbclik.com — Please mention on Subject E-mail: …" (subject format from CMS).
+Breadcrumb: Home > Karir > Detail pekerjaan. Title "Detail pekerjaan". Job title, category, "Lamar" button (**revised:** opens JobStreet in a new tab; no "bagikan" share). Sections separated by orange bars: Key Responsibilities, Minimum Qualifications (**revised:** Education removed). Footer note "Email to: talent@cbclik.com — Please mention on Subject E-mail: …" with a fixed example, from code (`src/content/careers.ts`) — the per-job subject format was removed. **Note:** this footer still asks for email while Lamar goes to JobStreet; decide whether to keep it.

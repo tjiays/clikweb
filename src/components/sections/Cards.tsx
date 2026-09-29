@@ -2,7 +2,6 @@ import type { ComponentProps } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/Button'
-import { ShareButton } from '@/components/ui/ShareButton'
 import styles from './Cards.module.css'
 
 /**
@@ -163,7 +162,6 @@ export function ArticleCard({
   imageUrl,
   imageAlt,
   readMoreLabel,
-  shareLabel,
   variant = 'news',
   external = false,
   className,
@@ -176,8 +174,6 @@ export function ArticleCard({
   imageUrl?: string | null
   imageAlt?: string
   readMoreLabel: string
-  /** Accessible name for the share button ("Bagikan" / "Share"). */
-  shareLabel?: string
   variant?: ArticleVariant
   /** The card points at another site (Liputan Media): open it in a new tab. */
   external?: boolean
@@ -216,13 +212,6 @@ export function ArticleCard({
           <CardLink href={href} className={`t-link-caps ${styles.readMore}`}>
             {readMoreLabel}
           </CardLink>
-          <ShareButton
-            url={href}
-            title={title}
-            label={shareLabel}
-            size={variant === 'home' ? 45 : 40}
-            variant={variant === 'home' ? 'popover' : 'native'}
-          />
         </div>
       </div>
     </article>

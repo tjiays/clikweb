@@ -3,99 +3,160 @@
 Panduan ini untuk tim yang mengisi konten website — bukan untuk developer.
 Anda tidak perlu tahu apa pun soal pemrograman untuk menggunakan CMS ini.
 
+## Apa saja yang diatur di CMS
+
+CMS hanya berisi hal yang tim terbitkan sendiri secara rutin:
+
+| Menu | Isi | Tim |
+| --- | --- | --- |
+| **Berita** | Artikel Newsroom | News Admin |
+| **Laporan** | Laporan Tahunan dan Laporan Perkembangan Usaha | News Admin |
+| **Produk** | Produk di halaman Credit Scoring dan Business Solution | Marketing Admin |
+| **Karir** | Lowongan pekerjaan | HR Admin |
+| **Data Masuk** | Kiriman formulir Hubungi Kami | Sales Admin |
+
+Isi lain di website — teks halaman, logo, testimoni, halaman kebijakan, alamat
+dan nomor telepon — **tidak** ada di CMS. Untuk mengubahnya, hubungi developer.
+
 ## Masuk ke CMS
 
 Buka alamat website diikuti `/admin`, lalu masuk dengan email dan kata sandi
-Anda. Jika lupa kata sandi, hubungi Super Admin.
+Anda.
 
-Menu di sebelah kiri hanya menampilkan bagian yang boleh Anda kelola. Jadi
-kalau Anda tidak melihat suatu menu, itu memang bukan bagian Anda.
+- **Akun baru** belum bisa dipakai sampai Anda menekan **tautan verifikasi**
+  yang dikirim ke email Anda.
+- **Lupa kata sandi?** Tekan *Lupa kata sandi* di halaman masuk. Tautan untuk
+  membuat kata sandi baru dikirim ke email Anda dan berlaku satu jam.
+- Lima kali salah kata sandi akan mengunci akun selama 10 menit.
 
-## Alur kerja: dari draf sampai tayang
+> **Selama masa uji coba (staging)** email dari CMS belum benar-benar terkirim;
+> semuanya tertahan di `/mailpit/`. Jika menunggu tautan verifikasi atau reset
+> kata sandi, minta Super Admin mengambilkannya.
 
-Setiap perubahan yang Anda buat **tidak langsung tayang**. Perubahan harus
-disetujui lebih dulu oleh Approver.
+Menu di sebelah kiri hanya menampilkan bagian yang boleh Anda kelola. Kalau
+Anda tidak melihat suatu menu, itu memang bukan bagian Anda. Menu **Akun** dan
+**Keluar** selalu ada di bagian bawah.
 
-1. **Draft** — Anda membuat atau mengubah konten. Belum terlihat publik.
-2. **In Review** — Anda menekan simpan dengan status *In Review*. Konten
-   dikunci; Anda belum bisa mengubahnya lagi.
-3. **Approved** — Approver menyetujui. Konten tayang di website.
-4. **Rejected** — Approver menolak dan **wajib menuliskan alasannya**. Anda
-   bisa membaca alasan itu, memperbaiki, lalu mengirim ulang.
+Tampilan CMS bisa dipakai dalam Bahasa Indonesia atau English; atur di menu
+**Akun**.
+
+## Halaman pertama: Dashboard
+
+Setelah masuk, Anda melihat **analitik website** tujuh hari terakhir: jumlah
+pengunjung, halaman yang paling banyak dibuka, berapa lama orang membacanya,
+dan seberapa cepat halaman tampil. Setiap angka kecepatan diberi label
+**Baik**, **Perlu perbaikan**, atau **Buruk** beserta targetnya.
+
+## Alur kerja: dari simpan sampai tayang
+
+Setiap perubahan **tidak langsung tayang**. Perubahan harus disetujui Approver
+lebih dulu. Hanya ada tiga status:
+
+| Status | Artinya | Tampil di website? |
+| --- | --- | --- |
+| **In Review** | Sudah Anda simpan, menunggu keputusan | Tidak |
+| **Approved** | Disetujui Approver | **Ya** |
+| **Rejected** | Ditolak, dengan alasan | Tidak |
+
+1. Isi formulir, lalu tekan tombol oranye **Kirim untuk ditinjau**.
+   Statusnya otomatis **In Review**, dan Anda dibawa kembali ke daftar. Kalau
+   penyimpanan gagal, Anda tetap di halaman itu, tulisan Anda tidak hilang,
+   dan alasannya ditampilkan.
+2. Selama In Review, Anda **masih bisa mengubahnya** sendiri. Orang lain tidak.
+3. Approver menyetujui (**Approved**, tayang) atau menolak (**Rejected**,
+   dengan alasan yang bisa Anda baca di item tersebut).
+4. Jika ditolak, perbaiki lalu simpan lagi. Item kembali ke In Review.
 
 Yang penting diketahui:
 
-- Kalau Anda mengubah konten yang **sudah tayang**, versi lama tetap tayang
-  sampai versi baru disetujui. Website tidak pernah kosong di tengah proses.
-- Menghapus juga perlu persetujuan. Item tetap tayang sampai disetujui.
-- Setiap versi tersimpan. Tidak ada pekerjaan yang hilang.
+- **Mengubah konten yang sudah tayang tidak menurunkannya dari website.**
+  Versi lama tetap tayang selama perubahan Anda ditinjau, lalu langsung
+  diganti begitu Approver menyetujui. Pembaca tidak pernah melihat versi yang
+  belum disetujui.
+- **Tanggal publikasi di masa depan** membuat berita atau laporan baru tampil
+  pada hari itu, mulai pukul 00:00 WIB — walaupun sudah disetujui lebih awal.
+- **Menghapus** langsung terjadi tanpa persetujuan, dan tercatat di log. Hati-hati.
+- Setiap versi tersimpan, sampai 25 versi per item.
 
 ## Mengisi dua bahasa
 
-Setiap tulisan punya versi **Bahasa Indonesia** dan **English**. Gunakan
-pemilih bahasa di bagian atas halaman untuk berpindah.
+Setiap kolom tulisan muncul **dua kali, berdampingan**: Bahasa Indonesia dan
+English. Keduanya wajib diisi sebelum item bisa disetujui.
 
-Bahasa Indonesia adalah bahasa sumber. Isi versi Indonesia lebih dulu.
+Isi versi Indonesia lebih dulu. Pada **Berita** dan **Laporan**, tombol
+**Auto-translate** di kolom kanan mengisi kolom English yang masih kosong dari
+versi Indonesia. Kolom yang sudah Anda isi tidak akan ditimpa. **Hasilnya
+tetap perlu dibaca ulang** — terjemahan otomatis adalah titik awal, bukan hasil
+akhir. Produk dan Karir tidak punya tombol ini.
 
-Untuk versi Inggris, tekan tombol **Auto-translate to English** di kolom
-kanan. Tombol itu:
-
-- hanya mengisi kolom Inggris yang **masih kosong** — tulisan yang sudah Anda
-  perbaiki tidak akan ditimpa;
-- menyimpan hasilnya sebagai draf, jadi tetap lewat persetujuan seperti biasa.
-
-**Hasil terjemahan tetap perlu dibaca ulang.** Terjemahan otomatis adalah titik
-awal, bukan hasil akhir. Untuk halaman hukum (Kebijakan Privasi, Kebijakan
-Keamanan Informasi, Penyelesaian Pengaduan), hasilnya wajib diperiksa oleh
-orang yang berwenang sebelum disetujui.
+Nama produk dan singkatan seperti CLIK, CRIF, dan OJK tidak diterjemahkan.
 
 ## Gambar
 
-Semua gambar diunggah lewat **Media Library**. Satu gambar bisa dipakai di
-banyak tempat — tidak perlu mengunggah ulang.
+Gambar diurus langsung di kolom gambar pada Berita dan Laporan. Dari sana Anda
+bisa mengunggah file baru, memilih gambar yang sudah ada lewat **Pilih dari
+yang sudah ada**, mengganti gambar, atau menyunting alt text-nya. Tidak ada
+menu Media tersendiri.
 
-Isi selalu kolom **alt text**: itu yang dibaca pembaca tunanetra dan yang
-muncul kalau gambar gagal dimuat.
+Setiap kolom gambar menuliskan ukuran yang disarankan, misalnya *Rasio 7:4;
+min 1140x650px; maks 5MB*. File lebih dari 5 MB, terlalu sempit, atau
+rasionya tidak sesuai akan ditolak dengan pesan yang menjelaskan sebabnya.
+
+**Mengganti file gambar yang sudah ada hanya bisa dilakukan Super Admin**,
+karena perubahan gambar langsung tampil di setiap halaman yang memakainya.
+Untuk mengganti gambar di berita atau laporan Anda, unggah gambar baru lalu
+pilih di item tersebut — perubahan itu ditinjau seperti biasa. Alt text tetap
+bisa Anda perbaiki sendiri.
+
+Isi selalu **alt text**: itu yang dibaca pembaca tunanetra dan yang muncul
+kalau gambar gagal dimuat.
 
 ## Panduan singkat per tim
 
-**Tim Newsroom (News Admin)** — Artikel, Author, Partner Logo (media), Liputan
-Media, dan Daftar Laporan. Centang *Featured News* pada artikel yang ingin
-ditonjolkan di halaman Newsroom.
+**Tim Newsroom (News Admin)** — Berita dan Laporan. Berita selalu tampil dari
+yang terbaru; Featured News otomatis berisi delapan berita terbaru. Panduan
+lengkap: `editor-guide-newsroom.md`.
 
-**Tim HR (HR Admin)** — Lowongan Pekerjaan dan Konten Halaman Karir. Hanya
-lowongan yang dicentang *Lowongan masih dibuka* yang tampil di website.
+**Tim HR (HR Admin)** — Lowongan di menu Karir. Hanya lowongan yang dicentang
+*Lowongan masih dibuka* yang tampil. Tombol Lamar membuka halaman JobStreet
+CLIK. Panduan lengkap: `editor-guide-careers.md`.
 
-**Tim Marketing (Marketing Admin)** — Homepage (hero dan statistik), Produk &
-Layanan, Testimoni, Timeline Pencapaian, Partner Logo, CTA Blocks, dan Page
-Content.
+**Tim Marketing (Marketing Admin)** — Produk. Status produk boleh dipilih
+paling banyak dua. Panduan lengkap: `editor-guide-marketing.md`.
 
-**Tim Sales (Sales Admin)** — Data Masuk dari formulir Hubungi Kami. Centang
-*Sudah ditindaklanjuti* setelah Anda menghubungi pengirimnya.
+**Tim Sales (Sales Admin)** — Data Masuk dari formulir Hubungi Kami. Setiap
+kiriman masuk berstatus **Baru**. Ubah menjadi **Ditindaklanjuti** setelah Anda
+menghubungi pengirimnya; nama Anda dan waktunya tercatat otomatis. Mengembalikan
+status ke Baru akan menghapus catatan itu. Isi kiriman tidak bisa diubah atau
+dihapus oleh siapa pun.
 
 ## Untuk Approver
 
-Buka daftar mana pun, lalu saring berdasarkan **Approval Status = In Review**
-untuk melihat apa yang menunggu.
+Buka daftar mana pun, lalu saring **Approval Status = In Review** untuk melihat
+apa yang menunggu.
 
-Buka itemnya, baca versi Indonesia dan Inggris dengan pemilih bahasa, lalu
-ubah Approval Status menjadi **Approved** atau **Rejected**, dan simpan.
+Buka itemnya. Versi Indonesia dan Inggris ada berdampingan di halaman yang
+sama. Lalu tekan salah satu:
 
-Kalau menolak, **alasan wajib diisi**. Sistem tidak akan menyimpan penolakan
-tanpa alasan. Tulis alasan yang cukup jelas supaya editor tahu apa yang perlu
-diperbaiki.
+- **Setujui & tayangkan** — item tayang di website.
+- **Tolak** — tulis **Alasan penolakan**, lalu kirim. Penolakan tidak bisa
+  dikirim tanpa alasan. Tulis dengan jelas supaya editor tahu apa yang perlu
+  diperbaiki.
 
 Approver tidak bisa mengubah isi konten — itu memang disengaja. Tugas Approver
-adalah memutuskan, bukan menulis ulang.
+adalah memutuskan, bukan menulis ulang. Item tidak bisa disetujui kalau salah
+satu bahasa belum lengkap; sistem menyebutkan bagian mana yang kurang.
 
 ## Kalau ada yang tidak beres
 
-Pesan **"This item is locked while it is in review"** berarti konten sedang
-menunggu keputusan Approver. Tunggu keputusannya.
-
-Pesan **"Only the Approver can approve or reject"** berarti Anda mencoba
-menyetujui pekerjaan sendiri. Kirim untuk review, lalu minta Approver
-memutuskan.
+| Pesan | Artinya |
+| --- | --- |
+| *This item is locked while it is in review* | Item sedang ditinjau dan dikirim oleh orang lain. Tunggu keputusannya. |
+| *Only the Approver can approve or reject* | Anda mencoba menyetujui pekerjaan sendiri. Minta Approver memutuskan. |
+| *Belum bisa disetujui — …* | Salah satu bahasa belum lengkap. Lengkapi dulu. |
+| *Beri judul Bahasa Indonesia lebih dulu* | Judul Indonesia wajib diisi sebelum menyimpan. |
+| *Maksimal pilih 2* | Status produk dipilih lebih dari dua. |
+| *Ukuran … tidak sesuai* / *Lebar …px, minimal …* | Gambar tidak memenuhi ukuran kolom itu. |
 
 Kalau menu yang Anda cari tidak ada, kemungkinan besar itu bukan bagian tim
 Anda. Hubungi Super Admin kalau memang seharusnya ada.

@@ -15,12 +15,14 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
-    "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create"
+    "migrate:create": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:create",
+    "migrate:report-tables": "node scripts/migrate-report-tables.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.126.0",
     "@payloadcms/db-postgres": "3.89.0",
     "@payloadcms/email-nodemailer": "^3.89.0",
+    "@payloadcms/live-preview-react": "^3.89.0",
     "@payloadcms/next": "3.89.0",
     "@payloadcms/richtext-lexical": "3.89.0",
     "@payloadcms/ui": "3.89.0",

@@ -5,7 +5,6 @@ import { Container } from '@/components/layout/Container'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTitle } from '@/components/sections/SectionTitle'
 import { JobRow, BriefcaseIcon } from '@/components/sections/JobRow'
-import { JobShare } from '@/components/sections/JobShare'
 import { Marquee } from '@/components/sections/Marquee'
 import { RichText } from '@/components/ui/RichText'
 import { Button } from '@/components/ui/Button'
@@ -18,22 +17,26 @@ import { getOpenJobs, getJobBySlug, t } from '@/lib/content'
 import styles from './CareersPage.module.css'
 
 /**
- * Builds the mailto link for a job. Subject follows the note on the detail
- * page, "Source Vacancy – Position Applied" (e.g. "Website – Sales Operations");
- * a CMS subject that already names the position is used as it is.
+ * Where the Apply button sends an applicant.
+ *
+ * It used to open a mail client with a subject line the editor had to spell
+ * out per job. It now goes to the job board, which is where the vacancies
+ * actually live; a job with no link of its own falls back to the company
+ * page so the button is never dead.
  */
-function applyMailto(job: any, fallbackEmail: string) {
-  const email = job?.applyEmail || fallbackEmail
-  const format = String(job?.emailSubjectFormat ?? '').trim()
-  const title = String(job?.title ?? '')
-  const subject = format && title && format.includes(title) ? format : `${format || 'Website'} – ${title}`
-  return `mailto:${email}?subject=${encodeURIComponent(subject)}`
+const JOBSTREET =
+  'https://id.jobstreet.com/id/companies/crif-lembaga-informasi-keuangan-168557222859016/jobs'
+
+function applyHref(job: any) {
+  const url = String(job?.applyUrl ?? '').trim()
+  return url || JOBSTREET
 }
 
 /** Photo band (Figma Component 10): one set of six photos is 3161px wide
- *  (sizes + 48px gaps) and moves by one set every 10s. */
+ *  (sizes + 48px gaps). Figma moves a set every 10s (~316px/s), which the
+ *  owner found too fast to look at, so it runs at 25s (~126px/s) instead. */
 const STRIP_GAP = 48
-const STRIP_SECONDS = 10
+const STRIP_SECONDS = 25
 
 /** Karir — Figma 415:2692, per intent/02 §2.16. */
 export async function CareersPage({ locale }: { locale: Locale }) {
@@ -159,11 +162,9 @@ export async function CareersPage({ locale }: { locale: Locale }) {
                   title={job.title}
                   category={job.category ? categoryName(job.category) : undefined}
                   detailHref={detailHref('careers', job.slug, locale)}
-                  applyMailto={applyMailto(job, careersEmail)}
+                  applyMailto={applyHref(job)}
                   applyLabel={dict.careers.apply}
                   detailLabel={dict.careers.viewDetail}
-                  shareLabel={t(careers.share, locale)}
-                  copiedLabel={t(careers.linkCopied, locale)}
                 />
               ))}
             </div>
@@ -220,7 +221,8 @@ export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: st
   const [dict, job] = await Promise.all([getDictionary(locale), getJobBySlug(locale, slug)])
   if (!job) notFound()
 
-  const careersEmail = job.applyEmail || site.careersEmail || 'talent@cbclik.com'
+  // The per-job address is gone; the note falls back to the company's own.
+  const careersEmail = site.careersEmail || 'talent@cbclik.com'
   const category = jobCategories.find((c) => c.slug === job.category)
 
   return (
@@ -247,23 +249,15 @@ export async function JobDetailPage({ locale, slug }: { locale: Locale; slug: st
               </p>
             )}
             <div className={styles.detailActions}>
-              <Button href={applyMailto(job, careersEmail)} external size="sm" className={styles.detailApply}>
+              <Button href={applyHref(job)} external size="sm" className={styles.detailApply}>
                 {dict.careers.apply}
               </Button>
-              <JobShare
-                url={detailHref('careers', job.slug, locale)}
-                title={job.title}
-                label={t(careers.share, locale)}
-                copiedLabel={t(careers.linkCopied, locale)}
-                showLabel
-              />
             </div>
           </header>
 
           {[
             { title: t(jobDetail.responsibilities, locale), body: job.responsibilities },
             { title: t(jobDetail.qualifications, locale), body: job.minimumQualifications },
-            { title: t(jobDetail.education, locale), body: job.education },
           ]
             .filter((block) => block.body)
             .map((block) => (

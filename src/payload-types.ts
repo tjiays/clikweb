@@ -76,7 +76,6 @@ export interface Config {
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -91,7 +90,6 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
@@ -135,13 +133,28 @@ export interface UserAuthOperations {
  */
 export interface Article {
   id: number;
-  title: string;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Ratio 7:4; min 1140x650px; max 5MB
    */
-  slug: string;
-  excerpt?: string | null;
-  body?: {
+  cover?: (number | null) | Media;
+  /**
+   * Ratio 3.5:1; min 1300x372px; max 5MB
+   */
+  banner?: (number | null) | Media;
+  titleId: string;
+  titleEn: string;
+  /**
+   * Muncul di kartu artikel, bukan di halaman artikel.
+   */
+  excerptId?: string | null;
+  /**
+   * Shown on the article card, not on the article page.
+   */
+  excerptEn?: string | null;
+  /**
+   * Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.
+   */
+  bodyId?: {
     root: {
       type: string;
       children: {
@@ -156,44 +169,46 @@ export interface Article {
     };
     [k: string]: unknown;
   } | null;
-  cover?: (number | null) | Media;
   /**
-   * Optional. The wide 1300x372 image at the top of the article page. Leave empty to use the cover.
+   * The same article in English. Use Auto-translate to draft it, then edit.
    */
-  banner?: (number | null) | Media;
-  author?: string | null;
-  /**
-   * Newest first on the Newsroom and Home. Same day: the later time comes first.
-   */
-  publishDate: string;
-  /**
-   * Shows in the Featured News list on the Newsroom page.
-   */
-  isFeatured?: boolean | null;
-  /**
-   * Place in the Featured News list (1 = top). An article may take more than one place. Empty: after the numbered ones, newest first.
-   */
-  featuredPositions?: number[] | null;
-  /**
-   * Keeps the article off the Newsroom cards, Home and "Anda mungkin juga tertarik dengan". Its page and its Featured News link still work.
-   */
-  hideFromList?: boolean | null;
+  bodyEn?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Up to 3 articles, in order. Empty: the newest articles.
    */
   relatedArticles?: (number | Article)[] | null;
-  seo?: {
-    title?: string | null;
-    description?: string | null;
-  };
+  seoTitleId?: string | null;
+  seoTitleEn?: string | null;
+  seoDescriptionId?: string | null;
+  seoDescriptionEn?: string | null;
   /**
-   * Seed content from the design. Replace before launch.
+   * Terisi otomatis dengan nama Anda. Ubah bila perlu.
    */
+  author?: string | null;
+  slug: string;
+  /**
+   * Terisi otomatis dengan waktu sekarang. Menentukan urutan: yang terbaru tampil lebih dulu.
+   */
+  publishDate: string;
+  isFeatured?: boolean | null;
+  featuredPositions?: number[] | null;
+  hideFromList?: boolean | null;
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus: 'in_review' | 'approved' | 'rejected';
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -217,9 +232,6 @@ export interface Media {
    * Describes the image for readers using a screen reader, and shows if the image fails to load.
    */
   alt: string;
-  /**
-   * Placeholder from the design. Replace before launch.
-   */
   isSample?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -277,6 +289,8 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -295,20 +309,42 @@ export interface User {
  */
 export interface Report {
   id: number;
-  type: 'annual_report' | 'business_development';
-  title: string;
   /**
-   * Used in the page address. Derived from title if left blank.
+   * Ratio 3:2; min 2000x1333px; max 5MB
    */
-  slug: string;
-  year: number;
-  /**
-   * Shown on the report card, left of the date.
-   */
-  author?: string | null;
-  excerpt?: string | null;
   cover?: (number | null) | Media;
-  body: {
+  titleId: string;
+  titleEn: string;
+  /**
+   * Satu atau dua kalimat, tampil di kartu laporan.
+   */
+  excerptId?: string | null;
+  /**
+   * One or two sentences, shown on the report card.
+   */
+  excerptEn?: string | null;
+  /**
+   * Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.
+   */
+  bodyId: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  /**
+   * The same report in English. Use Auto-translate to draft it, then edit.
+   */
+  bodyEn: {
     root: {
       type: string;
       children: {
@@ -325,13 +361,7 @@ export interface Report {
   };
   financialTables?:
     | {
-        /**
-         * e.g. "Laporan Keuangan Posisi Keuangan 31 Desember 2025 (terlampir)".
-         */
         intro?: string | null;
-        /**
-         * e.g. "LAPORAN LABA RUGI". Leave empty for none.
-         */
         title?: string | null;
         caption?: string | null;
         rows?:
@@ -346,19 +376,16 @@ export interface Report {
         id?: string | null;
       }[]
     | null;
+  type: 'annual_report' | 'business_development';
+  slug: string;
+  author?: string | null;
   publishDate?: string | null;
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus: 'in_review' | 'approved' | 'rejected';
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -378,13 +405,11 @@ export interface Report {
  */
 export interface JobOpening {
   id: number;
-  title: string;
-  /**
-   * Used in the page address. Derived from title if left blank.
-   */
+  titleId: string;
+  titleEn: string;
   slug: string;
-  category: 'information-technology' | 'analysis-reporting' | 'sales-business-development';
-  responsibilities?: {
+  category: 'it' | 'analytics' | 'sales-business-development' | 'operations' | 'finance';
+  responsibilitiesId?: {
     root: {
       type: string;
       children: {
@@ -399,7 +424,7 @@ export interface JobOpening {
     };
     [k: string]: unknown;
   } | null;
-  minimumQualifications?: {
+  responsibilitiesEn?: {
     root: {
       type: string;
       children: {
@@ -414,7 +439,22 @@ export interface JobOpening {
     };
     [k: string]: unknown;
   } | null;
-  education?: {
+  minimumQualificationsId?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  minimumQualificationsEn?: {
     root: {
       type: string;
       children: {
@@ -430,27 +470,19 @@ export interface JobOpening {
     [k: string]: unknown;
   } | null;
   /**
-   * The "Lamar" button opens an email to this address.
+   * Where the Apply button goes. Leave empty to use the careers page default.
    */
-  applyEmail?: string | null;
-  emailSubjectFormat?: string | null;
+  applyUrl?: string | null;
   /**
    * Only open positions are listed on the website.
    */
   isOpen?: boolean | null;
-  postedDate?: string | null;
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus: 'in_review' | 'approved' | 'rejected';
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -470,10 +502,15 @@ export interface JobOpening {
  */
 export interface ProductItem {
   id: number;
-  name: string;
-  category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
-  shortDescription?: string | null;
-  description?: {
+  nameId: string;
+  nameEn: string;
+  shortDescriptionId?: string | null;
+  shortDescriptionEn?: string | null;
+  /**
+   * Pick up to 2. Leave empty for no badge.
+   */
+  statuses?: ('live' | 'ready_to_sell' | 'new')[] | null;
+  descriptionId?: {
     root: {
       type: string;
       children: {
@@ -488,38 +525,64 @@ export interface ProductItem {
     };
     [k: string]: unknown;
   } | null;
-  productStatus: 'live' | 'ready_to_sell';
-  isNew?: boolean | null;
-  features?:
+  descriptionEn?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuresId?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
-  suitableFor?:
+  featuresEn?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
-  useCases?:
+  suitableForId?:
     | {
         label: string;
         id?: string | null;
       }[]
     | null;
+  suitableForEn?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  useCasesId?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  useCasesEn?:
+    | {
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  category: 'credit-scoring' | 'analytics' | 'decisioning' | 'business-intelligence' | 'consulting';
   /**
-   * Lower numbers appear first.
+   * Biarkan 0 untuk urutan otomatis, terbaru di atas. Angka lebih kecil menyematkan ke atas.
    */
   sortOrder?: number | null;
-  /**
-   * Seed content from the design. Replace before launch.
-   */
   isSample?: boolean | null;
-  /**
-   * Editors submit for review. Only the Approver approves or rejects.
-   */
-  approvalStatus: 'draft' | 'in_review' | 'approved' | 'rejected';
+  approvalStatus: 'in_review' | 'approved' | 'rejected';
   /**
    * Required when rejecting. The editor sees this.
    */
@@ -573,7 +636,7 @@ export interface ContactSubmission {
   ipAddress?: string | null;
   userAgent?: string | null;
   consentTextVersion?: string | null;
-  followedUp?: boolean | null;
+  followUpStatus: 'new' | 'follow_up';
   followedUpBy?: (number | null) | User;
   followedUpAt?: string | null;
   updatedAt: string;
@@ -614,53 +677,6 @@ export interface PayloadKv {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents".
- */
-export interface PayloadLockedDocument {
-  id: number;
-  document?:
-    | ({
-        relationTo: 'articles';
-        value: number | Article;
-      } | null)
-    | ({
-        relationTo: 'reports';
-        value: number | Report;
-      } | null)
-    | ({
-        relationTo: 'job-openings';
-        value: number | JobOpening;
-      } | null)
-    | ({
-        relationTo: 'product-items';
-        value: number | ProductItem;
-      } | null)
-    | ({
-        relationTo: 'contact-submissions';
-        value: number | ContactSubmission;
-      } | null)
-    | ({
-        relationTo: 'audit-log';
-        value: number | AuditLog;
-      } | null)
-    | ({
-        relationTo: 'users';
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null);
-  globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
@@ -698,24 +714,25 @@ export interface PayloadMigration {
  * via the `definition` "articles_select".
  */
 export interface ArticlesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  excerpt?: T;
-  body?: T;
   cover?: T;
   banner?: T;
+  titleId?: T;
+  titleEn?: T;
+  excerptId?: T;
+  excerptEn?: T;
+  bodyId?: T;
+  bodyEn?: T;
+  relatedArticles?: T;
+  seoTitleId?: T;
+  seoTitleEn?: T;
+  seoDescriptionId?: T;
+  seoDescriptionEn?: T;
   author?: T;
+  slug?: T;
   publishDate?: T;
   isFeatured?: T;
   featuredPositions?: T;
   hideFromList?: T;
-  relatedArticles?: T;
-  seo?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-      };
   isSample?: T;
   approvalStatus?: T;
   rejectionReason?: T;
@@ -733,14 +750,13 @@ export interface ArticlesSelect<T extends boolean = true> {
  * via the `definition` "reports_select".
  */
 export interface ReportsSelect<T extends boolean = true> {
-  type?: T;
-  title?: T;
-  slug?: T;
-  year?: T;
-  author?: T;
-  excerpt?: T;
   cover?: T;
-  body?: T;
+  titleId?: T;
+  titleEn?: T;
+  excerptId?: T;
+  excerptEn?: T;
+  bodyId?: T;
+  bodyEn?: T;
   financialTables?:
     | T
     | {
@@ -758,6 +774,9 @@ export interface ReportsSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  type?: T;
+  slug?: T;
+  author?: T;
   publishDate?: T;
   sortOrder?: T;
   isSample?: T;
@@ -777,16 +796,16 @@ export interface ReportsSelect<T extends boolean = true> {
  * via the `definition` "job-openings_select".
  */
 export interface JobOpeningsSelect<T extends boolean = true> {
-  title?: T;
+  titleId?: T;
+  titleEn?: T;
   slug?: T;
   category?: T;
-  responsibilities?: T;
-  minimumQualifications?: T;
-  education?: T;
-  applyEmail?: T;
-  emailSubjectFormat?: T;
+  responsibilitiesId?: T;
+  responsibilitiesEn?: T;
+  minimumQualificationsId?: T;
+  minimumQualificationsEn?: T;
+  applyUrl?: T;
   isOpen?: T;
-  postedDate?: T;
   sortOrder?: T;
   isSample?: T;
   approvalStatus?: T;
@@ -805,30 +824,50 @@ export interface JobOpeningsSelect<T extends boolean = true> {
  * via the `definition` "product-items_select".
  */
 export interface ProductItemsSelect<T extends boolean = true> {
-  name?: T;
+  nameId?: T;
+  nameEn?: T;
+  shortDescriptionId?: T;
+  shortDescriptionEn?: T;
+  statuses?: T;
+  descriptionId?: T;
+  descriptionEn?: T;
+  featuresId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  featuresEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  suitableForId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  suitableForEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  useCasesId?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
+  useCasesEn?:
+    | T
+    | {
+        label?: T;
+        id?: T;
+      };
   category?: T;
-  shortDescription?: T;
-  description?: T;
-  productStatus?: T;
-  isNew?: T;
-  features?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  suitableFor?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
-  useCases?:
-    | T
-    | {
-        label?: T;
-        id?: T;
-      };
   sortOrder?: T;
   isSample?: T;
   approvalStatus?: T;
@@ -863,7 +902,7 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   ipAddress?: T;
   userAgent?: T;
   consentTextVersion?: T;
-  followedUp?: T;
+  followUpStatus?: T;
   followedUpBy?: T;
   followedUpAt?: T;
   updatedAt?: T;
@@ -898,6 +937,8 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
@@ -968,17 +1009,6 @@ export interface MediaSelect<T extends boolean = true> {
 export interface PayloadKvSelect<T extends boolean = true> {
   key?: T;
   data?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-locked-documents_select".
- */
-export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T;
-  globalSlug?: T;
-  user?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
