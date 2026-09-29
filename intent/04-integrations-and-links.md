@@ -110,6 +110,6 @@ In the CMS each submission has a follow-up status, **Baru** (new) or **Ditindakl
 - The tracking script loads on the **public site only**, never on the CMS or on previews.
 - It records page views, visitors, referrers and real-user page speed (LCP, INP, CLS, FCP, TTFB).
 - The CMS dashboard reads it server-side (see `03` §7). Umami's own screens are at `/analytics`.
-- **Known limitations:** time on page is the time until the visitor opens their next page, so a tab left open counts as reading. Umami currently stores times 7 hours early because PostgreSQL runs on Jakarta time; this doesn't affect durations or counts, but it does affect hourly and daily charts (fix pending). Staging and production would share one analytics site unless split (open item O9).
+- **Known limitations:** time on page is the time until the visitor opens their next page, so a tab left open counts as reading. (Stored times were 7 hours early because PostgreSQL runs on Jakarta time; fixed 29 September, history corrected.) Staging and production would share one analytics site unless split (open item O9).
 
 Details: `docs/analytics.md`.

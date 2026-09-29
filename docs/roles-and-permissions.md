@@ -21,7 +21,7 @@ Super Admin manages users.
 | Laporan / Reports | Full | — | Create, edit, delete | — | — | Approve / Reject |
 | Produk / Products | Full | — | — | Create, edit, delete | — | Approve / Reject |
 | Karir / Careers | Full | Create, edit, delete | — | — | — | Approve / Reject |
-| Images (via the image fields; no menu) | Upload, delete | Upload | Upload | Upload | — | View |
+| Images (via the image fields; no menu) | Upload, replace, delete | Upload, edit alt text | Upload, edit alt text | Upload, edit alt text | — | View |
 | Data Masuk / Enquiries | View, follow-up status | — | — | — | View, follow-up status | — |
 | Log Audit / Audit Log | View | — | — | — | — | — |
 | Pengguna / Users | Full | — | — | — | — | — |

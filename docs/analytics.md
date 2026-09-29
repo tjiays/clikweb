@@ -104,19 +104,18 @@ pnpm 12.3.4, because it looks for `bin/pnpm.cjs` where that version ships
 
 ## Known issues
 
-**Stored times are 7 hours early.** This server's PostgreSQL runs on
-`Asia/Jakarta` (changed from UTC on 3 July), and Umami sends event times
-without a timezone, so PostgreSQL reads UTC times as Jakarta times. Found on
-28 September: the website entry created at about 16:50 WIB is stored as 09:50.
+**Stored times were 7 hours early — fixed 29 September.** This server's
+PostgreSQL runs on `Asia/Jakarta`, and Umami sends event times without a
+timezone, so PostgreSQL read UTC times as Jakarta times. Durations and counts
+were right; hourly and daily charts were not.
 
-- **Unaffected:** time on page, visit length, counts and page speed — they are
-  differences or tallies, and both ends shift equally.
-- **Affected:** anything by hour or by day in Umami's own screens. A visit at
-  06:00 WIB appears at 23:00 the previous day.
-
-Fix, not yet applied: `ALTER ROLE umami SET timezone TO 'UTC';`, restart
-`umami`, then add 7 hours to the timestamps already stored. It changes stored
-data, so it waits for the product owner's go-ahead.
+The `umami` role now runs in UTC (`ALTER ROLE umami SET timezone TO 'UTC'`),
+and the times already stored were moved forward 7 hours with Umami stopped and
+a backup taken first. One column was left alone: `user.created_at`, which
+Umami's installer wrote with the database clock and was already right — every
+other column holding data was checked and was 7 hours early. A new visit is
+now stored within seconds of the real time. The first recorded visit reads
+17:12 on 25 September, matching the real time.
 
 **Time on page counts idle tabs.** It is the time until the visitor opens their
 next page, so a tab left open reads as reading time. One such view dominated a

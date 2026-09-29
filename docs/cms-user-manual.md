@@ -58,9 +58,10 @@ lebih dulu. Hanya ada tiga status:
 | **Approved** | Disetujui Approver | **Ya** |
 | **Rejected** | Ditolak, dengan alasan | Tidak |
 
-1. Isi formulir, lalu tekan tombol oranye **Publikasikan perubahan**.
-   Menyimpan berarti mengirim untuk ditinjau — statusnya otomatis **In
-   Review**, dan Anda dibawa kembali ke daftar.
+1. Isi formulir, lalu tekan tombol oranye **Kirim untuk ditinjau**.
+   Statusnya otomatis **In Review**, dan Anda dibawa kembali ke daftar. Kalau
+   penyimpanan gagal, Anda tetap di halaman itu, tulisan Anda tidak hilang,
+   dan alasannya ditampilkan.
 2. Selama In Review, Anda **masih bisa mengubahnya** sendiri. Orang lain tidak.
 3. Approver menyetujui (**Approved**, tayang) atau menolak (**Rejected**,
    dengan alasan yang bisa Anda baca di item tersebut).
@@ -68,9 +69,10 @@ lebih dulu. Hanya ada tiga status:
 
 Yang penting diketahui:
 
-- **Mengubah konten yang sudah tayang akan menurunkannya dari website** sampai
-  perubahan itu disetujui lagi. Jadi kumpulkan perbaikan sekaligus, jangan
-  satu per satu.
+- **Mengubah konten yang sudah tayang tidak menurunkannya dari website.**
+  Versi lama tetap tayang selama perubahan Anda ditinjau, lalu langsung
+  diganti begitu Approver menyetujui. Pembaca tidak pernah melihat versi yang
+  belum disetujui.
 - **Tanggal publikasi di masa depan** membuat berita atau laporan baru tampil
   pada hari itu, mulai pukul 00:00 WIB — walaupun sudah disetujui lebih awal.
 - **Menghapus** langsung terjadi tanpa persetujuan, dan tercatat di log. Hati-hati.
@@ -99,6 +101,12 @@ menu Media tersendiri.
 Setiap kolom gambar menuliskan ukuran yang disarankan, misalnya *Rasio 7:4;
 min 1140x650px; maks 5MB*. File lebih dari 5 MB, terlalu sempit, atau
 rasionya tidak sesuai akan ditolak dengan pesan yang menjelaskan sebabnya.
+
+**Mengganti file gambar yang sudah ada hanya bisa dilakukan Super Admin**,
+karena perubahan gambar langsung tampil di setiap halaman yang memakainya.
+Untuk mengganti gambar di berita atau laporan Anda, unggah gambar baru lalu
+pilih di item tersebut — perubahan itu ditinjau seperti biasa. Alt text tetap
+bisa Anda perbaiki sendiri.
 
 Isi selalu **alt text**: itu yang dibaca pembaca tunanetra dan yang muncul
 kalau gambar gagal dimuat.

@@ -35,6 +35,22 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [
+      /*
+       * Replacing the file behind an existing image is Super Admin only.
+       * Images sit outside the approval workflow, so a replaced file went
+       * straight onto every live page that shows it — an approved annual
+       * report's cover could change with no Approver involved. Editors still
+       * upload new images and choose them in an item, which is reviewed like
+       * any other edit, and can still correct alt text.
+       */
+      ({ req, operation }) => {
+        if (operation === 'update' && req?.file && !isSuperAdmin(req.user)) {
+          throw new APIError(
+            'Hanya Super Admin yang bisa mengganti file gambar yang sudah ada. Unggah gambar baru, lalu pilih di item Anda.',
+            403,
+          )
+        }
+      },
       ({ req }) => {
         /*
          * The parser already refuses anything over the limit, but its message is

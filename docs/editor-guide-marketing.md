@@ -36,7 +36,7 @@ kosong tidak ditampilkan.
 | Urutan | Biarkan 0 agar produk terbaru di atas. Angka lebih kecil menyematkan ke atas. |
 | Status persetujuan | Hanya dibaca. Berubah sendiri saat Anda menyimpan. |
 
-Setelah selesai, tekan tombol oranye **Publikasikan perubahan**. Produk
+Setelah selesai, tekan tombol oranye **Kirim untuk ditinjau**. Produk
 dikirim untuk ditinjau (**In Review**) dan tayang setelah Approver menyetujui.
 
 ## Status produk
@@ -56,7 +56,7 @@ atau CLIK SKAI Score tidak diterjemahkan.
 
 ## Perlu diingat
 
-- Mengubah produk yang sudah tayang akan **menurunkannya dari website** sampai
-  perubahan itu disetujui lagi. Kumpulkan perbaikan sekaligus.
+- Mengubah produk yang sudah tayang **tidak menurunkannya dari website**:
+  versi lama tetap tayang sampai perubahan Anda disetujui.
 - Tombol **Preview** membuka halaman Credit Scoring, tempat produk ditampilkan,
   untuk memeriksa hasilnya sebelum disetujui.

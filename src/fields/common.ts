@@ -27,6 +27,14 @@ export const slugField = (from = 'title', localized = true, hiddenFromForm = tru
   required: true,
   localized,
   index: true,
+  /*
+   * One address, one page. Two articles with the same title used to get the
+   * same slug; the page loads the first match, so the other could never be
+   * reached (two "Gundul Gundul Pacul" reports did exactly that). The hook
+   * below avoids a clash by adding -2, -3…; the database refuses one that
+   * slips past it.
+   */
+  unique: !localized,
   access: lockedForApprover,
   admin: {
     position: 'sidebar',
@@ -40,10 +48,32 @@ export const slugField = (from = 'title', localized = true, hiddenFromForm = tru
   },
   hooks: {
     beforeValidate: [
-      ({ value, data }) => {
-        if (value) return slugify(String(value))
-        const source = data?.[from]
-        return source ? slugify(String(source)) : value
+      async ({ value, data, originalDoc, collection, req }) => {
+        const base = value
+          ? slugify(String(value))
+          : data?.[from]
+            ? slugify(String(data[from]))
+            : value
+        if (!base || localized || !collection?.slug || !req?.payload) return base
+
+        // First free address: base, base-2, base-3…, ignoring this item itself.
+        const selfId = (originalDoc as { id?: unknown } | undefined)?.id
+        for (let n = 1; n < 100; n++) {
+          const candidate = n === 1 ? String(base) : `${base}-${n}`
+          const taken = await req.payload.count({
+            collection: collection.slug as never,
+            where: {
+              and: [
+                { slug: { equals: candidate } },
+                ...(selfId !== undefined ? [{ id: { not_equals: selfId } }] : []),
+              ],
+            } as never,
+            overrideAccess: true,
+            req,
+          })
+          if (taken.totalDocs === 0) return candidate
+        }
+        return base
       },
     ],
   },

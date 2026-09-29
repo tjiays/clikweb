@@ -25,7 +25,7 @@ A user has exactly one role. Only Super Admin creates, edits and deletes users, 
 | Laporan (reports) | Full | — | Create, edit, delete | — | — | Approve / Reject |
 | Produk (product items) | Full | — | — | Create, edit, delete | — | Approve / Reject |
 | Karir (job vacancies) | Full | Create, edit, delete | — | — | — | Approve / Reject |
-| Images (inside the image fields) | Upload, delete | Upload | Upload | Upload | — | View |
+| Images (inside the image fields) | Upload, replace, delete | Upload, edit alt | Upload, edit alt | Upload, edit alt | — | View |
 | Data Masuk (enquiries) | View, follow-up status | — | — | — | View, follow-up status | — |
 | Log Audit | View | — | — | — | — | — |
 | Pengguna (users) | Full | — | — | — | — | — |
@@ -55,7 +55,7 @@ Three statuses, and only one of them is on the website.
 Rules:
 - **Saving is submitting.** An editor has no status control; their save always lands on In Review. They see the status as a read-only label.
 - **No Draft.** Work in progress is an item in review that nobody has decided on yet; its author can keep editing it.
-- **Editing approved or rejected work sends it back to In Review**, whoever edits it. An approved page leaves the website until the edit is approved. Nothing unreviewed reaches a reader; the cost is that a typo fix takes the page down until someone approves it.
+- **Editing approved or rejected work sends it back to In Review**, whoever edits it. **The approved version stays on the website** while the edit is reviewed — every save that is not an approval is stored as a draft version — and is replaced the moment the edit is approved. Nothing unreviewed reaches a reader, and nothing goes offline.
 - **Super Admin** may set Approved in the same save, which publishes immediately.
 - **Locking:** an item in review is locked to everyone except the person who submitted it.
 - **Both languages** must be filled in before an item can be approved (§4).

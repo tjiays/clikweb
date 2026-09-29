@@ -269,10 +269,12 @@ body[data-role='approver'] .doc-tabs {
    News, reports and products keep both languages on the page as visible
    pairs, so the switcher has nothing to switch there. Payload draws it
    whenever localization exists anywhere in the project, so it is hidden per
-   collection instead. Job openings and media alt text still need it. */
+   collection instead. Job openings moved to pairs too on 23 September; only
+   media alt text still uses it. */
 body[data-collection='articles'] .localizer,
 body[data-collection='reports'] .localizer,
-body[data-collection='product-items'] .localizer {
+body[data-collection='product-items'] .localizer,
+body[data-collection='job-openings'] .localizer {
   display: none;
 }
 
@@ -390,5 +392,16 @@ body {
    one — including the delete button on the user list. The choice is remembered
    per person, so a column switched off once stays off and looks like a bug. */
 .list-controls__toggle-columns {
+  display: none;
+}
+
+/* ---- "Revert to published" ----
+   Payload shows it whenever an item has a pending edit. Only a Super Admin can
+   use it as intended — "cancel this pending edit". For an editor the server
+   refuses it (it would amount to approving their own work), and for the
+   Approver, whose content fields are locked, it would publish the pending edit
+   rather than revert it. So it is shown to Super Admin alone. The role is
+   stamped on <body> by the sidebar (src/components/admin/Nav.tsx). */
+body:not([data-role='super_admin']) #action-revert-to-published {
   display: none;
 }

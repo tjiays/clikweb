@@ -42,11 +42,12 @@ These files describe **what to build** for the new CLIK (PT CRIF Lembaga Informa
 14. **Revised:** there is **no Draft**. Three statuses only: **In Review, Approved, Rejected**. Saving is submitting — an editor's save always lands on In Review. The Approver can only approve or reject, and **rejection requires a reason**. Super Admin may approve in the same save.
 15. Laporan (reports) is managed by **News Admin**.
 16. **Revised:** homepage hero, stats and all other page copy live **in code** (`src/content/`), changed by a developer. The CMS holds only what the team publishes on its own schedule: **news, reports, product items and job vacancies**, plus contact enquiries and users.
-22. **New:** **Editing approved or rejected work sends it back to In Review**, whoever edits it. An approved page leaves the website until the edit is approved.
+22. **New, revised 29 Sep:** **Editing approved or rejected work sends it back to In Review**, whoever edits it — and **the approved version stays on the website** until the edit is approved, then is replaced at once.
 23. **New:** A new CMS account is **inactive until its owner clicks the verification link** sent to their email. Only Super Admin creates, and deletes, accounts.
 24. **New:** The CMS **opens on website analytics** — visitors, page views, time on page and page speed — from a self-hosted Umami, not Google Analytics.
 25. **New:** **Every create, update and delete is written to the audit log**, naming the item and the person.
-26. **New:** Images are managed **inside the image fields** of news and reports. There is **no Media menu**, for any role.
+26. **New:** Images are managed **inside the image fields** of news and reports. There is **no Media menu**, for any role. Only Super Admin can replace the file behind an existing image; editors upload new ones and fix alt text.
+27. **New:** Every news, report and vacancy address (slug) is **unique**; a clash gets `-2`, `-3`… automatically.
 
 **Contact form**
 17. Each submission is **stored in the CMS database** and **emailed to sales@cbclik.com**.
@@ -89,6 +90,9 @@ Changes to the original intent, in the order they were made. Each links to the c
 | 25 Sep | Media menu hidden for every role; images managed in their fields | Shared Media Library menu | `fa5fe1f` |
 | 25 Sep | CMS dashboard replaced by website analytics from self-hosted Umami | Content counts and charts | `880956d` |
 | 28 Sep | Top pages show time on page, bounce and load time; speed metrics in plain words | — | `5444769`, `c75fb89` |
+| 29 Sep | Security, reliability and scalability hardening (four phases) | — | `2457fa6` … `bc65763` |
+| 29 Sep | Editing live work keeps the live version online until approved | 23 Sep: editing took the page down | this change |
+| 29 Sep | Only Super Admin replaces an image file; slugs unique; reset email link absolute | — | this change |
 
 ## Open items
 

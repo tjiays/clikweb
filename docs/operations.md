@@ -194,13 +194,13 @@ Deliberate, and recorded rather than forgotten:
 - **No uptime monitoring or alerting.** Nobody is paged if the site goes down.
 - **No device testing.** The responsive behaviour is implemented and reasoned
   about, but nobody has opened the site on a real phone.
-- **The password-reset email carries a relative link** (`/admin/reset/<token>`),
-  so it cannot be clicked from a mail client. Payload's default template; the
-  account-verification email builds an absolute link and does not have this
-  problem. Until fixed, prefix the link with the site address by hand.
-- **Umami stores times 7 hours early**, because PostgreSQL runs on Jakarta time
-  and Umami sends times without a zone. Durations and counts are right; hourly
-  and daily charts are not. Fix pending — see [analytics](./analytics.md).
+- **The migration schema snapshot is stale.** Hand-written migrations since
+  25 September did not update the snapshot `migrate:create` compares against,
+  so it now asks about old changes interactively instead of generating a
+  migration. Write migrations by hand until a fresh snapshot is taken.
+- **Email links use `SITE_URL`**, never the request's address (so a forged
+  Host header cannot redirect a password reset). On staging, `SITE_URL` is the
+  Tailscale address; set it to whichever address the team actually uses.
 
 ## Database connections
 

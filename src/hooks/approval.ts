@@ -163,7 +163,15 @@ export const enforceApprovalRules: CollectionBeforeValidateHook = async ({
      * one — but saving an edit without touching it is an edit, not a
      * republish.
      */
-    if (SETTLED.includes(String(previous)) && !deliberate(next, previous)) {
+    /*
+     * "Setujui & tayangkan" publishes with the status Approved. On an item
+     * that was already approved the status does not change, so on its own it
+     * would read as "no decision" and send the edit back for review — through
+     * a publish, which would take the live page down. Publishing as Approved
+     * is the decision, whether or not the value moved. A draft save never is.
+     */
+    const approvingNow = next === APPROVAL_STATUSES.approved && data._status === 'published'
+    if (SETTLED.includes(String(previous)) && !deliberate(next, previous) && !approvingNow) {
       data.approvalStatus = APPROVAL_STATUSES.inReview
       data.submittedBy = user.id
       data.submittedAt = new Date().toISOString()

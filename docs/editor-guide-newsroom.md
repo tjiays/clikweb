@@ -37,7 +37,7 @@ Tidak ada lagi kotak *Featured News* atau *Sembunyikan dari daftar*. Berita
 selalu tampil dari yang terbaru, dan **Featured News otomatis berisi delapan
 berita terbaru**.
 
-Setelah selesai, tekan tombol oranye **Publikasikan perubahan**. Berita
+Setelah selesai, tekan tombol oranye **Kirim untuk ditinjau**. Berita
 langsung dikirim untuk ditinjau (**In Review**) dan Anda dibawa kembali ke
 daftar. Berita tayang setelah Approver menyetujui.
 
@@ -137,9 +137,10 @@ angka yang sama persis.
 setelah **Approved**. Periksa juga **Tanggal publikasi** — kalau di masa depan,
 berita baru tampil pada hari itu.
 
-**Berita saya hilang dari website setelah saya mengubahnya.** Itu disengaja.
-Setiap perubahan pada berita yang sudah tayang harus disetujui lagi, dan
-selama menunggu, berita turun dari website. Kumpulkan perbaikan sekaligus.
+**Perubahan saya belum muncul di website.** Versi lama tetap tayang sampai
+Approver menyetujui perubahan Anda; setelah disetujui, versi baru langsung
+menggantikannya. Pengunjung bisa melihatnya sampai satu menit kemudian,
+karena halaman untuk pengunjung disimpan sementara.
 
 **Saya tidak bisa mengubah berita.** Kalau statusnya **In Review** dan bukan
 Anda yang mengirimnya, berita itu dikunci sampai Approver memutuskan.

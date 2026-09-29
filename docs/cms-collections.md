@@ -37,6 +37,8 @@ appears.
 
 Every image field refuses files over **5 MB**, and states its recommended size on the form. Images already attached before a rule existed are not re-checked.
 
+**Only a Super Admin can replace the file behind an existing image.** Images sit outside the approval workflow, so a replaced file went straight onto every live page showing it. Editors upload a new image and choose it in their item — which is reviewed like any edit — and can still correct alt text.
+
 Still in the schema but hidden and unread: `isFeatured`, `featuredPositions`,
 `hideFromList`. They hold the old hand-ordering of Featured News, kept so the
 change can be walked back. Featured News is now simply the newest eight.
@@ -93,7 +95,8 @@ and the posted date. Karir has **no auto-translate**.
 
 - **Approval workflow** — In Review, Approved, Rejected. Saving submits.
   Details in [approval workflow](./approval-workflow.md).
-- **Back to the list after saving**, so the editor sees their item in context.
+- **Unique slugs.** A new item whose slug is taken gets `-2`, `-3`… automatically, and the database refuses a duplicate that slips past (unique indexes on `articles`, `reports`, `job_openings`, from migration `20260929_120000_unique_slugs`).
+- **Back to the list after a save succeeds**, so the editor sees their item in context. A save that fails leaves them on the page with their work and the reason — it used to send them to the list regardless, losing unsaved text.
 - **Preview and Live Preview** — see below.
 - **Revision history** — up to 25 versions, restorable.
 - **Audit logging** — every create, update, delete, submit, approval and rejection.

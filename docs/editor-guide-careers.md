@@ -30,7 +30,7 @@ disetujui.
 
 Alamat halaman detail (slug) dibuat otomatis dari nama posisi.
 
-Setelah selesai, tekan tombol oranye **Publikasikan perubahan**. Lowongan
+Setelah selesai, tekan tombol oranye **Kirim untuk ditinjau**. Lowongan
 dikirim untuk ditinjau (**In Review**) dan tayang setelah Approver menyetujui.
 
 Karir tidak punya tombol Auto-translate; isi versi English sendiri.
@@ -41,7 +41,7 @@ Hilangkan centang **Lowongan masih dibuka**, lalu simpan. Setelah disetujui,
 lowongan hilang dari daftar tanpa perlu dihapus, dan riwayatnya tetap
 tersimpan.
 
-Ingat: selama perubahan itu menunggu persetujuan, lowongan turun dari website.
+Selama perubahan itu menunggu persetujuan, versi lama tetap tayang di website.
 
 ## Tombol Lamar
 

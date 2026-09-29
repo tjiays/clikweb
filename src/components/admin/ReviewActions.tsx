@@ -1,37 +1,84 @@
 'use client'
 
 import { useState } from 'react'
-import { Button, PublishButton, useAuth, useForm, useFormFields } from '@payloadcms/ui'
+import { Button, useAuth, useConfig, useDocumentInfo, useForm, useFormFields, useLocale } from '@payloadcms/ui'
 import './ReviewActions.scss'
 
 /**
- * What an Approver gets instead of Save draft and Publish.
+ * The save and decision buttons, in place of Payload's Save draft / Publish.
  *
- * Their job is to read the item and decide, so the controls are the decision:
- * Setujui, or Tolak with the reason the workflow requires. Payload's own
- * buttons stay for everybody else — an editor still saves, and a Super Admin
- * still publishes.
+ * A live page stays live while its edit is reviewed. Anything that is not an
+ * approval is saved as a *draft version*: Payload writes only the version
+ * history and leaves the published document — the one the website reads —
+ * exactly as it was. Only an approval publishes, which is the moment the
+ * reviewed draft replaces what readers see.
  *
- * Rejecting asks for the reason here rather than leaving the editor to find a
- * field further up the sidebar, because a rejection without one is refused by
- * the server and the save would simply fail.
+ * Until 29 September every save published, so editing an approved page took
+ * it off the website until someone approved the edit.
  *
- * The buttons appear only while an item is actually in review. A decision is
- * refused on anything else — the rule is that only a submitted item can be
- * decided on — so on an approved or rejected report they were controls that
- * could not work. What replaces them is the standing of the item, since that
- * is all there is to say once the decision is made.
+ *   Editor       Kirim untuk ditinjau              draft
+ *   Super Admin  Kirim untuk ditinjau              draft
+ *                Setujui & tayangkan               publish, as Approved
+ *   Approver     Setujui & tayangkan               publish, as Approved
+ *                Tolak (with a reason)             draft, as Rejected
+ *
+ * The Approver's buttons appear only while an item is in review: a decision
+ * on anything else is refused by the server, so they would be controls that
+ * cannot work.
  */
 export default function ReviewActions() {
   const { user } = useAuth()
   const { submit } = useForm()
+  const { id, collectionSlug } = useDocumentInfo()
+  const locale = useLocale()
+  const {
+    config: {
+      routes: { api },
+    },
+  } = useConfig()
   const status = useFormFields(([fields]) => fields?.approvalStatus?.value) as string | undefined
   const [rejecting, setRejecting] = useState(false)
   const [reason, setReason] = useState('')
   const [busy, setBusy] = useState(false)
 
-  if ((user as { role?: string } | null)?.role !== 'approver') {
-    return <PublishButton />
+  const role = (user as { role?: string } | null)?.role
+
+  const run = async (work: () => Promise<unknown>) => {
+    setBusy(true)
+    try {
+      await work()
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  // The same request Payload's own Save draft button makes.
+  const saveDraft = (overrides: Record<string, unknown> = {}) =>
+    run(() =>
+      submit({
+        action: `${api}/${collectionSlug}${id ? `/${id}` : ''}?locale=${locale?.code ?? 'id'}&depth=0&fallback-locale=null&draft=true`,
+        method: id ? 'PATCH' : 'POST',
+        overrides: { ...overrides, _status: 'draft' },
+        skipValidation: true,
+      }),
+    )
+
+  const publishApproved = () =>
+    run(() => submit({ overrides: { approvalStatus: 'approved', _status: 'published' } }))
+
+  if (role !== 'approver') {
+    return (
+      <div className="clik-review">
+        <Button buttonStyle="primary" disabled={busy} onClick={() => saveDraft()}>
+          Kirim untuk ditinjau
+        </Button>
+        {role === 'super_admin' ? (
+          <Button buttonStyle="secondary" disabled={busy} onClick={publishApproved}>
+            Setujui &amp; tayangkan
+          </Button>
+        ) : null}
+      </div>
+    )
   }
 
   if (status !== 'in_review') {
@@ -43,15 +90,6 @@ export default function ReviewActions() {
     // A document with no status yet is one the Approver cannot have reached.
     if (!note) return null
     return <p className="clik-review__settled">{note}</p>
-  }
-
-  const decide = async (overrides: Record<string, unknown>) => {
-    setBusy(true)
-    try {
-      await submit({ overrides })
-    } finally {
-      setBusy(false)
-    }
   }
 
   if (rejecting) {
@@ -72,7 +110,8 @@ export default function ReviewActions() {
           <Button
             buttonStyle="primary"
             disabled={busy || !reason.trim()}
-            onClick={() => decide({ approvalStatus: 'rejected', rejectionReason: reason.trim() })}
+            // A rejection is a draft: an approved page being edited stays live.
+            onClick={() => saveDraft({ approvalStatus: 'rejected', rejectionReason: reason.trim() })}
           >
             Kirim penolakan
           </Button>
@@ -86,11 +125,7 @@ export default function ReviewActions() {
 
   return (
     <div className="clik-review">
-      <Button
-        buttonStyle="primary"
-        disabled={busy}
-        onClick={() => decide({ approvalStatus: 'approved' })}
-      >
+      <Button buttonStyle="primary" disabled={busy} onClick={publishApproved}>
         Setujui &amp; tayangkan
       </Button>
       <Button buttonStyle="secondary" disabled={busy} onClick={() => setRejecting(true)}>

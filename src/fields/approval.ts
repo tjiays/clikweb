@@ -23,11 +23,6 @@ export type ApprovalStatus = (typeof APPROVAL_STATUSES)[keyof typeof APPROVAL_ST
  * Every change by an HR, News or Marketing Admin passes through it. Super
  * Admin changes skip it and publish directly. Rejection requires a reason.
  */
-const decides = (user: unknown) =>
-  ['approver', 'super_admin'].includes(
-    String((user as { role?: string } | null | undefined)?.role ?? ''),
-  )
-
 /**
  * Which language still needs work.
  *
@@ -53,7 +48,10 @@ export const approvalFields: Field[] = [
     type: 'ui',
     admin: {
       position: 'sidebar',
-      condition: (_data, _siblingData, { user }) => !decides(user),
+      // Everyone sees the status as a label. Decisions are made with the
+      // buttons (ReviewActions), which also decide draft versus publish; a
+      // status picked in a dropdown and then saved as a draft could leave an
+      // "Approved" draft that never reached the website.
       components: {
         Field: '@/components/admin/ApprovalStatusBadge#default',
       },
@@ -81,7 +79,7 @@ export const approvalFields: Field[] = [
        * The role is read off the user rather than through @/access because
        * this function is serialised to the browser.
        */
-      condition: (_data, _siblingData, { user }) => decides(user),
+      hidden: true,
     },
     index: true,
   },

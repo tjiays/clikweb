@@ -18,25 +18,44 @@ decided on yet, and its author can keep editing it until they do.
 
 | Role | On save | Can set |
 | --- | --- | --- |
-| HR / News / Marketing Admin | In Review, always | nothing — there is no status control on their form |
-| Approver | — | Approved, Rejected (reason required), and only on an item in review |
-| Super Admin | In Review by default | any status, including Approved in the same save that creates the item |
+| HR / News / Marketing Admin | **Kirim untuk ditinjau** → In Review | nothing |
+| Approver | — | **Setujui & tayangkan** or **Tolak** (reason required), only on an item in review |
+| Super Admin | **Kirim untuk ditinjau** → In Review | or **Setujui & tayangkan** in the same save |
 
-An editor sees where their work stands as a read-only pill, not a control.
+Everyone sees the status as a read-only label; decisions are the buttons.
+There is no status dropdown: a status chosen there and then saved as a draft
+could leave an "Approved" draft that never reached the website.
 
 ## Editing settled work
 
 Anything approved or rejected goes back to **In Review** the moment it is
-saved, whoever saves it — editor, Approver or Super Admin. An approved page
-therefore leaves the website while its edit is in review, and returns when it
-is approved again.
+saved, whoever saves it. **The approved page stays on the website meanwhile**,
+and is replaced by the reviewed version the moment it is approved.
 
-This is deliberate and differs from the original note in `intent/03-cms.md`,
-which had the live version stay online until a revision was approved. Nothing
-unreviewed reaches a reader; the cost is that correcting a typo takes the
-page down until someone approves it. A Super Admin can do both in one step by
-setting the status to Approved before saving, which counts as a decision
-because the value changes.
+This works through Payload's draft versions. Every save that is not an
+approval — an editor's, a Super Admin's **Kirim untuk ditinjau**, and the
+Approver's **Tolak** — is saved as a *draft version*: Payload writes only the
+version history and leaves the published document, the one the website reads,
+untouched. Only **Setujui & tayangkan** publishes. The admin list and the
+Approver's form show the latest draft, so a pending edit shows as In Review
+and can be found and read as usual. Verified on 29 September: an edit, a
+second edit and a rejection all left the live text in place; the approval
+swapped it in.
+
+A Super Admin's **Setujui & tayangkan** on an item that was already approved
+counts as the decision even though the status does not change — otherwise it
+would read as "no decision" and send the edit back for review through a
+publish, taking the page down.
+
+(From 23 to 29 September every save published, so editing an approved page
+took it off the website until someone approved the edit. That was replaced at
+the product owner's request.)
+
+**One route still takes a page down:** an editor calling the REST API directly
+with a non-draft save of their own live item. The admin never does this, and
+nothing unreviewed becomes visible — the page goes offline instead. It is not
+blocked because editors can already delete their module's items outright,
+which is strictly more.
 
 The admin form posts back whatever the status field is showing, so an
 unchanged value is not a choice. Reading it as one is what once left a
@@ -51,10 +70,12 @@ of their own half-written piece by their first save.
 
 ## What the editor sees
 
-One orange button, **Publikasikan perubahan**. Pressing it saves and submits:
-the item lands on In Review and the editor is taken back to the list. There is
-no separate Save Draft button, and no status control — the status shows as a
-read-only label.
+One orange button, **Kirim untuk ditinjau**. Pressing it saves a draft and
+submits it: the item lands on In Review and the editor is taken back to the
+list — only once the save has succeeded. A failed save leaves them on the
+page with their work and the reason. Payload's **Revert to published** button
+is shown to Super Admin only: for an editor the server refuses it, and for the
+Approver it would publish the pending edit rather than revert it.
 
 ## What the Approver sees
 
@@ -136,6 +157,7 @@ The workflow began as **Draft → In Review → Published**, with the live versi
 staying online while an edit was reviewed, and deletion as a request. During
 the build the product owner asked for saving to submit, and Draft became a
 state nothing could reach or leave, so it was removed (21 September). Editing
-settled work now takes the page down until it is re-approved (23 September).
+settled work took the page down until it was re-approved (23 September),
+and from 29 September the live version stays online through the review.
 Deletion-by-request was never built. The reasoning is in commits `09a2b7e`,
 `27e6c9b` and `714ecd8`.
