@@ -75,9 +75,9 @@ Status badges (products):
 | Dropdown "Tentang Kami" | `953:5693` (light), `953:5680` (dark) | Items: Tentang CLIK · Laporan · Kebijakan Keamanan Informasi · Kebijakan Privasi. Opens on hover. |
 | Language switch | `231:2160` | "ID \| EN"; active language in orange. Switches to the same page in the other language. |
 | **Breadcrumb** | on every inner page | `Home > Section > Page`, 16px regular, `>` chevron. |
-| **Footer** | `113:551` (ID), `113:552` (EN) | Light blue background. Left: logo, address, phone, email, website, social icons. Middle: "ANGGOTA DARI" member logos (AFPI, BIIA, Fintech Indonesia/AFTECH, APPI). Right: "TERDAFTAR & DIAWASI OLEH OJK" + OJK logo + license no. Bottom: copyright. All logos/links from CMS. |
-| **Closing block** (cross-link card + CTA banner) | bottom of Credit Scoring `859:4489`, Business Solution `859:4457`, Home `156:1049`, About Us | Cross-link card: small label with breadcrumb-style prefix, title, image, links to another page. CTA banner: full-width image with dark overlay, title, text, orange button. Both editable per page in CMS. Either part is optional per page. |
-| Article card | Newsroom, Home, Detail Berita | Image, author, date, title, excerpt (truncated), "READ MORE" link, share icon button. |
+| **Footer** | `113:551` (ID), `113:552` (EN) | Light blue background. Left: logo, address, phone, email, website, social icons. Middle: "ANGGOTA DARI" member logos (AFPI, BIIA, Fintech Indonesia/AFTECH, APPI). Right: "TERDAFTAR & DIAWASI OLEH OJK" + OJK logo + license no. Bottom: copyright. **Revised:** logos and links are kept in code (`src/content/site.ts`, `src/content/partners.ts`). |
+| **Closing block** (cross-link card + CTA banner) | bottom of Credit Scoring `859:4489`, Business Solution `859:4457`, Home `156:1049`, About Us | Cross-link card: small label with breadcrumb-style prefix, title, image, links to another page. CTA banner: full-width image with dark overlay, title, text, orange button. Either part is optional per page. **Revised:** both are edited per page in code (`src/content/cta.ts`), not in the CMS. |
+| Article card | Newsroom, Home, Detail Berita | Image, author, date, title, excerpt (truncated), "READ MORE" link. **Revised:** no share icon button. |
 | Report card | Laporan `724:3551` | Same layout as article card. |
 | Job row | Karir `415:2692` "Group 2324" | Job title, category, "Lamar" button (orange) and "Lihat Detail" button (outline). |
 | Product accordion row | Credit Scoring "What We Offer" | Status badge(s), product name, short description, "+" button expands the row to show details (Figma "Expanded card" `1391:5420`). |
@@ -88,7 +88,7 @@ Status badges (products):
 | Media logo strip | Newsroom `Component 6` | Scrolling row of media logos. |
 | Media logo grid ("Daftar Media") | Newsroom sidebar | 2-column grid of outlined logo buttons; each opens that outlet's Liputan Media page. |
 | Pagination | Newsroom | Prev arrow, page numbers, next arrow; active page highlighted. |
-| Share bar | Detail Berita | "Share:" + X, Facebook, WhatsApp, LinkedIn icons. |
+| ~~Share bar~~ | Detail Berita | **Removed** — the site has no share buttons (decision 20). |
 | Back-to-top button | `461:2572` "kembali ke atas" | Floating button. |
 | Buttons | "Hubungi Kami" `407:2351`, "Pelajari selengkapnya" `269:667`, "Lihat Layanan Kami" `407:2355`, "Lihat selengkapnya" `498:2862`, "Lamar" `527:2766`, "Lihat detail" `527:2770`, "Submit" `300:1788` | Each has a hover variant (Variant2) in Figma — implement hover styles to match. |
 
@@ -110,5 +110,5 @@ Status badges (products):
 - Nav item layer named "karis" is "Karir".
 - In the dark header, "Business Solution" links to Credit Scoring → should link to Business Solution.
 - "Tentang Kami" top-level item has no destination → it only opens the dropdown.
-- Home stat "10.500+ Lembaga keuangan" conflicts with "2.688" elsewhere → both come from CMS; keep as seed data.
+- Home stat "10.500+ Lembaga keuangan" conflicts with "2.688" elsewhere → both are kept in code (`src/content/`); keep as seed data until CLIK confirms the figures.
 - Copyright "© Copyright 2024 - CLIK" → generate the current year automatically.

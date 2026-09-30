@@ -1,188 +1,259 @@
-import Link from 'next/link'
 import type { AdminViewServerProps } from 'payload'
-import { ROLES, type Role } from '@/access/roles'
-import { getDashboardData } from './dashboardData'
-import { PublishedChart, CategoryChart } from './Charts'
+import { getAnalytics, rate, type Rating } from './umami'
 import './Dashboard.scss'
 
 /**
- * Replaces Payload's default dashboard with an overview: the figures that
- * describe the site, what is waiting for a decision, and what changed
- * recently — rather than a list of links.
+ * The CMS landing page: how the website is doing, for visitors and for speed.
  *
- * Laid out as stat tiles, then a chart panel beside a breakdown, then recent
- * activity, then the module shortcuts.
+ * Drawn here rather than framing Umami's own screen, so it wears the CLIK
+ * palette and type like the rest of the admin, and so nobody needs a second
+ * account to read it. The figures come from Umami over the loopback address.
  */
 
-type Card = { label: string; description: string; slug: string; roles: Role[] }
+const RANGE_DAYS = 7
 
-const EDITORS: Record<string, Role[]> = {
-  news: [ROLES.newsAdmin],
-  hr: [ROLES.hrAdmin],
-  marketing: [ROLES.marketingAdmin],
+const nf = new Intl.NumberFormat('id-ID')
+
+const ms = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(2)}s` : `${Math.round(v)}ms`)
+
+/** Seconds as a reader would say them: "8 dtk", "9 mnt 58 dtk". */
+const duration = (sec: number) => {
+  const s = Math.round(sec)
+  if (s < 60) return `${s} dtk`
+  const m = Math.floor(s / 60)
+  const r = s % 60
+  return r ? `${m} mnt ${r} dtk` : `${m} mnt`
 }
 
-const CONTENT: Card[] = [
-  { label: 'Artikel', description: 'Berita dan insight', slug: 'articles', roles: EDITORS.news },
-  { label: 'Laporan', description: 'Laporan tahunan dan perkembangan usaha', slug: 'reports', roles: EDITORS.news },
-  { label: 'Item Produk', description: 'Produk pada Business Solution', slug: 'product-items', roles: EDITORS.marketing },
-  { label: 'Lowongan Pekerjaan', description: 'Posisi yang sedang dibuka', slug: 'job-openings', roles: EDITORS.hr },
+/*
+ * Each card leads with what the number means in plain words; the acronym is
+ * kept small for anyone who wants to look it up. The target is the boundary
+ * of "Baik" in rate(), stated so the badge beside it makes sense.
+ * CLS is a ratio, not a duration, so it is the one metric without a unit.
+ */
+type VitalKey = 'lcp' | 'inp' | 'cls' | 'fcp' | 'ttfb'
+const VITALS: { key: VitalKey; code: string; title: string; about: string; target: string; format: (v: number) => string }[] = [
+  {
+    key: 'lcp',
+    code: 'LCP',
+    title: 'Konten utama tampil',
+    about: 'Lama sampai isi utama halaman terlihat.',
+    target: 'Baik: maks. 2,5 dtk',
+    format: ms,
+  },
+  {
+    key: 'inp',
+    code: 'INP',
+    title: 'Respons saat diklik',
+    about: 'Jeda antara klik atau ketuk dan halaman bereaksi.',
+    target: 'Baik: maks. 200 ms',
+    format: ms,
+  },
+  {
+    key: 'cls',
+    code: 'CLS',
+    title: 'Stabilitas tampilan',
+    about: 'Seberapa banyak isi halaman bergeser saat dimuat. Makin kecil makin baik.',
+    target: 'Baik: maks. 0,1',
+    format: (v) => v.toFixed(3),
+  },
+  {
+    key: 'fcp',
+    code: 'FCP',
+    title: 'Tampilan pertama',
+    about: 'Lama sampai sesuatu pertama kali muncul di layar.',
+    target: 'Baik: maks. 1,8 dtk',
+    format: ms,
+  },
+  {
+    key: 'ttfb',
+    code: 'TTFB',
+    title: 'Respons server',
+    about: 'Lama server mulai mengirim halaman ke browser.',
+    target: 'Baik: maks. 800 ms',
+    format: ms,
+  },
 ]
 
-const SETTINGS: Card[] = [
-  { label: 'Data Masuk', description: 'Kiriman formulir Hubungi Kami', slug: 'contact-submissions', roles: [ROLES.salesAdmin] },
-  { label: 'Media Library', description: 'Gambar untuk artikel dan laporan', slug: 'media', roles: [ROLES.newsAdmin, ROLES.hrAdmin, ROLES.marketingAdmin] },
-  { label: 'Audit Trail', description: 'Riwayat perubahan konten', slug: 'audit-log', roles: [] },
-  { label: 'Users', description: 'Pengguna CMS dan perannya', slug: 'users', roles: [] },
-]
-
-/** The four figures worth putting at the top, in reading order. */
-const TILES = [
-  { slug: 'articles', label: 'Artikel', hint: 'dipublikasikan' },
-  { slug: 'product-items', label: 'Item Produk', hint: 'di Business Solution' },
-  { slug: 'job-openings', label: 'Lowongan', hint: 'terdaftar' },
-  { slug: 'contact-submissions', label: 'Data Masuk', hint: 'dari formulir kontak' },
-]
-
-const formatWhen = (iso: string) => {
-  if (!iso) return '—'
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return '—'
-  return new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(d)
+const RATING_LABEL: Record<Rating, string> = {
+  good: 'Baik',
+  fair: 'Perlu perbaikan',
+  poor: 'Buruk',
+  none: 'Belum ada data',
 }
 
-export default async function Dashboard({ user }: AdminViewServerProps) {
-  const role = (user as { role?: Role } | undefined)?.role
-  const isSuperAdmin = role === ROLES.superAdmin
-  const isApprover = role === ROLES.approver
+const trend = (now: number, before: number) => {
+  if (!before) return null
+  const pct = Math.round(((now - before) / before) * 100)
+  if (pct === 0) return null
+  return { pct: Math.abs(pct), up: pct > 0 }
+}
 
-  const visible = (card: Card) => {
-    if (isSuperAdmin) return true
-    if (isApprover) return card.slug !== 'users' && card.slug !== 'contact-submissions'
-    return Boolean(role && card.roles.includes(role))
-  }
+export default async function Dashboard(_props: AdminViewServerProps) {
+  const a = await getAnalytics(RANGE_DAYS)
 
-  const content = CONTENT.filter(visible)
-  const settings = SETTINGS.filter(visible)
-  const allowed = [...content, ...settings].map((c) => c.slug)
+  const bounceRate = a.stats.visits ? Math.round((a.stats.bounces / a.stats.visits) * 100) : 0
+  const avgVisit = a.stats.visits ? Math.round(a.stats.totaltime / a.stats.visits) : 0
 
-  const data = await getDashboardData(allowed)
-  const waiting = Object.values(data.inReview).reduce((a, b) => a + b, 0)
-  const tiles = TILES.filter((t) => allowed.includes(t.slug))
-
-  const reviewLink = (slug: string) => `/admin/collections/${slug}?where[approvalStatus][equals]=in_review`
+  const tiles = [
+    { label: 'Pengunjung', value: nf.format(a.stats.visitors), t: trend(a.stats.visitors, a.previous.visitors) },
+    { label: 'Tampilan halaman', value: nf.format(a.stats.pageviews), t: trend(a.stats.pageviews, a.previous.pageviews) },
+    { label: 'Bounce rate', value: `${bounceRate}%`, t: null },
+    { label: 'Rata-rata kunjungan', value: avgVisit ? ms(avgVisit * 1000) : '—', t: null },
+  ]
 
   return (
-    <div className="clik-dash">
-      <header className="clik-dash__head">
-        <div>
-          <h1>Selamat datang{user?.name ? `, ${user.name}` : ''}</h1>
-          <p>Ringkasan konten CLIK hari ini.</p>
-        </div>
-        {waiting > 0 && (
-          <Link href={reviewLink(Object.keys(data.inReview)[0])} className="clik-dash__alert">
-            <span className="clik-dash__alertDot" aria-hidden="true" />
-            {waiting} item menunggu review
-          </Link>
-        )}
+    <div className="cdash">
+      <header className="cdash__head">
+        <h1 className="cdash__title">Analitik Website</h1>
+        <p className="cdash__sub">{RANGE_DAYS} hari terakhir · cbclik.com</p>
       </header>
 
-      {tiles.length > 0 && (
-        <section className="clik-tiles">
-          {tiles.map((tile) => (
-            <Link key={tile.slug} href={`/admin/collections/${tile.slug}`} className="clik-tile">
-              <span className="clik-tile__value">{data.counts[tile.slug] ?? 0}</span>
-              <span className="clik-tile__label">{tile.label}</span>
-              <span className="clik-tile__hint">{tile.hint}</span>
-              {data.inReview[tile.slug] && (
-                <span className="clik-tile__flag">{data.inReview[tile.slug]} menunggu</span>
-              )}
-            </Link>
-          ))}
-        </section>
-      )}
+      {!a.configured ? (
+        <p className="cdash__notice">
+          Analitik belum dikonfigurasi. Setel <code>UMAMI_API_KEY</code> dan{' '}
+          <code>UMAMI_WEBSITE_ID</code> lalu mulai ulang aplikasi.
+        </p>
+      ) : !a.ok ? (
+        <p className="cdash__notice">
+          Tidak bisa menghubungi layanan analitik. Website tetap berjalan normal; hanya
+          angka di halaman ini yang belum bisa ditampilkan.
+        </p>
+      ) : null}
 
-      <section className="clik-split">
-        {allowed.includes('articles') && (
-          <article className="clik-panel clik-panel--wide">
-            <header className="clik-panel__head">
-              <h2>Artikel terbit</h2>
-              <span className="clik-panel__sub">12 bulan terakhir</span>
-            </header>
-            <PublishedChart data={data.published} />
-          </article>
-        )}
+      <section className="cdash__tiles">
+        {tiles.map((t) => (
+          <div key={t.label} className="cdash__tile">
+            <span className="cdash__tileValue">{t.value}</span>
+            <span className="cdash__tileLabel">{t.label}</span>
+            {t.t ? (
+              <span className={`cdash__trend cdash__trend--${t.t.up ? 'up' : 'down'}`}>
+                {t.t.up ? '▲' : '▼'} {t.t.pct}%
+              </span>
+            ) : null}
+          </div>
+        ))}
+      </section>
 
-        {allowed.includes('product-items') && data.byCategory.length > 0 && (
-          <article className="clik-panel">
-            <header className="clik-panel__head">
-              <h2>Produk per kategori</h2>
-              <span className="clik-panel__sub">{data.counts['product-items'] ?? 0} total</span>
-            </header>
-            <CategoryChart data={data.byCategory} />
-          </article>
+      <section className="cdash__panel">
+        <h2 className="cdash__panelTitle">Kecepatan halaman</h2>
+        <div className="cdash__vitals">
+          {VITALS.map(({ key, code, title, about, target, format }) => {
+            const p75 = a.vitals?.[key]?.p75 ?? 0
+            const r = rate(key, p75)
+            return (
+              <div key={key} className="cdash__vital">
+                <div className="cdash__vitalTop">
+                  <span className="cdash__vitalLabel">{title}</span>
+                  <span className="cdash__vitalCode">{code}</span>
+                </div>
+                <div className="cdash__vitalMid">
+                  <span className="cdash__vitalValue">{r === 'none' ? '—' : format(p75)}</span>
+                  <span className={`cdash__badge cdash__badge--${r}`}>{RATING_LABEL[r]}</span>
+                </div>
+                <span className="cdash__vitalHint">{about}</span>
+                <span className="cdash__vitalTarget">{target}</span>
+              </div>
+            )
+          })}
+        </div>
+      </section>
+
+      <section className="cdash__panel">
+        <h2 className="cdash__panelTitle">Halaman teratas</h2>
+        {a.topPages.length ? (
+          <>
+            <div className="cdash__tableWrap">
+              <table className="cdash__table">
+                <thead>
+                  <tr>
+                    <th scope="col">Halaman</th>
+                    <th scope="col" className="num">Tampilan</th>
+                    <th scope="col" className="num">Pengunjung</th>
+                    <th scope="col" className="num">Rata-rata waktu</th>
+                    <th scope="col" className="num">Bounce</th>
+                    <th scope="col" className="num">Waktu loading</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {a.topPages.map((p) => {
+                    const r = rate('lcp', p.lcp)
+                    return (
+                      <tr key={p.path}>
+                        <th scope="row" className="cdash__path" title={p.path}>{p.path}</th>
+                        <td className="num">{nf.format(p.views)}</td>
+                        <td className="num">{nf.format(p.visitors)}</td>
+                        <td
+                          className="num"
+                          title={
+                            p.avgSeconds == null
+                              ? 'Selalu menjadi halaman terakhir kunjungan, jadi belum bisa diukur'
+                              : `Dari ${nf.format(p.timedViews)} tampilan yang terukur`
+                          }
+                        >
+                          {p.avgSeconds == null ? '—' : duration(p.avgSeconds)}
+                        </td>
+                        <td
+                          className="num"
+                          title={
+                            p.entrances
+                              ? `${nf.format(p.bounces)} dari ${nf.format(p.entrances)} kunjungan yang masuk lewat halaman ini`
+                              : 'Belum ada kunjungan yang masuk lewat halaman ini'
+                          }
+                        >
+                          {p.entrances ? `${Math.round((p.bounces / p.entrances) * 100)}%` : '—'}
+                        </td>
+                        <td className="num">
+                          {p.lcp == null ? (
+                            '—'
+                          ) : (
+                            <span className="cdash__load">
+                              {ms(p.lcp)}
+                              <span className={`cdash__badge cdash__badge--${r}`}>{RATING_LABEL[r]}</span>
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p className="cdash__foot">
+              <strong>Rata-rata waktu</strong>: lama pengunjung di halaman sampai membuka halaman
+              berikutnya; halaman terakhir sebuah kunjungan tidak bisa diukur.{' '}
+              <strong>Bounce</strong>: kunjungan yang masuk lewat halaman ini lalu pergi tanpa
+              membuka halaman lain. <strong>Waktu loading</strong>: sampai konten utama tampil
+              (LCP, persentil ke-75).
+            </p>
+          </>
+        ) : (
+          <p className="cdash__empty">Belum ada kunjungan tercatat.</p>
         )}
       </section>
 
-      {data.activity.length > 0 && (
-        <section className="clik-panel">
-          <header className="clik-panel__head">
-            <h2>Aktivitas terbaru</h2>
-            <Link href="/admin/collections/audit-log" className="clik-panel__link">
-              Lihat semua
-            </Link>
-          </header>
-          <table className="clik-table">
-            <thead>
-              <tr>
-                <th>Tindakan</th>
-                <th>Item</th>
-                <th>Oleh</th>
-                <th>Waktu</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.activity.map((row, i) => (
-                <tr key={i}>
-                  <td><span className="clik-table__action">{row.action}</span></td>
-                  <td className="clik-table__title">{row.title}</td>
-                  <td>{row.user}</td>
-                  <td className="clik-table__when">{formatWhen(row.at)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-      )}
-
-      {(content.length > 0 || settings.length > 0) && (
-        <section className="clik-dash__links">
-          <h2 className="clik-dash__linksTitle">Kelola</h2>
-          <div className="clik-dash__linkGrid">
-            {[...content, ...settings].map((card) => (
-              <Link
-                key={card.slug}
-                href={`/admin/collections/${card.slug}`}
-                className="clik-link"
-              >
-                <span className="clik-link__label">{card.label}</span>
-                <span className="clik-link__description">{card.description}</span>
-              </Link>
+      <section className="cdash__panel">
+        <h2 className="cdash__panelTitle">Sumber kunjungan</h2>
+        {a.referrers.length ? (
+          <ul className="cdash__list">
+            {a.referrers.map((r) => (
+              <li key={r.referrer} className="cdash__row">
+                <span className="cdash__rowLabel">{r.referrer}</span>
+                <span className="cdash__rowValue">{nf.format(r.views)}</span>
+              </li>
             ))}
-          </div>
-        </section>
-      )}
+          </ul>
+        ) : (
+          <p className="cdash__empty">Belum ada sumber tercatat.</p>
+        )}
+      </section>
 
-      {content.length === 0 && settings.length === 0 && (
-        <p className="clik-dash__empty">
-          Belum ada modul yang bisa Anda akses. Hubungi Super Admin.
+      {a.ok && !a.hasData ? (
+        <p className="cdash__notice cdash__notice--calm">
+          Belum ada data karena situs belum dikunjungi. Angka akan muncul sendiri
+          begitu ada pengunjung.
         </p>
-      )}
+      ) : null}
     </div>
   )
 }

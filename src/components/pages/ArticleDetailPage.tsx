@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/layout/Container'
 import { RichText } from '@/components/ui/RichText'
-import { ShareBar } from '@/components/ui/ShareBar'
 import { ArticleCard } from '@/components/sections/Cards'
 import { getDictionary } from '@/i18n'
 import { href, detailHref } from '@/i18n/routes'
@@ -37,11 +36,9 @@ export async function ArticleDetailPage({
 
   const related = await getRelatedArticles(locale, article, 3)
   const base = site.websiteUrl.replace(/\/$/, '')
-  const shareUrl = `${base}${detailHref('newsroom', article.slug, locale)}`
   // The wide banner, when the article has one; otherwise the card cover.
   const bannerImage = imageUrl(article.banner) ? article.banner : article.cover
   const cover = imageUrl(bannerImage)
-  const shareName = dict.newsroom.share.replace(/:$/, '')
 
   return (
     <>
@@ -89,7 +86,6 @@ export async function ArticleDetailPage({
             ) : (
               <span />
             )}
-            <ShareBar url={shareUrl} title={article.title} label={dict.newsroom.share} />
           </div>
 
           <hr className={styles.divider} />
@@ -118,7 +114,6 @@ export async function ArticleDetailPage({
                   imageUrl={imageUrl(item.cover)}
                   imageAlt={imageAlt(item.cover)}
                   readMoreLabel={dict.common.readMore}
-                  shareLabel={shareName}
                 />
               ))}
             </div>

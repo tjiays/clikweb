@@ -5,73 +5,138 @@ import {
   imageField,
   localisedText,
   localisedTextarea,
-  richText,
   slugField,
   sortOrderField,
+  imageGuidance,
+  imageRule,
+  IMAGE_RULES,
+  authorField,
+  publishDateField,
 } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
 
-/** Laporan — managed by News Admin (confirmed decision 15). */
+/**
+ * Laporan — managed by News Admin (confirmed decision 15).
+ *
+ * Laid out like Articles: one writing tab holding the title, the summary and
+ * the editor, with everything else behind the other tabs or in the sidebar.
+ */
 export const Reports: CollectionConfig = contentCollection({
   slug: 'reports',
-  labels: { singular: 'Laporan', plural: 'Laporan' },
+  labels: { singular: bothLanguages('reports'), plural: bothLanguages('reports') },
   group: 'Report',
   owners: MODULE_OWNERS.laporan,
   preview: { id: '/laporan', en: '/en/reports' },
-  defaultColumns: ['title', 'type', 'year', 'approvalStatus'],
+  useAsTitle: 'titleId',
+  defaultColumns: ['titleId', 'type', 'publishDate', 'approvalStatus'],
   fields: [
+    /*
+     * One page, no tabs — the cover first, then the writing. It was split
+     * across Tulisan and Pengaturan, which meant the picture lived on a tab
+     * nobody opened while writing, and a report could be finished without
+     * anyone noticing it had none.
+     */
     {
-      name: 'type',
-      type: 'select',
-      required: true,
-      defaultValue: 'annual_report',
-      access: lockedForApprover,
-      options: [
-        { label: 'Laporan Tahunan', value: 'annual_report' },
-        { label: 'Laporan Perkembangan Usaha', value: 'business_development' },
+      ...imageField('cover', 'Gambar sampul'),
+      /*
+       * Only the Annual Report draws a 1300px hero; a Business Development
+       * report shows its cover on the 416px card and nothing wider, so it is
+       * held to the card's requirement instead.
+       */
+      validate: imageRule((data) =>
+        (data as { type?: string })?.type === 'business_development'
+          ? IMAGE_RULES.reportCoverBusiness
+          : IMAGE_RULES.reportCoverAnnual,
+      ),
+      admin: {
+        /*
+         * Quotes the annual report's target, which is the stricter of the
+         * two; a business development cover only fills a card and the check
+         * lets it through smaller. A label that asks for slightly more than
+         * the rule enforces never surprises anyone with a rejection.
+         */
+        description: imageGuidance(IMAGE_RULES.reportCoverAnnual),
+      },
+    } as Field,
+    {
+      type: 'row',
+      fields: [
+        {
+          name: 'titleId',
+          type: 'text',
+          label: 'Judul (Bahasa Indonesia)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
+        {
+          name: 'titleEn',
+          type: 'text',
+          label: 'Title (English)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
       ],
     },
-    localisedText('title', 'Judul', true),
-    slugField(),
     {
-      name: 'year',
-      type: 'number',
+      type: 'row',
+      fields: [
+        {
+          name: 'excerptId',
+          type: 'textarea',
+          label: 'Ringkasan (Bahasa Indonesia)',
+          access: lockedForApprover,
+          admin: { width: '50%', description: 'Satu atau dua kalimat, tampil di kartu laporan.' },
+        },
+        {
+          name: 'excerptEn',
+          type: 'textarea',
+          label: 'Summary (English)',
+          access: lockedForApprover,
+          admin: { width: '50%', description: 'One or two sentences, shown on the report card.' },
+        },
+      ],
+    },
+    {
+      name: 'bodyId',
+      type: 'richText',
+      label: 'Isi laporan (Bahasa Indonesia)',
       required: true,
       access: lockedForApprover,
-      admin: { position: 'sidebar' },
+      admin: {
+        description:
+          'Toolbar di atas editor: judul bagian, daftar, tautan, perataan, gambar dan tabel.',
+      },
     },
     {
-      // A name rather than a relationship, as on Newsroom articles.
-      name: 'author',
-      type: 'text',
-      label: 'Penulis',
+      name: 'bodyEn',
+      type: 'richText',
+      label: 'Report body (English)',
+      required: true,
       access: lockedForApprover,
-      admin: { description: 'Shown on the report card, left of the date.' },
+      admin: {
+        description: 'The same report in English. Use Auto-translate to draft it, then edit.',
+      },
     },
-    localisedTextarea('excerpt', 'Ringkasan'),
-    imageField('cover', 'Gambar sampul'),
-    richText('body', 'Isi laporan', true),
     {
       /*
-       * Financial statements under the body (Figma 709:3673: "Posisi
-       * Keuangan" and "Laporan Laba Rugi"). Kept as rows rather than rich
-       * text so figures stay aligned and editors cannot break the table.
+       * Superseded by tables written in the editor
+       * (migration 20260921_095500_report_tables_into_body). Kept, hidden,
+       * so the rows are still there if that migration is ever rolled back:
+       * ReportsPage falls back to them whenever a report's body has no table
+       * of its own. Nothing writes to it any more.
        */
       name: 'financialTables',
       type: 'array',
-      label: 'Tabel keuangan',
+      label: 'Tabel keuangan (lama)',
       access: lockedForApprover,
-      labels: { singular: 'Tabel', plural: 'Tabel' },
+      admin: { hidden: true },
       fields: [
-        {
-          ...localisedTextarea('intro', 'Teks di atas tabel (rata kiri)'),
-          admin: { description: 'e.g. "Laporan Keuangan Posisi Keuangan 31 Desember 2025 (terlampir)".' },
-        } as Field,
-        {
-          ...localisedText('title', 'Judul tabel (tengah, tebal)'),
-          admin: { description: 'e.g. "LAPORAN LABA RUGI". Leave empty for none.' },
-        } as Field,
-        localisedText('caption', 'Keterangan di bawah judul (tengah)'),
+        localisedTextarea('intro', 'Teks di atas tabel'),
+        localisedText('title', 'Judul tabel'),
+        localisedText('caption', 'Keterangan'),
         {
           name: 'rows',
           type: 'array',
@@ -104,11 +169,23 @@ export const Reports: CollectionConfig = contentCollection({
       ],
     },
     {
-      name: 'publishDate',
-      type: 'date',
+      name: 'type',
+      type: 'select',
+      label: 'Jenis laporan',
+      required: true,
+      defaultValue: 'annual_report',
       access: lockedForApprover,
       admin: { position: 'sidebar' },
+      options: [
+        { label: 'Laporan Tahunan', value: 'annual_report' },
+        { label: 'Laporan Perkembangan Usaha', value: 'business_development' },
+      ],
     },
+    slugField('titleId', false),
+    // A name rather than a relationship, as on Newsroom articles.
+    authorField('Penulis', null),
+    // Date only: reports are ordered by rank, so the clock added nothing.
+    publishDateField(false, null, { withTime: false }),
     sortOrderField,
   ],
 })

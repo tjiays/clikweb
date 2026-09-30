@@ -49,7 +49,6 @@ export async function MediaCoveragePage({
   const totalPages = Math.max(1, Math.ceil(all.length / PER_PAGE))
   const current = Math.min(Math.max(1, page), totalPages)
   const docs = all.slice((current - 1) * PER_PAGE, current * PER_PAGE)
-  const shareName = dict.newsroom.share.replace(/:$/, '')
 
   return (
     <>
@@ -93,7 +92,6 @@ export async function MediaCoveragePage({
                     imageUrl={imageUrl(item.cover)}
                     imageAlt={imageAlt(item.cover)}
                     readMoreLabel={dict.common.readMore}
-                    shareLabel={shareName}
                   />
                 ))}
               </div>

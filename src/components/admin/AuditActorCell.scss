@@ -1,0 +1,16 @@
+.clik-actor {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.clik-actor__email {
+  color: var(--clik-muted, #697077);
+  font-size: 0.8125rem;
+}
+
+/* Not a person: a seed script or a migration wrote this row. */
+.clik-actor__system {
+  color: var(--clik-muted, #697077);
+  font-style: italic;
+}

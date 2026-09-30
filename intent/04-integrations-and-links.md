@@ -1,5 +1,7 @@
 # 04 — Integrations, Contact Form, Translation and Links
 
+**Revised 28 September 2026.** Changed since the original: careers apply goes to JobStreet (§2), share buttons are removed (§3), translation works on side-by-side fields (§4), external links live in code (§5), and website analytics is new (§6). See the decision log in `00-README.md`.
+
 ## 1. Contact form (Hubungi Kami, `284:1397`)
 
 ### Fields (from Figma; all required unless noted)
@@ -27,7 +29,11 @@ Also store: submitted language, page URL, timestamp, IP address, user agent, con
 3. **Save** the submission in the database (visible in CMS → Data Masuk; kept permanently).
 4. **Send an email** to **sales@cbclik.com** containing all fields. Reply-To = the submitter's email.
 5. Show a success message on the page.
-6. If the email fails, the submission is still saved; log the error and retry.
+6. If the email fails, the submission is still saved; log the error.
+
+In the CMS each submission has a follow-up status, **Baru** (new) or **Ditindaklanjuti** (followed up), set by Sales Admin. Setting Ditindaklanjuti records who did it and when.
+
+**Mail on staging** is captured by Mailpit (`/mailpit/`) and never delivered. Real SMTP credentials are needed before launch (open item O8).
 
 ### Rate limits
 
@@ -42,20 +48,20 @@ Also store: submitted language, page URL, timestamp, IP address, user agent, con
 
 ## 2. Career applications
 
-- "Lamar" button (Karir list and Detail Lowongan) opens `mailto:talent@cbclik.com` with the subject pre-filled from the job's `email_subject_format` and job title.
+- **Revised:** "Lamar" (Karir list and Detail Lowongan) opens **CLIK's JobStreet company page** in a new tab: `https://id.jobstreet.com/id/companies/crif-lembaga-informasi-keuangan-168557222859016/jobs`. Each vacancy may carry its own link; left empty, it uses the company page. The company page was chosen over per-role links because the roles listed on JobStreet are not the ones on the site.
 - No application form or file upload on the website.
 - The "Tidak menemukan posisi yang sesuai?" note links to `mailto:talent@cbclik.com`.
+- This is a link only. Synchronising vacancies with JobStreet (BRD FR-038 – FR-040) is not built.
 
 ## 3. Share buttons
 
-- Detail Berita: X, Facebook, WhatsApp, LinkedIn — use each platform's standard share URL with the current page URL and title.
-- Article/report cards and Detail Lowongan ("bagikan"): use the Web Share API where available, otherwise copy link.
+**Removed.** The site has no share buttons — not on articles, cards or vacancies. (Originally: X, Facebook, WhatsApp and LinkedIn on Detail Berita, and the Web Share API elsewhere.)
 
 ## 4. Translation
 
 - Indonesian is the source language. English is produced by **AI translation** and reviewed manually by the team afterwards.
 - Website UI strings: keep in locale files (`id`, `en`); generate `en` by AI translation.
-- CMS content: "Auto-translate" action per item (see `03`).
+- CMS content: each item is written in both languages side by side. The **Auto-translate** button (news and reports only) drafts empty English fields from the Indonesian, using Claude through `ANTHROPIC_API_KEY`. The glossary and do-not-translate list below are built into it. See `03` §4.
 - Glossary (keep consistent):
 
 | Indonesian | English |
@@ -78,25 +84,32 @@ Also store: submitted language, page URL, timestamp, IP address, user agent, con
 
 ## 5. External links
 
-None of these are set in the Figma prototype. The AI coder finds the official URLs, stores them in CMS (Site Settings / Partner Logos), opens them in a new tab, and marks each one **TO VERIFY** until the team confirms.
+**Revised:** none of these are set in the Figma prototype. The AI coder found the official URLs and stored them **in code** (`src/content/site.ts`, `src/content/partners.ts`), not in the CMS. Each is marked **TO VERIFY** until the team confirms it. The live register is `docs/external-links.md`.
 
 | Where | Link | Value | Status |
 |---|---|---|---|
 | Footer | Website | https://www.cbclik.com | TO VERIFY |
 | Footer, Contact | Email | mailto:info@cbclik.com | Confirmed (from design) |
 | Footer, Contact | Phone | tel:+622180604228 | Confirmed (from design) |
-| Contact | Map | Google Maps — Menara Dea Tower 2, Jl. Mega Kuningan Barat Blok E4.3 No 1-2, Kuningan Timur, Setiabudi, Jakarta 12950 | TO VERIFY |
-| Footer | Social icons (3 shown in design — identify platforms) | CLIK official accounts | TO VERIFY |
-| Footer, Home trust bar | OJK logo | Official OJK website | TO VERIFY |
-| Footer | AFPI logo | Official AFPI website | TO VERIFY |
-| Footer | BIIA logo | Official BIIA website | TO VERIFY |
-| Footer | Fintech Indonesia (AFTECH) logo | Official AFTECH website | TO VERIFY |
-| Footer | APPI logo | Official APPI website | TO VERIFY |
-| Home trust bar, About Us "Tentang CRIF → Pelajari selengkapnya" | CRIF Global | Official CRIF website | TO VERIFY |
-| Newsroom, Liputan Media | Media outlet logos / coverage cards | Per item, set in CMS | Sample data |
-| About Us | "Kenali CLIK Lebih Dekat" video | Video URL, set in CMS | TODO |
-| Cara mendapat laporan kredit | "Formulir Permintaan Data" | File upload in CMS | TODO |
-| Karir, Detail Lowongan | Lamar | mailto:talent@cbclik.com | Confirmed |
+| Contact | Map | Google Maps embed — Menara Dea Tower 2, Mega Kuningan | Implemented, TO VERIFY |
+| Footer | Social icons | WhatsApp, Instagram, LinkedIn (platforms confirmed from the Figma icons) | URLs TO VERIFY |
+| Footer | OJK licence | NO. KEP-179/D.03/2019 | TO VERIFY |
+| Footer, Home trust bar | OJK, AFPI, BIIA, AFTECH, APPI logos | Left blank on purpose until confirmed | TODO |
+| Home trust bar, About Us "Tentang CRIF" | CRIF Global | https://www.crif.com | TO VERIFY |
+| Newsroom, Liputan Media | Media outlets and coverage | In code, `src/content/newsroom.ts` | Sample data |
+| About Us | "Kenali CLIK Lebih Dekat" video | Not supplied | TODO |
+| Cara mendapat laporan kredit | "Formulir Permintaan Data" | File not supplied | TODO |
+| Karir, Detail Lowongan | Lamar | JobStreet company page (§2) | Checked live 23 Sep |
+| Karir | CV note | mailto:talent@cbclik.com | Confirmed |
 | Contact form | Recipient | sales@cbclik.com | Confirmed |
 
-Keep a single `external-links` checklist (e.g. in the README of the code repo or an admin page) listing every link and its status.
+## 6. Website analytics
+
+**New.** Measured with **Umami**, self-hosted on the same server, so visitor data never leaves CLIK's infrastructure. Chosen over Google Analytics because it is free, keeps data at home (which matters for a credit bureau), sets no cookies, and needs no consent banner.
+
+- The tracking script loads on the **public site only**, never on the CMS or on previews.
+- It records page views, visitors, referrers and real-user page speed (LCP, INP, CLS, FCP, TTFB).
+- The CMS dashboard reads it server-side (see `03` §7). Umami's own screens are at `/analytics`.
+- **Known limitations:** time on page is the time until the visitor opens their next page, so a tab left open counts as reading. (Stored times were 7 hours early because PostgreSQL runs on Jakarta time; fixed 29 September, history corrected.) Staging and production would share one analytics site unless split (open item O9).
+
+Details: `docs/analytics.md`.

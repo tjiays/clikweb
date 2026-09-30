@@ -213,7 +213,7 @@ export async function CreditScoringPage({ locale }: { locale: Locale }) {
               <p className={styles.offerSubtitle}>{t(category.offerSubtitle, locale)}</p>
             )}
             <ProductAccordion
-              rows={toAccordionRows(products, duration)}
+              rows={toAccordionRows(products, locale, duration)}
               labels={accordionLabels(locale)}
               gap={15}
             />

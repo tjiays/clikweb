@@ -14,9 +14,22 @@
  */
 
 :root {
+  /*
+   * The website's own tokens, from src/styles/tokens.css, so the CMS and the
+   * site it edits are the same brand rather than two near-misses. These are
+   * the Figma values in intent/01-design-system.md; the deck brand spec is a
+   * different system with a different navy, orange and typeface, and applies
+   * to decks, not to this.
+   */
   --clik-orange: #ff7d00;
   --clik-orange-light: #ffbb7b;
   --clik-navy: #003a79;
+  --clik-page: #fafafa;
+  --clik-surface: #ffffff;
+  --clik-tint: #f1faff;
+  --clik-border: #dbe4f0;
+  --clik-muted: #697077;
+  --clik-radius: 10px;
 
   --font-body: 'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-serif: var(--font-body);
@@ -26,19 +39,26 @@ body {
   font-family: var(--font-body);
 }
 
-/* ---- Actions ---- */
-.btn--style-primary .btn__content,
+/* ---- Actions ----
+   Set Payload's own variables rather than background-color directly. Publish
+   is a split button — the label and the caret that opens "publish in this
+   language" are two elements — and the caret paints itself from --bg-color.
+   Overriding the property alone left the label orange and the caret on
+   Payload's default dark, which is why the button had two colours. */
 .btn--style-primary {
-  background-color: var(--clik-orange);
-  border-color: var(--clik-orange);
-  color: #fff;
+  --bg-color: var(--clik-orange);
+  --color: #fff;
+  --hover-bg: var(--clik-orange-light);
+  --hover-color: var(--clik-navy);
+  --btn-border: 1px solid var(--clik-orange);
+  --hover-btn-border: 1px solid var(--clik-orange-light);
 }
 
-.btn--style-primary:hover,
-.btn--style-primary:focus-visible {
-  background-color: var(--clik-orange-light);
-  border-color: var(--clik-orange-light);
-  color: var(--clik-navy);
+/* The caret's divider is drawn in the page background, which cut a pale notch
+   through the orange. A faint white keeps the two halves one button while
+   leaving the caret findable. */
+.btn--withPopup .popup-button {
+  border-left-color: rgba(255, 255, 255, 0.4);
 }
 
 .btn--style-secondary {
@@ -111,4 +131,277 @@ body {
 .pill--style-warning {
   background-color: var(--clik-orange-light);
   color: var(--clik-navy);
+}
+
+/* ---- The content editor ----
+   Articles and reports are written in one box, so it has to read as a page
+   rather than as a form field. The type below mirrors the website's article
+   styles exactly (src/styles/tokens.css and RichText.module.css), so what an
+   editor types looks like what publishes: 16px black body on a 1.364 line,
+   24px navy section headings, orange underlined links.
+
+   The literal mirror is the Live Preview pane beside the form; this is so
+   the writing surface itself does not look like a different document. */
+.rich-text-lexical {
+  .editor-container {
+    min-height: 460px;
+  }
+
+  /* The fixed toolbar stays in reach while scrolling through a long article. */
+  .fixed-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-radius: 4px 4px 0 0;
+    background: var(--theme-elevation-50);
+  }
+
+  .ContentEditable__root {
+    /* 992px is the article body column on the website; the same measure here
+       means line breaks fall in roughly the same places. */
+    max-width: 992px;
+    padding: 24px 28px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.364;
+    color: #000;
+
+    p {
+      margin: 0 0 21.824px;
+    }
+
+    h2, h3 {
+      font-size: 24px;
+      line-height: 32.736px;
+    }
+
+    h4 {
+      font-size: 20px;
+    }
+
+    h2, h3, h4 {
+      color: var(--clik-navy);
+      font-weight: 700;
+      margin: 21.824px 0 0;
+    }
+
+    ul, ol {
+      margin: 0 0 21.824px;
+      padding-left: 24px;
+    }
+
+    ul { list-style: disc; }
+    ol { list-style: decimal; }
+
+    a {
+      color: var(--clik-orange);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    blockquote {
+      margin: 1.5rem 0;
+      padding-left: 1.25rem;
+      border-left: 3px solid var(--clik-orange);
+      color: #697077;
+    }
+
+    img {
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Tables built with the toolbar, in the website's border colour. */
+    table {
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      border: 1px solid #dbe4f0;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1faff;
+      color: var(--clik-navy);
+      font-weight: 700;
+    }
+  }
+}
+
+/* Tab bar above the editor: make the writing tab the obvious place to be. */
+.tabs-field__tabs {
+  border-bottom: 1px solid var(--theme-elevation-150);
+}
+
+.tabs-field__tab-button--active {
+  color: var(--clik-navy);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--clik-orange);
+}
+
+/* ---- Live Preview ----
+   The pane that shows the real page beside the form. Give the toggle the
+   brand accent so it reads as the main way to check work before submitting. */
+.live-preview-toggler {
+  color: var(--clik-navy);
+  font-weight: 700;
+}
+
+.live-preview-window__wrapper {
+  background: #fafafa;
+}
+
+/* ---- The Approver's screen ----
+   They open an item to read it and choose Setujui or Tolak. The tab strip
+   above the document offers Edit and Versions, neither of which is a thing
+   they do, so it goes. The role comes from components/admin/Nav.tsx. */
+body[data-role='approver'] .doc-tabs {
+  display: none;
+}
+
+/* ---- Language switcher ----
+   News, reports and products keep both languages on the page as visible
+   pairs, so the switcher has nothing to switch there. Payload draws it
+   whenever localization exists anywhere in the project, so it is hidden per
+   collection instead. Job openings moved to pairs too on 23 September; only
+   media alt text still uses it. */
+body[data-collection='articles'] .localizer,
+body[data-collection='reports'] .localizer,
+body[data-collection='product-items'] .localizer,
+body[data-collection='job-openings'] .localizer {
+  display: none;
+}
+
+/* ---- Surfaces ----
+   Payload's own greys give way to the site's: the page ground, the card
+   white and the pale blue rule that separates them. Only the colours the
+   brand actually defines are replaced; the rest of Payload's scale is left
+   alone, because it carries text contrast that is not ours to re-balance. */
+body {
+  --theme-bg: var(--clik-page);
+  --theme-border-color: var(--clik-border);
+}
+
+.template-default__wrap,
+.collection-list,
+.document-fields {
+  background-color: var(--clik-page);
+}
+
+/* Anything Payload draws as a panel: the list table, the field column, the
+   sidebar box on a document. */
+.table,
+.doc-fields__sidebar-fields,
+.collection-list__wrap .list-controls {
+  background-color: var(--clik-surface);
+  border: 1px solid var(--clik-border);
+  border-radius: var(--clik-radius);
+}
+
+/* ---- Fields ----
+   A navy label over a white field on the site's border blue, and the focus
+   ring in orange, which is the one place the accent belongs. */
+.field-label {
+  color: var(--clik-navy);
+  font-weight: 700;
+}
+
+.field-type input:not([type='checkbox']):not([type='radio']),
+.field-type textarea,
+.field-type .rs__control {
+  border-color: var(--clik-border);
+  border-radius: 6px;
+}
+
+.field-type input:focus,
+.field-type textarea:focus,
+.field-type .rs__control--is-focused {
+  border-color: var(--clik-orange);
+  box-shadow: 0 0 0 2px rgba(255, 125, 0, 0.18);
+  outline: none;
+}
+
+.field-description {
+  color: var(--clik-muted);
+}
+
+/* ---- Tables ----
+   The header is the site's own: pale blue with navy text, as
+   RichText.module.css sets it. A solid navy bar was my invention and far too
+   heavy for a row of column names — it read as a title rather than a label,
+   and there is a lot of it across a list of twenty-nine products. */
+.table thead tr {
+  background-color: var(--clik-tint);
+}
+
+.table thead th,
+.table thead th button {
+  color: var(--clik-navy);
+  font-weight: 700;
+}
+
+.table thead th {
+  border-bottom: 1px solid var(--clik-border);
+}
+
+.table tbody td {
+  border-bottom: 1px solid var(--clik-border);
+}
+
+/* The header now holds the tint, so the hover takes the page ground instead
+   and the two stay distinguishable. */
+.table tbody tr:hover {
+  background-color: var(--clik-page);
+}
+
+/* ---- Links ---- */
+.doc-controls a,
+.collection-list a:not(.btn):not(.pill) {
+  color: var(--clik-navy);
+}
+
+.doc-controls a:hover,
+.collection-list a:not(.btn):not(.pill):hover {
+  color: var(--clik-orange);
+}
+
+/* ---- Headings ---- */
+.doc-header__title,
+.collection-list__header h1,
+.list-header h1 {
+  color: var(--clik-navy);
+}
+
+/* ---- Pills ----
+   The badge styling from the website's tokens, so a status here looks like a
+   status there: navy for the settled state, orange outline for the pending
+   one. */
+.pill {
+  border-radius: 999px;
+}
+
+/* ---- Every list ----
+   No Columns control anywhere. Each collection already declares the columns
+   worth showing in its defaultColumns, and the chooser only lets someone hide
+   one — including the delete button on the user list. The choice is remembered
+   per person, so a column switched off once stays off and looks like a bug. */
+.list-controls__toggle-columns {
+  display: none;
+}
+
+/* ---- "Revert to published" ----
+   Payload shows it whenever an item has a pending edit. Only a Super Admin can
+   use it as intended — "cancel this pending edit". For an editor the server
+   refuses it (it would amount to approving their own work), and for the
+   Approver, whose content fields are locked, it would publish the pending edit
+   rather than revert it. So it is shown to Super Admin alone. The role is
+   stamped on <body> by the sidebar (src/components/admin/Nav.tsx). */
+body:not([data-role='super_admin']) #action-revert-to-published {
+  display: none;
 }

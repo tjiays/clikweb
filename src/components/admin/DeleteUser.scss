@@ -1,0 +1,71 @@
+/* Deleting an account: visible, and deliberately two steps. */
+.clik-del {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--clik-border);
+}
+
+.clik-del__heading {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--theme-elevation-600);
+  font-size: 0.8rem;
+}
+
+.clik-del__warn {
+  margin: 0 0 8px;
+  color: var(--theme-elevation-700);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.clik-del__error {
+  margin: 0 0 8px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  background: #fde4e4;
+  color: #8c1d1d;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.clik-del__start,
+.clik-del__go,
+.clik-del__cancel {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Outlined until it is asked for, solid once it is the actual action. */
+.clik-del__start {
+  border: 1px solid #8c1d1d;
+  background: none;
+  color: #8c1d1d;
+}
+
+.clik-del__go {
+  margin-bottom: 6px;
+  border: none;
+  background: #8c1d1d;
+  color: #fff;
+}
+
+.clik-del__cancel {
+  border: 1px solid var(--theme-elevation-200);
+  background: none;
+  color: var(--theme-elevation-700);
+}
+
+.clik-del__self {
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--clik-border);
+  color: var(--theme-elevation-600);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}

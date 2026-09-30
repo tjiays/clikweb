@@ -72,7 +72,6 @@ export async function NewsroomPage({ locale, page }: { locale: Locale; page: num
                     imageUrl={imageUrl(article.cover)}
                     imageAlt={imageAlt(article.cover)}
                     readMoreLabel={dict.common.readMore}
-                    shareLabel={dict.newsroom.share.replace(/:$/, '')}
                   />
                 ))}
               </div>

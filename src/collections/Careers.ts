@@ -1,49 +1,103 @@
 import type { CollectionConfig } from 'payload'
 import { contentCollection } from './factory'
 import { MODULE_OWNERS } from '@/access'
-import { localisedText, richText, slugField, sortOrderField } from '@/fields/common'
+import { slugField, sortOrderField } from '@/fields/common'
 import { lockedForApprover } from '@/fields/approval'
+import { bothLanguages } from '@/i18n/admin'
+import { jobCategories } from '@/content/careers'
 
 const owners = MODULE_OWNERS.karir
 
 export const JobOpenings: CollectionConfig = contentCollection({
   slug: 'job-openings',
-  labels: { singular: 'Lowongan Pekerjaan', plural: 'Lowongan Pekerjaan' },
+  labels: { singular: bothLanguages('careers'), plural: bothLanguages('careers') },
   group: 'Karir',
   owners,
   preview: { id: '/karir', en: '/en/careers' },
-  defaultColumns: ['title', 'category', 'isOpen', 'approvalStatus'],
+  // The sidebar is down to what a job actually needs, so the two language
+  // helpers would be most of what is left on it.
+  autoTranslate: false,
+  languageStatus: false,
+  useAsTitle: 'titleId',
+  defaultColumns: ['titleId', 'category', 'isOpen', 'approvalStatus'],
   fields: [
-    localisedText('title', 'Nama posisi', true),
-    slugField(),
     {
-      // The category list is fixed and lives in src/content/careers.ts, so it
-      // is a select rather than its own collection.
+      type: 'row',
+      fields: [
+        {
+          name: 'titleId',
+          type: 'text',
+          label: 'Nama posisi (Bahasa Indonesia)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
+        {
+          name: 'titleEn',
+          type: 'text',
+          label: 'Position (English)',
+          required: true,
+          access: lockedForApprover,
+          admin: { width: '50%' },
+        },
+      ],
+    },
+    slugField('titleId', false),
+    {
+      /*
+       * Built from jobCategories in src/content/careers.ts, which is also
+       * what the site reads to label a job card. Two hand-kept lists had
+       * already started to disagree on wording.
+       */
       name: 'category',
       type: 'select',
       label: 'Kategori',
       required: true,
       access: lockedForApprover,
-      options: [
-        { label: 'Information Technology', value: 'information-technology' },
-        { label: 'Analysis & Reporting', value: 'analysis-reporting' },
-        { label: 'Sales & Business Development', value: 'sales-business-development' },
-      ],
+      options: jobCategories.map((c) => ({ label: c.name.en, value: c.slug })),
     },
-    richText('responsibilities', 'Key Responsibilities'),
-    richText('minimumQualifications', 'Minimum Qualifications'),
-    richText('education', 'Education'),
     {
-      name: 'applyEmail',
-      type: 'text',
-      defaultValue: 'talent@cbclik.com',
+      name: 'responsibilitiesId',
+      type: 'richText',
+      label: 'Tanggung jawab (Bahasa Indonesia)',
       access: lockedForApprover,
-      admin: { description: 'The "Lamar" button opens an email to this address.' },
     },
-    localisedText(
-      'emailSubjectFormat',
-      'Format subjek email',
-    ),
+    {
+      name: 'responsibilitiesEn',
+      type: 'richText',
+      label: 'Key Responsibilities (English)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'minimumQualificationsId',
+      type: 'richText',
+      label: 'Persyaratan (Bahasa Indonesia)',
+      access: lockedForApprover,
+    },
+    {
+      name: 'minimumQualificationsEn',
+      type: 'richText',
+      label: 'Minimum Qualifications (English)',
+      access: lockedForApprover,
+    },
+    {
+      /*
+       * The Lamar button sends applicants here instead of opening a mail
+       * client. One company page rather than a link per role: the roles
+       * listed on JobStreet are not the ones seeded here, so a deep link
+       * per job would point at nothing.
+       */
+      name: 'applyUrl',
+      type: 'text',
+      label: 'Tautan lamaran (JobStreet)',
+      access: lockedForApprover,
+      admin: {
+        description: {
+          en: 'Where the Apply button goes. Leave empty to use the careers page default.',
+          id: 'Tujuan tombol Lamar. Kosongkan untuk memakai tautan bawaan.',
+        },
+      },
+    },
     {
       name: 'isOpen',
       type: 'checkbox',
@@ -54,12 +108,6 @@ export const JobOpenings: CollectionConfig = contentCollection({
         position: 'sidebar',
         description: 'Only open positions are listed on the website.',
       },
-    },
-    {
-      name: 'postedDate',
-      type: 'date',
-      access: lockedForApprover,
-      admin: { position: 'sidebar' },
     },
     sortOrderField,
   ],

@@ -1,6 +1,5 @@
 import type { SVGProps } from 'react'
 import { Button } from '@/components/ui/Button'
-import { JobShare } from './JobShare'
 import styles from './JobRow.module.css'
 
 /** Briefcase before the job category (Figma 582:3263, 17x14, #000 @ 50%). */
@@ -30,8 +29,6 @@ export function JobRow({
   applyMailto,
   applyLabel,
   detailLabel,
-  shareLabel,
-  copiedLabel,
 }: {
   title: string
   category?: string | null
@@ -39,14 +36,11 @@ export function JobRow({
   applyMailto: string
   applyLabel: string
   detailLabel: string
-  shareLabel: string
-  copiedLabel: string
 }) {
   return (
     <article className={styles.card}>
       <div className={styles.head}>
         <h3 className={styles.title}>{title}</h3>
-        <JobShare url={detailHref} title={title} label={shareLabel} copiedLabel={copiedLabel} />
       </div>
       {category && (
         <p className={styles.category}>

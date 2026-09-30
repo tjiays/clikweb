@@ -1,6 +1,8 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { contentEditor } from './fields/editor'
+import { MAX_UPLOAD_MB } from './fields/common'
+import { adminI18n } from './i18n/admin'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -17,6 +19,7 @@ import {
   Media,
 } from './collections'
 import { autoTranslateEndpoint } from './endpoints/autoTranslate'
+import { verificationLinkEndpoint } from './endpoints/verificationLink'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -51,6 +54,9 @@ export default buildConfig({
 
   // Indonesian is the source language; English is produced by translation
   // and reviewed by the team. Every localised field carries both.
+  // The admin panel in Indonesian or English, per user. See src/i18n/admin.ts.
+  i18n: adminI18n,
+
   localization: {
     locales: [
       { label: 'Bahasa Indonesia', code: 'id' },
@@ -60,6 +66,18 @@ export default buildConfig({
     fallback: true,
   },
 
+  /*
+   * Document locking is off for every collection. Before a save, Payload's
+   * lock check reads the locked-documents table *outside* the save's
+   * transaction (payload.db.find without req, still so in 3.90.2), so it
+   * needs a second pooled connection while the save holds its first. Twenty
+   * saves at once took all ten connections, each waiting for an eleventh, and
+   * every request on the site — the public pages too — hung until a restart.
+   *
+   * What goes is the "someone else is editing this" notice. The approval
+   * workflow already locks an item in review to everyone but its author,
+   * which is the conflict that matters here.
+   */
   collections: [
     // Newsroom
     Articles,
@@ -76,15 +94,34 @@ export default buildConfig({
     Users,
     // Shared — needed for article, report and product images
     Media,
-  ],
-  editor: lexicalEditor(),
+  ].map((collection) => ({ ...collection, lockDocuments: false as const })),
+  // One editor everywhere: fixed toolbar, headings, alignment, lists,
+  // links, inline images and tables. See src/fields/editor.ts.
+  editor: contentEditor,
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
+  /*
+   * The upload ceiling, from MAX_UPLOAD_MB. Enforced here at the parser so an oversized file is
+   * refused before anything is written to disk; Media adds the readable
+   * message. nginx allows 25M, so the limit an editor meets is this one.
+   */
+  upload: {
+    limits: { fileSize: MAX_UPLOAD_MB * 1024 * 1024 },
+    abortOnLimit: true,
+    responseOnLimit: `Ukuran file melebihi ${MAX_UPLOAD_MB}MB. Perkecil gambar lalu unggah lagi.`,
+  },
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      /*
+       * A query that cannot get a connection within 10 seconds fails instead
+       * of waiting for ever. If anything again holds a connection while
+       * asking for another, one request errors and releases what it held;
+       * without this, the whole site stopped answering and stayed stopped.
+       */
+      connectionTimeoutMillis: 10_000,
     },
     // Schema changes go through committed migrations, never an implicit dev
     // push. A stray push leaves a "dev" marker that makes `payload migrate`
@@ -109,7 +146,7 @@ export default buildConfig({
     },
   }),
 
-  endpoints: [autoTranslateEndpoint],
+  endpoints: [autoTranslateEndpoint, verificationLinkEndpoint],
 
   sharp,
   plugins: [],

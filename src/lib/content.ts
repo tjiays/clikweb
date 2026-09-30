@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { draftMode } from 'next/headers'
 import type { Locale } from '@/i18n/config'
+import { publicWhere, startOfTomorrowInJakarta } from './schedule'
 
 /**
  * Reads the content that is still in the CMS: articles, reports, job
@@ -39,6 +40,10 @@ export type Paged<T> = {
   totalDocs: number
 }
 
+// The publish-date rule lives in ./schedule so the collections' access rules
+// can share it; see the note there.
+export { publicWhere } from './schedule'
+
 async function listPublished<T>(
   collection: string,
   options: {
@@ -58,7 +63,7 @@ async function listPublished<T>(
     draft: await isPreview(),
     where: ((await isPreview())
       ? (options.where ?? {})
-      : { _status: { equals: 'published' }, ...(options.where ?? {}) }) as never,
+      : publicWhere(collection, options.where ?? {})) as never,
   })
   return docs as T[]
 }
@@ -80,9 +85,7 @@ async function listPaged<T>(
     sort,
     depth: 2,
     draft: await isPreview(),
-    where: ((await isPreview())
-      ? where
-      : { _status: { equals: 'published' }, ...where }) as never,
+    where: ((await isPreview()) ? where : publicWhere(collection, where)) as never,
   })
   return {
     docs: result.docs as T[],
@@ -107,7 +110,7 @@ async function findOne<T>(
     draft: await isPreview(),
     where: ((await isPreview())
       ? { [field]: { equals: value } }
-      : { [field]: { equals: value }, _status: { equals: 'published' } }) as never,
+      : publicWhere(collection, { [field]: { equals: value } })) as never,
   })
   return (docs[0] as T) ?? null
 }
@@ -115,44 +118,78 @@ async function findOne<T>(
 /* ---- Newsroom ---- */
 
 /** Articles marked "hide from list" keep their page but stay off the cards. */
-const listedArticles = {
-  or: [{ hideFromList: { equals: false } }, { hideFromList: { exists: false } }],
+const forLocale = <T extends Record<string, any>>(doc: T | null, locale: Locale): T | null => {
+  if (!doc) return null
+  const L = locale === 'en' ? 'En' : 'Id'
+  const out: Record<string, any> = { ...doc }
+  let paired = false
+
+  /*
+   * Every field kept as a visible pair in the CMS — titleId beside titleEn —
+   * is flattened to the language being served, so the pages read doc.title
+   * and never have to know. A pair is only a pair when both halves exist,
+   * which keeps an ordinary field ending in "Id" from being mistaken for one.
+   *
+   * Indonesian is the fallback: better a page in the wrong language than an
+   * empty one, in the window before something is translated. Approval refuses
+   * a half-translated item, so anything published has both.
+   */
+  for (const key of Object.keys(doc)) {
+    if (!key.endsWith('Id')) continue
+    const base = key.slice(0, -2)
+    if (!base || !(`${base}En` in doc)) continue
+    paired = true
+    out[base] = doc[`${base}${L}`] ?? doc[`${base}Id`] ?? null
+  }
+
+  if (!paired) return doc
+
+  if ('seoTitle' in out || 'seoDescription' in out) {
+    out.seo = { title: out.seoTitle ?? '', description: out.seoDescription ?? '' }
+  }
+
+  // Related articles arrive as whole documents and need the same treatment.
+  if (Array.isArray(doc.relatedArticles)) {
+    out.relatedArticles = doc.relatedArticles.map((a: any) => forLocale(a, locale))
+  }
+
+  return out as T
 }
+
+
+/*
+ * Every published article is listed. There used to be a hideFromList flag
+ * keeping some off the cards while they sat in Featured News; that is no
+ * longer a choice anyone makes, so the filter goes with it.
+ */
 
 /** Same day: the later time comes first, so the order is always the same. */
 const NEWEST_FIRST = ['-publishDate', '-id']
 
-export const getLatestArticles = (locale: Locale, limit = 3) =>
-  listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST, where: listedArticles })
+export const getLatestArticles = async (locale: Locale, limit = 3) =>
+  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST }))
+    .map((doc) => forLocale(doc, locale))
 
-export const getArticlesPage = (locale: Locale, page = 1) =>
-  listPaged<any>('articles', locale, page, 6, NEWEST_FIRST, listedArticles)
-
-/**
- * Featured News, in the order the editors numbered them. An article may hold
- * more than one place (Figma 1783:10696 lists one twice). Featured articles
- * without a number follow, newest first.
- */
-export const getFeaturedArticles = async (locale: Locale, limit = 8) => {
-  const articles = await listPublished<any>('articles', {
-    locale,
-    limit: 100,
-    sort: NEWEST_FIRST,
-    where: { isFeatured: { equals: true } },
-  })
-  const placed: { place: number; article: any }[] = []
-  const rest: any[] = []
-  for (const article of articles) {
-    const places = (article.featuredPositions ?? []).filter((n: unknown) => typeof n === 'number')
-    if (places.length === 0) rest.push(article)
-    for (const place of places) placed.push({ place, article })
-  }
-  placed.sort((a, b) => a.place - b.place)
-  return [...placed.map((p) => p.article), ...rest].slice(0, limit)
+export const getArticlesPage = async (locale: Locale, page = 1) => {
+  const result = await listPaged<any>('articles', locale, page, 6, NEWEST_FIRST)
+  return { ...result, docs: result.docs.map((doc) => forLocale(doc, locale)) }
 }
 
-export const getArticleBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('articles', 'slug', slug, locale)
+/**
+ * Featured News: simply the newest articles.
+ *
+ * It used to be a hand-ordered list — a checkbox to promote an article and a
+ * number to place it. Nobody has to remember either now: whatever was
+ * published last is at the top here and at the top of the Newsroom cards,
+ * which is what an editor expects after pressing save.
+ */
+export const getFeaturedArticles = async (locale: Locale, limit = 8) =>
+  (await listPublished<any>('articles', { locale, limit, sort: NEWEST_FIRST })).map((a) =>
+    forLocale(a, locale),
+  )
+
+export const getArticleBySlug = async (locale: Locale, slug: string) =>
+  forLocale(await findOne<any>('articles', 'slug', slug, locale), locale)
 
 export const getArticlesBySlugs = async (locale: Locale, slugs: string[]) => {
   if (slugs.length === 0) return []
@@ -162,7 +199,10 @@ export const getArticlesBySlugs = async (locale: Locale, slugs: string[]) => {
     where: { slug: { in: slugs } },
     sort: NEWEST_FIRST,
   })
-  return slugs.map((slug) => docs.find((d) => d.slug === slug)).filter(Boolean)
+  return slugs
+    .map((slug) => docs.find((d) => d.slug === slug))
+    .filter(Boolean)
+    .map((doc) => forLocale(doc, locale))
 }
 
 /**
@@ -174,33 +214,61 @@ export const getRelatedArticles = async (
   article: { id: string | number; relatedArticles?: unknown },
   limit = 3,
 ) => {
+  // These arrive whole from the relationship rather than through a query, so
+  // they miss publicWhere and have to be held to the same rule by hand.
+  const live = startOfTomorrowInJakarta()
   const picked = (Array.isArray(article.relatedArticles) ? article.relatedArticles : []).filter(
-    (a): a is { id: number; _status?: string } =>
-      Boolean(a) && typeof a === 'object' && (a as { _status?: string })._status === 'published',
+    (a): a is { id: number; _status?: string; publishDate?: string } => {
+      if (!a || typeof a !== 'object') return false
+      const doc = a as { _status?: string; publishDate?: string }
+      if (doc._status !== 'published') return false
+      return !doc.publishDate || doc.publishDate < live
+    },
   )
-  if (picked.length > 0) return picked.slice(0, limit)
+  if (picked.length > 0) return picked.slice(0, limit).map((a) => forLocale(a, locale))
   const articles = await listPublished<any>('articles', {
     locale,
     limit: limit + 1,
     sort: NEWEST_FIRST,
-    where: listedArticles,
   })
-  return articles.filter((a) => a.id !== article.id).slice(0, limit)
+  return articles
+    .filter((a) => a.id !== article.id)
+    .slice(0, limit)
+    .map((a) => forLocale(a, locale))
 }
 
 /* ---- Report ---- */
-export const getReportsPage = (locale: Locale, page = 1) =>
-  listPaged<any>('reports', locale, page, 6, 'sortOrder')
+/*
+ * Reports keep both languages side by side in the CMS rather than behind the
+ * locale switcher, so an editor can see that one of them is empty. That means
+ * titleId/titleEn rather than one localised title, and the pages should not
+ * have to care: this flattens the pair down to the language being served, so
+ * ReportsPage still reads report.title, report.excerpt and report.body.
+ */
 
-export const getReportBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('reports', 'slug', slug, locale)
+
+/*
+ * Urutan first, then newest. Every report defaults to rank 0, so in practice
+ * the list is newest-first on its own and a new report lands at the top
+ * without anyone renumbering the ones already there. A lower rank pins a
+ * report above that block.
+ */
+export const getReportsPage = async (locale: Locale, page = 1) => {
+  const result = await listPaged<any>('reports', locale, page, 6, ['sortOrder', '-createdAt'])
+  return { ...result, docs: result.docs.map((doc) => forLocale(doc, locale)) }
+}
+
+export const getReportBySlug = async (locale: Locale, slug: string) =>
+  forLocale(await findOne<any>('reports', 'slug', slug, locale), locale)
 
 /* ---- Karir ---- */
 export const getOpenJobs = (locale: Locale) =>
-  listPublished<any>('job-openings', { locale, where: { isOpen: { equals: true } } })
+  listPublished<any>('job-openings', { locale, where: { isOpen: { equals: true } } }).then((docs) =>
+    docs.map((doc) => forLocale(doc, locale)),
+  )
 
 export const getJobBySlug = (locale: Locale, slug: string) =>
-  findOne<any>('job-openings', 'slug', slug, locale)
+  findOne<any>('job-openings', 'slug', slug, locale).then((doc) => forLocale(doc, locale))
 
 /* ---- Product ---- */
 export const getProductItems = async (locale: Locale, categorySlug?: string) => {

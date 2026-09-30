@@ -73,9 +73,38 @@ export async function checkRateLimit(
   return { allowed: true }
 }
 
-/** The visitor's address, taken from the proxy headers nginx sets. */
+/**
+ * The visitor's address.
+ *
+ * X-Real-IP first: nginx sets it to the connecting address and replaces
+ * whatever the visitor sent, so it cannot be forged. X-Forwarded-For is only
+ * a fallback, and then its *last* entry — the one nginx appended. Its first
+ * entry is whatever the visitor chose to write, and trusting it let one
+ * machine claim a new address per submission and walk past the hourly limit.
+ */
 export function clientIp(headers: Headers): string | null {
+  const real = headers.get('x-real-ip')?.trim()
+  if (real) return real
   const forwarded = headers.get('x-forwarded-for')
-  if (forwarded) return forwarded.split(',')[0]?.trim() ?? null
-  return headers.get('x-real-ip')
+  if (forwarded) return forwarded.split(',').pop()?.trim() || null
+  return null
+}
+
+/*
+ * One submission at a time between the limit check and the insert.
+ *
+ * Checking and then saving are two steps. Eight requests arriving together
+ * all counted zero earlier submissions, all passed, and all saved — eight
+ * against a limit of three. Queueing that stretch closes the gap. It holds
+ * only a count and an insert, a few milliseconds, never the outgoing email.
+ *
+ * This is an in-process queue, which is enough while the site runs as one
+ * Node process. Running several would need the lock in the database instead.
+ */
+let queue: Promise<unknown> = Promise.resolve()
+
+export function oneAtATime<T>(work: () => Promise<T>): Promise<T> {
+  const run = queue.then(work, work)
+  queue = run.catch(() => undefined)
+  return run
 }

@@ -18,20 +18,34 @@ const labelsOf = (items: unknown): string[] =>
  */
 export function toAccordionRows(
   products: any[],
+  locale: Locale,
   duration: (product: any) => number = () => 0.3,
 ): ProductRow[] {
-  return products.map((product) => ({
-    id: product.id,
-    name: product.name,
-    shortDescription: product.shortDescription,
-    description: product.description ? <RichText data={product.description} /> : null,
-    status: product.productStatus,
-    isNew: product.isNew,
-    features: labelsOf(product.features),
-    suitableFor: labelsOf(product.suitableFor),
-    useCases: labelsOf(product.useCases),
-    duration: duration(product),
-  }))
+  // Both languages sit on the product now, so the page picks its own.
+  const L = locale === 'en' ? 'En' : 'Id'
+  const pick = (p: any, base: string) => p[`${base}${L}`] ?? p[`${base}Id`]
+
+  return products.map((product) => {
+    const status: string[] = Array.isArray(product.statuses) ? product.statuses : []
+    return {
+      id: product.id,
+      name: pick(product, 'name'),
+      shortDescription: pick(product, 'shortDescription'),
+      description: pick(product, 'description') ? (
+        <RichText data={pick(product, 'description')} />
+      ) : null,
+      /*
+       * Drawn in the order the design reads them: what you can do with the
+       * product, then whether it is new. The editor's own order is not used,
+       * so picking NEW first does not put it in front.
+       */
+      statuses: ['live', 'ready_to_sell', 'new'].filter((s) => status.includes(s)),
+      features: labelsOf(pick(product, 'features')),
+      suitableFor: labelsOf(pick(product, 'suitableFor')),
+      useCases: labelsOf(pick(product, 'useCases')),
+      duration: duration(product),
+    }
+  })
 }
 
 export const accordionLabels = (locale: Locale): ProductAccordionLabels => ({
@@ -42,3 +56,4 @@ export const accordionLabels = (locale: Locale): ProductAccordionLabels => ({
   expand: t(productUi.accordion.expand, locale),
   collapse: t(productUi.accordion.collapse, locale),
 })
+

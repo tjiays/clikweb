@@ -7,7 +7,6 @@
 #
 # Used by a `map` block in nginx; see deploy/nginx-production.conf.
 
-/ /;  # homepage: both old roots land on the Indonesian home
 /about-us /en/about-us;
 /artikel/apakah-skor-kredit-anda-berubah-setiap-kali-anda-memeriksanya-inilah-alasannya /en/newsroom/apakah-skor-kredit-anda-berubah-setiap-kali-anda-memeriksanya-inilah-alasannya;  # article slug must exist in the CMS
 /artikel/building-a-better-credit-score-essential-tips-for-responsible-credit-card-use /en/newsroom/building-a-better-credit-score-essential-tips-for-responsible-credit-card-use;  # article slug must exist in the CMS

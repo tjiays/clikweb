@@ -299,8 +299,8 @@
   justify-content: space-between;
   gap: 1rem;
   margin-top: auto;
-  /* Share circle 16px from the card's right edge (1661:8977, 730:3688) */
-  margin-right: -4px;
+  /* The -4px here pulled the share circle out to the card's edge; with the
+     share button gone it would have pushed READ MORE past it instead. */
   padding-top: 16px;
 }
 
